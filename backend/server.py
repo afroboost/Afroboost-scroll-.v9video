@@ -267,8 +267,8 @@ def is_super_admin(email: str) -> bool:
 def get_coach_filter(email: str) -> dict:
     """Retourne le filtre MongoDB pour l'isolation des données coach"""
     if is_super_admin(email):
-        # Super Admin voit tout (ses données + données sans coach_id)
-        return {"$or": [{"coach_id": {"$exists": False}}, {"coach_id": DEFAULT_COACH_ID}]}
+        # Super Admin voit TOUT - pas de filtre (Pass Total)
+        return {}
     # Coach normal - uniquement ses propres données
     return {"coach_id": email.lower().strip()}
 
