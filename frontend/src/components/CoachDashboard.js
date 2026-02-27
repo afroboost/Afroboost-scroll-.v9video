@@ -286,6 +286,42 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // === PANNEAU SUPER ADMIN ===
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   
+  // === STRIPE CONNECT v8.9.3 (uniquement pour les coachs, pas Bassi) ===
+  const [stripeConnectStatus, setStripeConnectStatus] = useState(null);
+  const [stripeConnectLoading, setStripeConnectLoading] = useState(false);
+
+  // Vérifier le statut Stripe Connect au chargement (pour les coachs seulement)
+  useEffect(() => {
+    if (coachUser?.email && !isSuperAdmin) {
+      axios.get(`${API}/coach/stripe-connect/status`, {
+        headers: { 'X-User-Email': coachUser.email }
+      }).then(res => {
+        setStripeConnectStatus(res.data);
+      }).catch(() => {
+        setStripeConnectStatus({ connected: false, status: 'error' });
+      });
+    }
+  }, [coachUser?.email, isSuperAdmin]);
+
+  // Fonction pour lancer l'onboarding Stripe Connect
+  const handleStripeConnect = async () => {
+    if (!coachUser?.email || stripeConnectLoading) return;
+    setStripeConnectLoading(true);
+    try {
+      const res = await axios.post(`${API}/coach/stripe-connect/onboard`, {
+        email: coachUser.email
+      });
+      if (res.data?.url) {
+        window.open(res.data.url, '_blank');
+      }
+    } catch (err) {
+      console.error('[STRIPE-CONNECT] Erreur:', err);
+      alert('Erreur lors de la connexion Stripe');
+    } finally {
+      setStripeConnectLoading(false);
+    }
+  };
+  
   // === PERSISTANCE ONGLET : Restaurer l'onglet depuis localStorage ===
   const [tab, setTab] = useState(() => {
     try {
