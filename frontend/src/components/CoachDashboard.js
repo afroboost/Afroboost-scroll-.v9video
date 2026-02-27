@@ -1128,10 +1128,6 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const [currentWhatsAppIndex, setCurrentWhatsAppIndex] = useState(0);
   const [instagramProfile, setInstagramProfile] = useState("afroboost"); // Profil Instagram par défaut
   const [messageCopied, setMessageCopied] = useState(false);
-
-  // === MÉDIA LINKS STATE (Lecteur Afroboost) ===
-  const [mediaLinks, setMediaLinks] = useState([]);
-  const [showMediaLinkForm, setShowMediaLinkForm] = useState(false);
   
   // v8.6: Envoi message de groupe
   const sendGroupMessage = async (messageText, mediaUrl = null) => {
@@ -1150,17 +1146,6 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
     }
   };
   
-  const [newMediaLink, setNewMediaLink] = useState({
-    slug: '',
-    video_url: '',
-    title: '',
-    description: '',
-    custom_thumbnail: '',
-    cta_type: 'PERSONNALISE', // Type de CTA: RESERVER | OFFRE | PERSONNALISE
-    cta_text: '',
-    cta_link: ''
-  });
-
   // === EMAIL RESEND STATE (remplace EmailJS) ===
   const [emailSendingProgress, setEmailSendingProgress] = useState(null);
   const [emailSendingResults, setEmailSendingResults] = useState(null);
@@ -1169,9 +1154,6 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // === RESOLVED THUMBNAIL FOR PREVIEW ===
   const [resolvedThumbnail, setResolvedThumbnail] = useState(null);
   const [testEmailStatus, setTestEmailStatus] = useState(null);
-  
-  // === ÉDITION MÉDIA ===
-  const [editingMediaLink, setEditingMediaLink] = useState(null);
 
   // === WHATSAPP API STATE ===
   const [whatsAppConfig, setWhatsAppConfig] = useState(() => getWhatsAppConfig());
