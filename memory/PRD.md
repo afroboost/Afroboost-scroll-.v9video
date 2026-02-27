@@ -1,5 +1,56 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v8.9 - MISSION SAAS : ARCHITECTURE MULTI-COACH ✅ (27 Février 2026)
+
+### STATUT: EN COURS
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7229 lignes** (sous limite 7450) |
+| Modules Articles | ❌ SUPPRIMÉS |
+| Modules Médias | ❌ SUPPRIMÉS |
+| Hiérarchie Super Admin | ✅ IMPLÉMENTÉE |
+| Packs Coach | ✅ CRUD COMPLET |
+| Page Devenir Coach | ✅ FONCTIONNELLE |
+| Stripe Coach Checkout | ✅ INTÉGRÉ |
+
+### Fonctionnalités v8.9
+
+#### 1. Système de Rôles
+| Rôle | Email | Accès |
+|------|-------|-------|
+| Super Admin | contact.artboost@gmail.com | Panneau total + Dashboard |
+| Coach | Coachs enregistrés | Dashboard isolé |
+| User | Autres | Client standard |
+
+#### 2. Packs Coach Créés
+| Pack | Prix | Crédits | Stripe ID |
+|------|------|---------|-----------|
+| Pack Starter | 49 CHF | 50 | price_1T5P8uRs... |
+| Pack Pro | 99 CHF | 150 | price_1T5P90Rs... |
+
+#### 3. Endpoints API v8.9
+- `GET /api/admin/coach-packs` - Liste packs (public)
+- `GET /api/admin/coach-packs/all` - Liste tous (Super Admin)
+- `POST /api/admin/coach-packs` - Créer pack (Super Admin)
+- `PUT /api/admin/coach-packs/{id}` - Modifier pack (Super Admin)
+- `DELETE /api/admin/coach-packs/{id}` - Supprimer pack (Super Admin)
+- `GET /api/auth/role` - Vérifier rôle utilisateur
+- `POST /api/stripe/create-coach-checkout` - Checkout coach
+
+#### 4. Composants Frontend v8.9
+- `BecomeCoachPage.js` - Page d'inscription coach
+- `SuperAdminPanel.js` - Panneau de gestion admin
+- Footer: Lien "Devenir Coach"
+- CoachDashboard: Bouton "Admin" (Super Admin only)
+
+### Tests v8.9 - Iteration 62
+- Backend: **20/20 tests ✅**
+- Frontend: **100% ✅**
+- Non-régression: **100% ✅**
+
+---
+
 ## v5 - VERROUILLAGE TECHNIQUE FINAL ✅ (8 Février 2026)
 
 ### STATUT: PRÊT POUR PRODUCTION
