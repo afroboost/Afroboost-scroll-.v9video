@@ -4078,15 +4078,6 @@ function App() {
                 <span className="text-white" style={{ opacity: 0.3 }}>|</span>
               </>
             )}
-            <button 
-              onClick={() => setShowBecomeCoach(true)}
-              className="text-white hover:text-pink-400 transition-colors"
-              style={{ opacity: 0.6, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 'inherit', fontSize: 'inherit', letterSpacing: 'inherit' }}
-              data-testid="become-coach-link"
-            >
-              Devenir Coach
-            </button>
-            <span className="text-white" style={{ opacity: 0.3 }}>|</span>
             <span 
               onClick={handleCopyrightClick} 
               className="copyright-secret text-white cursor-pointer" 
