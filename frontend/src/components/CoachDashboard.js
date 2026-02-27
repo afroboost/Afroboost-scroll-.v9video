@@ -1310,7 +1310,8 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   useEffect(() => {
     const loadCampaigns = async () => {
       try {
-        const res = await axios.get(`${API}/campaigns`);
+        // v8.9.5: Isolation coach_id
+        const res = await axios.get(`${API}/campaigns`, getCoachHeaders());
         setCampaigns(res.data);
       } catch (err) { console.error("Error loading campaigns:", err); }
     };
