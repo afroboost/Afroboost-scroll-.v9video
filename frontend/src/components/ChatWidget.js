@@ -3780,12 +3780,17 @@ export const ChatWidget = () => {
                       S'identifier comme abonné
                     </button>
                     
-                    {/* Bouton Devenir Coach v8.9.3 - Déplacé depuis le footer */}
+                    {/* Bouton Devenir Coach v8.9.9 - Dynamique selon statut */}
                     <button
                       type="button"
                       onClick={() => {
-                        // Émettre un événement pour ouvrir la page Devenir Coach
-                        window.dispatchEvent(new CustomEvent('openBecomeCoach'));
+                        if (isRegisteredCoach || isCoachMode) {
+                          // Coach inscrit: Rediriger vers le dashboard
+                          window.location.hash = '#coach-dashboard';
+                        } else {
+                          // Visiteur: Ouvrir la page Devenir Coach
+                          window.dispatchEvent(new CustomEvent('openBecomeCoach'));
+                        }
                       }}
                       className="text-xs font-medium transition-all hover:scale-105"
                       style={{
@@ -3793,14 +3798,16 @@ export const ChatWidget = () => {
                         padding: '10px',
                         marginTop: '8px',
                         borderRadius: '8px',
-                        background: 'transparent',
+                        background: (isRegisteredCoach || isCoachMode) 
+                          ? 'linear-gradient(135deg, rgba(217, 28, 210, 0.3), rgba(139, 92, 246, 0.3))' 
+                          : 'transparent',
                         color: '#D91CD2',
                         border: '1px solid rgba(217, 28, 210, 0.4)',
                         cursor: 'pointer'
                       }}
-                      data-testid="become-coach-chat-btn"
+                      data-testid={isRegisteredCoach || isCoachMode ? "coach-dashboard-btn" : "become-coach-chat-btn"}
                     >
-                      Devenir Coach Partenaire
+                      {(isRegisteredCoach || isCoachMode) ? '🏠 Accès Mon Dashboard' : 'Devenir Coach Partenaire'}
                     </button>
                     
                     <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.4)', marginTop: '8px' }}>
