@@ -3598,6 +3598,39 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 Admin
               </button>
             )}
+            {/* === BOUTON STRIPE CONNECT (visible uniquement pour les coachs, pas Bassi) v8.9.3 === */}
+            {!isSuperAdmin && (
+              <button 
+                onClick={handleStripeConnect}
+                disabled={stripeConnectLoading}
+                title={stripeConnectStatus?.connected ? "Compte Stripe connecté" : "Connecter votre Stripe"}
+                className="px-3 py-2 rounded-lg text-white text-sm flex items-center gap-2"
+                style={{ 
+                  background: stripeConnectStatus?.connected 
+                    ? 'rgba(34, 197, 94, 0.3)' 
+                    : 'linear-gradient(135deg, #635BFF, #8b5cf6)',
+                  border: stripeConnectStatus?.connected ? '1px solid rgba(34, 197, 94, 0.5)' : 'none',
+                  opacity: stripeConnectLoading ? 0.7 : 1
+                }}
+                data-testid="stripe-connect-btn"
+              >
+                {stripeConnectLoading ? (
+                  <span className="animate-pulse">...</span>
+                ) : stripeConnectStatus?.connected ? (
+                  <>
+                    <span style={{ color: '#22c55e' }}>✓</span>
+                    Stripe OK
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                    </svg>
+                    Connecter Stripe
+                  </>
+                )}
+              </button>
+            )}
             {/* === ICÔNE PARTAGE COACH === */}
             <button 
               onClick={handleCoachShareLink}
