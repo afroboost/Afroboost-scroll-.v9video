@@ -3591,33 +3591,7 @@ async def chat_with_ai(data: ChatMessage):
             logger.warning(f"[CHAT-IA] Erreur récupération cours: {e}")
             context += "\n\n🎯 COURS: Informations temporairement indisponibles.\n"
         
-        # === SECTION 3: ARTICLES ET ACTUALITÉS ===
-        try:
-            # Récupérer les 10 articles les plus récents
-            articles = await db.articles.find(
-                {"visible": {"$ne": False}}, 
-                {"_id": 0}
-            ).sort("createdAt", -1).to_list(10)
-            
-            if articles:
-                context += "\n\n📰 DERNIERS ARTICLES ET ACTUALITÉS:\n"
-                for a in articles[:5]:  # Max 5 articles dans le contexte
-                    title = a.get('title', 'Article')
-                    summary = a.get('summary', '')[:120] if a.get('summary') else ''
-                    link = a.get('link', '')
-                    
-                    context += f"  • {title}\n"
-                    if summary:
-                        context += f"    → {summary}\n"
-                    if link:
-                        context += f"    🔗 Lien: {link}\n"
-            else:
-                context += "\n\n📰 ARTICLES: Pas d'articles récents. Le blog arrive bientôt !\n"
-        except Exception as e:
-            logger.warning(f"[CHAT-IA] Erreur récupération articles: {e}")
-            # Silencieux si pas de collection articles
-        
-        # === SECTION 4: PROMOS SPÉCIALES (avec masquage des codes) ===
+        # === SECTION 3: PROMOS SPÉCIALES (avec masquage des codes) ===
         # L'IA peut connaître les remises pour calculer les prix, mais JAMAIS les codes
         # PRODUCTION-READY: Try/except individuel pour chaque promo
         try:
@@ -5394,33 +5368,7 @@ async def get_ai_response_with_session(request: Request):
             logger.warning(f"[CHAT-AI-RESPONSE] Erreur récupération cours: {e}")
             context += "\n\n🎯 COURS: Informations temporairement indisponibles.\n"
         
-        # === SECTION 3: ARTICLES ET ACTUALITÉS ===
-        try:
-            # Récupérer les 10 articles les plus récents
-            articles = await db.articles.find(
-                {"visible": {"$ne": False}}, 
-                {"_id": 0}
-            ).sort("createdAt", -1).to_list(10)
-            
-            if articles:
-                context += "\n\n📰 DERNIERS ARTICLES ET ACTUALITÉS:\n"
-                for a in articles[:5]:  # Max 5 articles dans le contexte
-                    title = a.get('title', 'Article')
-                    summary = a.get('summary', '')[:120] if a.get('summary') else ''
-                    link = a.get('link', '')
-                    
-                    context += f"  • {title}\n"
-                    if summary:
-                        context += f"    → {summary}\n"
-                    if link:
-                        context += f"    🔗 Lien: {link}\n"
-            else:
-                context += "\n\n📰 ARTICLES: Pas d'articles récents. Le blog arrive bientôt !\n"
-        except Exception as e:
-            logger.warning(f"[CHAT-AI-RESPONSE] Erreur récupération articles: {e}")
-            # Silencieux si pas de collection articles
-        
-        # === SECTION 4: PROMOS SPÉCIALES (avec masquage des codes) ===
+        # === SECTION 3: PROMOS SPÉCIALES (avec masquage des codes) ===
         # L'IA peut connaître les remises pour calculer les prix, mais JAMAIS les codes
         # PRODUCTION-READY: Try/except individuel pour chaque promo
         try:
