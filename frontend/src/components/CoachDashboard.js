@@ -1423,7 +1423,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
       try {
         const [sessionsRes, participantsRes, linksRes] = await Promise.all([
           axios.get(`${API}/chat/sessions`),
-          axios.get(`${API}/chat/participants`),
+          axios.get(`${API}/chat/participants`, getCoachHeaders()),
           axios.get(`${API}/chat/links`)
         ]);
         setChatSessions(sessionsRes.data);
