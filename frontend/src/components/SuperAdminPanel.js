@@ -377,6 +377,7 @@ const SuperAdminPanel = ({ userEmail, onClose }) => {
                         <th className="px-4 py-3 text-left text-xs font-medium text-white/70">Coach</th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-white/70">Email</th>
                         <th className="px-4 py-3 text-center text-xs font-medium text-white/70">Crédits</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-white/70">Stripe</th>
                         <th className="px-4 py-3 text-center text-xs font-medium text-white/70">Statut</th>
                         <th className="px-4 py-3 text-center text-xs font-medium text-white/70">Actions</th>
                       </tr>
@@ -393,6 +394,13 @@ const SuperAdminPanel = ({ userEmail, onClose }) => {
                               'bg-red-500/20 text-red-400'
                             }`}>
                               {coach.credits}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              coach.stripe_connect_id ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                            }`}>
+                              {coach.stripe_connect_id ? '✓ Connecté' : '—'}
                             </span>
                           </td>
                           <td className="px-4 py-3 text-center">
