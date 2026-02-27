@@ -5189,12 +5189,14 @@ async def generate_shareable_link(request: Request):
     frontend_url = os.environ.get("FRONTEND_URL", "")
     share_url = f"{frontend_url}/chat/{session.link_token}" if frontend_url else f"/chat/{session.link_token}"
     
-    logger.info(f"[CHAT-LINK] Lien créé: {session.link_token} (custom_prompt: {'oui' if custom_prompt else 'non'})")
+    logger.info(f"[CHAT-LINK] Lien cree: {session.link_token} | titre: {title} | custom_prompt: {'oui' if custom_prompt else 'non'}")
     
     return {
         "link_token": session.link_token,
         "share_url": share_url,
         "session_id": session.id,
+        "title": title,
+        "custom_prompt": custom_prompt,
         "has_custom_prompt": custom_prompt is not None
     }
 
