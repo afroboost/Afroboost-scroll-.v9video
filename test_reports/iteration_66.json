@@ -1,0 +1,63 @@
+{
+  "summary": "v8.9.5 Multi-tenant Isolation Testing COMPLETE - All backend isolation tests PASSED (15/15), Frontend verification COMPLETE",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v895_isolation.py",
+    "/app/test_reports/pytest/pytest_v895_isolation.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "v8.9.5 isolation implemented correctly in server.py",
+    "is_super_admin() function at line 263 correctly identifies Super Admin (contact.artboost@gmail.com)",
+    "get_coach_filter() at line 267 returns empty query for Super Admin (sees all), coach_id filter for others",
+    "/api/reservations (lines 1294-1328) correctly uses X-User-Email header for filtering",
+    "/api/campaigns (lines 1763-1772) correctly uses X-User-Email header for filtering",
+    "/api/chat/participants (lines 4028-4037) correctly uses X-User-Email header for filtering",
+    "Frontend CoachDashboard.js getCoachHeaders() helper (lines 287-290) correctly sends X-User-Email header",
+    "'Mon Stripe' tab logic correct (lines 3418-3421): Only added for non-Super Admin coaches"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v895_isolation.py"
+  ],
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "100% (all features verified via Playwright)"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com",
+    "test_coach_email": "unknown@coach.com"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "v8.9.5 ISOLATION ÉTANCHE fully tested. Backend: Super Admin sees all reservations/campaigns/participants, unknown coach sees 0. Non-regression: courses, offers, discount-codes, payment-links all INTACT. Frontend: 'Trouver un Coach' modal opens (data-testid='coach-search-nav-btn'), 'Devenir Coach Partenaire' button visible in chat (data-testid='become-coach-chat-btn'), March 2025 courses visible and functional.",
+  "verified_features_v895": {
+    "ISOLATION_reservations_super_admin": "PASSED - Super Admin (contact.artboost@gmail.com) sees ALL reservations",
+    "ISOLATION_reservations_unknown_coach": "PASSED - Unknown coach (unknown@coach.com) sees 0 reservations",
+    "ISOLATION_campaigns_super_admin": "PASSED - Super Admin sees ALL campaigns",
+    "ISOLATION_campaigns_unknown_coach": "PASSED - Unknown coach sees 0 campaigns",
+    "ISOLATION_chat_participants_super_admin": "PASSED - Super Admin sees ALL participants",
+    "ISOLATION_chat_participants_unknown_coach": "PASSED - Unknown coach sees 0 participants",
+    "ISOLATION_case_insensitive": "PASSED - Email comparison is case-insensitive",
+    "NON_REGRESSION_courses": "PASSED - GET /api/courses returns 200",
+    "NON_REGRESSION_offers": "PASSED - GET /api/offers returns 200",
+    "NON_REGRESSION_discount_codes": "PASSED - GET /api/discount-codes returns 200",
+    "NON_REGRESSION_payment_links": "PASSED - GET /api/payment-links returns 200",
+    "FRONTEND_coach_search_modal": "PASSED - 'Trouver un Coach' modal opens on icon click",
+    "FRONTEND_become_coach_btn": "PASSED - 'Devenir Coach Partenaire' button visible in chat widget",
+    "FRONTEND_march_courses": "PASSED - March 2025 courses visible (04.03, 11.03, 18.03, 25.03 Cardio + Sunday Vibes)",
+    "FRONTEND_fitness_tunnel": "PASSED - Complete sales tunnel intact"
+  },
+  "screenshots": [
+    ".screenshots/v895_coach_modal.png - Shows 'Trouver un Coach' modal",
+    ".screenshots/v895_chat_opened.png - Shows chat widget with 'Devenir Coach Partenaire' button"
+  ]
+}
