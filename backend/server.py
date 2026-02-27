@@ -5942,6 +5942,47 @@ async def send_coach_response(request: Request):
             asyncio.create_task(send_backup_email(participant_id, message_text))
     return {"success": True, "message_id": coach_message.id, "mode": session.get("mode")}
 
+# v8.6: Envoi message de groupe a tous les abonnes
+@api_router.post("/chat/group-message")
+async def send_group_message(request: Request):
+    """Envoie un message a tous les abonnes actifs (is_group=True)"""
+    body = await request.json()
+    message_text = body.get("message", "").strip()
+    coach_name = body.get("coach_name", "Coach Bassi")
+    media_url = body.get("media_url")
+    
+    if not message_text:
+        raise HTTPException(status_code=400, detail="message requis")
+    
+    # Recuperer tous les participants actifs
+    participants = await db.chat_participants.find({}, {"_id": 0, "id": 1, "email": 1, "name": 1}).to_list(500)
+    if not participants:
+        return {"success": False, "error": "Aucun abonne"}
+    
+    # Creer le message de groupe (session_id = "group")
+    group_msg = EnhancedChatMessage(
+        session_id="group", sender_id="coach", sender_name=coach_name,
+        sender_type="coach", content=message_text, mode="community", is_group=True
+    )
+    await db.chat_messages.insert_one(group_msg.model_dump())
+    
+    # Emettre via Socket.IO a tous
+    await sio.emit('group_message', {
+        "id": group_msg.id, "type": "coach", "text": message_text,
+        "sender": coach_name, "is_group": True, "created_at": group_msg.created_at,
+        "media_url": media_url
+    })
+    
+    # Notifications email en arriere-plan (async)
+    async def notify_all():
+        for p in participants:
+            if p.get("email"):
+                await send_backup_email(p["id"], f"[Groupe] {message_text[:100]}")
+    asyncio.create_task(notify_all())
+    
+    logger.info(f"[GROUP] Message envoye a {len(participants)} abonnes")
+    return {"success": True, "message_id": group_msg.id, "recipients": len(participants)}
+
 # --- Private Chat from Community ---
 @api_router.post("/chat/start-private")
 async def start_private_chat(request: Request):
