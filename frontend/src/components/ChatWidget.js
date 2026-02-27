@@ -1307,6 +1307,53 @@ export const ChatWidget = () => {
     }
   }, [afroboostProfile?.code, afroboostProfile?.email, checkReservationEligibility]);
 
+  // === v8.9.9: Vérifier si l'utilisateur est un coach inscrit ===
+  useEffect(() => {
+    const checkCoachStatus = async () => {
+      try {
+        // Récupérer l'email depuis le profil ou l'identité
+        const savedIdentity = localStorage.getItem(AFROBOOST_IDENTITY_KEY);
+        const savedClient = localStorage.getItem(CHAT_CLIENT_KEY);
+        const profile = afroboostProfile;
+        
+        let userEmail = profile?.email;
+        if (!userEmail && savedIdentity) {
+          try { userEmail = JSON.parse(savedIdentity)?.email; } catch {}
+        }
+        if (!userEmail && savedClient) {
+          try { userEmail = JSON.parse(savedClient)?.email; } catch {}
+        }
+        
+        if (!userEmail) {
+          setIsRegisteredCoach(false);
+          return;
+        }
+        
+        // Super Admin est toujours un coach
+        if (userEmail.toLowerCase() === 'contact.artboost@gmail.com') {
+          setIsRegisteredCoach(true);
+          return;
+        }
+        
+        // Vérifier si l'email est dans la collection coaches
+        const res = await fetch(`${BACKEND_URL}/api/coach/profile`, {
+          headers: { 'X-User-Email': userEmail }
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          setIsRegisteredCoach(data?.role === 'coach' || data?.role === 'super_admin');
+        } else {
+          setIsRegisteredCoach(false);
+        }
+      } catch {
+        setIsRegisteredCoach(false);
+      }
+    };
+    
+    checkCoachStatus();
+  }, [afroboostProfile?.email]);
+
   // === HANDLER CLIC BOUTON RÉSERVATION ===
   const handleReservationClick = useCallback(async () => {
     // BLINDAGE: Bloquer en mode Vue Visiteur
