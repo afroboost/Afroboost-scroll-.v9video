@@ -298,6 +298,12 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // === CRÉDITS COACH v8.9.7 ===
   const [coachCredits, setCoachCredits] = useState(null); // null=loading, -1=illimité, >=0=solde
   
+  // === v8.9.9: VITRINE COACH ===
+  const [coachUsername, setCoachUsername] = useState(null);
+  const coachVitrineUrl = coachUsername 
+    ? `${window.location.origin}/coach/${coachUsername}`
+    : isSuperAdmin ? `${window.location.origin}/coach/bassi` : null;
+  
   // Helper: crédits insuffisants (pour griser les boutons)
   const hasInsufficientCredits = !isSuperAdmin && coachCredits !== null && coachCredits !== -1 && coachCredits <= 0;
 
