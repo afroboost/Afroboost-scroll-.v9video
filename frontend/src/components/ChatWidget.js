@@ -793,6 +793,8 @@ export const ChatWidget = () => {
   });
   const [showMenu, setShowMenu] = useState(false);
   const [isCommunityMode, setIsCommunityMode] = useState(false);
+  const [chatMode, setChatMode] = useState('private'); // v8.6: 'private' ou 'group'
+  const [groupMessages, setGroupMessages] = useState([]); // v8.6: Messages de groupe
   const [lastMessageCount, setLastMessageCount] = useState(0);
   const [privateChatTarget, setPrivateChatTarget] = useState(null);
   const [messageCount, setMessageCount] = useState(0); // Compteur de messages pour prompt notif
