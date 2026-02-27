@@ -294,6 +294,25 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // === STRIPE CONNECT v8.9.3 (uniquement pour les coachs, pas Bassi) ===
   const [stripeConnectStatus, setStripeConnectStatus] = useState(null);
   const [stripeConnectLoading, setStripeConnectLoading] = useState(false);
+  
+  // === CRÉDITS COACH v8.9.7 ===
+  const [coachCredits, setCoachCredits] = useState(null); // null=loading, -1=illimité, >=0=solde
+  
+  // Helper: crédits insuffisants (pour griser les boutons)
+  const hasInsufficientCredits = !isSuperAdmin && coachCredits !== null && coachCredits !== -1 && coachCredits <= 0;
+
+  // Charger profil coach (crédits) au démarrage
+  useEffect(() => {
+    if (coachUser?.email) {
+      axios.get(`${BACKEND_URL}/api/coach/me`, {
+        headers: { 'X-User-Email': coachUser.email }
+      }).then(res => {
+        setCoachCredits(res.data?.credits ?? 0);
+      }).catch(() => {
+        setCoachCredits(isSuperAdmin ? -1 : 0);
+      });
+    }
+  }, [coachUser?.email, isSuperAdmin]);
 
   // Vérifier le statut Stripe Connect au chargement (pour les coachs seulement)
   useEffect(() => {
