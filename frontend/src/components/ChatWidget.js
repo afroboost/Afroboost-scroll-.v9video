@@ -3117,9 +3117,9 @@ export const ChatWidget = () => {
                       Synchronisation...
                     </span>
                   ) : (
-                    /* Afficher le statut abonné si profil validé */
+                    /* Afficher le statut abonné si profil validé + cours restants */
                     afroboostProfile?.code && step === 'chat'
-                      ? `Abonné - ${afroboostProfile.name}`
+                      ? `Abonne - ${afroboostProfile.name}${reservationEligibility?.remaining !== undefined && reservationEligibility?.remaining !== 'illimite' ? ` (${reservationEligibility.remaining} cours)` : ''}`
                       : isReturningClient && step === 'chat' 
                         ? leadData.firstName 
                         : isCommunityMode 
