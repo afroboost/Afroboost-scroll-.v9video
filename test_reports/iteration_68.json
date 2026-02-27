@@ -1,5 +1,5 @@
 {
-  "summary": "v8.9.7 Migration Bassi Data & SaaS Multi-Coach Testing - All backend tests PASSED (13/13), Frontend vitrine verified",
+  "summary": "v8.9.7 Migration Bassi Data & SaaS Multi-Coach Testing - All backend tests PASSED (13/13), Frontend vitrine FIXED and verified",
   "backend_issues": {
     "critical": [],
     "minor": []
@@ -7,20 +7,18 @@
   "frontend_issues": {
     "ui_bugs": [],
     "integration_issues": [],
-    "design_issues": [
-      {
-        "screen": "CoachVitrine - Cours section",
-        "issues": ["Course names are not displayed - only times (18:30) shown. Consider showing course.name or course.title property"]
-      }
-    ]
+    "design_issues": []
   },
   "test_report_links": [
     "/app/backend/tests/test_v897_migration_saas.py",
     "/app/test_reports/pytest/pytest_v897_migration_saas.xml"
   ],
-  "action_items": [
-    "MINOR: CoachVitrine.js - Course cards only show time '18:30' but not the course name. Check if course.title or course.name property is being used correctly"
-  ],
+  "action_items": [],
+  "bug_fixed": {
+    "file": "/app/frontend/src/components/CoachVitrine.js",
+    "issue": "Course cards were showing only times (18:30) - course.title was undefined, API returns course.name",
+    "fix": "Changed course.title to course.name || course.title, and course.description to course.description || course.locationName"
+  },
   "critical_code_review_comments": [
     "v8.9.7 Migration endpoint (/api/admin/migrate-bassi-data) correctly migrates reservations, contacts, campaigns to bassi_default",
     "Coach profile endpoint (/api/coach/profile) correctly returns credits=-1 and is_super_admin=true for Super Admin",
