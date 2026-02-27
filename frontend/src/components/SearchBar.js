@@ -231,6 +231,35 @@ export const NavigationBar = ({
               </button>
             );
           })}
+          
+          {/* v8.9.4: Icône Coach séparée - alignée avec les filtres */}
+          {onCoachClick && (
+            <>
+              <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.15)', margin: '0 4px' }} />
+              <button
+                onClick={onCoachClick}
+                data-testid="coach-search-nav-btn"
+                title="Trouver un coach"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
+                  border: '2px solid #D91CD2',
+                  background: 'transparent',
+                  color: '#D91CD2',
+                  cursor: 'pointer',
+                  transition: 'all 0.25s ease',
+                  outline: 'none',
+                  padding: 0
+                }}
+              >
+                <CoachIcon />
+              </button>
+            </>
+          )}
         </div>
       )}
 
