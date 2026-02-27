@@ -2421,26 +2421,77 @@ async def stripe_webhook(request: Request):
         event = stripe.Event.construct_from(stripe.util.json.loads(body), stripe.api_key)
         if event.type == 'checkout.session.completed':
             session = event.data.object
-            await db.payment_transactions.update_one({"session_id": session.id}, {"$set": {"payment_status": session.payment_status, "status": "completed", "webhook_received_at": datetime.now(timezone.utc).isoformat()}})
-            # v8.1: CREATION AUTOMATIQUE CODE D'ACCES
-            customer_email = session.get("customer_email") or session.metadata.get("customer_email", "")
-            product_name = session.metadata.get("product_name", "Abonnement Afroboost")
-            sessions_count = 10 if "10" in product_name else (5 if "5" in product_name else 1)
-            new_code = f"AFR-{str(uuid.uuid4())[:6].upper()}"
-            discount_doc = {"id": str(uuid.uuid4()), "code": new_code, "type": "100%", "value": 100, "assignedEmail": customer_email, "maxUses": sessions_count, "used": 0, "active": True, "courses": [], "created_at": datetime.now(timezone.utc).isoformat(), "source": "stripe_payment", "session_id": session.id}
-            await db.discount_codes.insert_one(discount_doc)
-            logger.info(f"[PAYMENT] Code {new_code} cree pour {customer_email} ({sessions_count} seances)")
-            # v8.1: EMAIL AVEC QR CODE + CODE TEXTE
-            if RESEND_AVAILABLE and RESEND_API_KEY and customer_email:
-                qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=AFROBOOST:{new_code}&format=png"
-                html = f"""<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;"><div style="background:linear-gradient(135deg,#d91cd2,#8b5cf6);padding:24px;text-align:center;"><h1 style="color:white;margin:0;font-size:22px;">Bienvenue chez Afroboost</h1></div><div style="padding:24px;color:#fff;"><p style="color:#a855f7;font-size:16px;line-height:1.6;">Merci pour ton achat et bienvenue dans la communaute Afroboost ! <span style="font-size:18px;">&#9889;</span><br><br>Ton energie va faire la difference. Tu trouveras ci-dessous ton code personnel et ton QR Code pour acceder a tes seances.</p><div style="background:rgba(147,51,234,0.15);border:1px solid rgba(147,51,234,0.3);border-radius:12px;padding:20px;margin:20px 0;text-align:center;"><p style="margin:0 0 8px;color:#888;">Ton code d'acces personnel</p><p style="margin:0;color:#d91cd2;font-size:28px;font-weight:bold;letter-spacing:3px;">{new_code}</p><p style="margin:12px 0 0;color:#888;">{sessions_count} seances incluses</p></div><div style="text-align:center;margin:30px 0;"><p style="color:#888;margin-bottom:16px;">Ton QR Code d'acces</p><img src="{qr_url}" alt="QR Code Afroboost" width="150" height="150" style="background:white;padding:10px;border-radius:8px;display:block;margin:0 auto;"/><p style="color:#a855f7;font-size:13px;margin-top:12px;">Presente ce QR Code a l'entree de ton cours.</p></div><div style="text-align:center;margin:30px 0;"><a href="https://afroboosteur.com" style="display:inline-block;background:#d91cd2;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Acceder a mon espace Afroboost</a></div><p style="color:#666;font-size:12px;text-align:center;margin-top:30px;">Conserve ce mail precieusement. A tres vite !</p></div></div>"""
-                try:
-                    await asyncio.to_thread(resend.Emails.send, {"from": "Afroboost <notifications@afroboosteur.com>", "to": [customer_email], "subject": f"Votre acces Afroboost - {new_code}", "html": html})
-                    logger.info(f"[PAYMENT] Email envoye a {customer_email}")
-                except Exception as mail_err:
-                    logger.warning(f"[PAYMENT] Email error: {mail_err}")
-            # v8.7: Sync CRM - Creer/MAJ contact (email unique)
-            await db.chat_participants.update_one({"email": customer_email}, {"$set": {"email": customer_email, "name": session.metadata.get("customer_name", customer_email.split("@")[0]), "source": "stripe_payment", "updated_at": datetime.now(timezone.utc).isoformat()}, "$setOnInsert": {"id": str(uuid.uuid4()), "created_at": datetime.now(timezone.utc).isoformat()}}, upsert=True)
+            metadata = session.metadata or {}
+            
+            # v8.9: Vérifier si c'est un paiement coach ou client
+            if metadata.get("type") == "coach_registration":
+                # Paiement Coach - Créer le compte coach
+                coach_email = metadata.get("customer_email", "").lower().strip()
+                coach_name = metadata.get("customer_name", "")
+                pack_id = metadata.get("pack_id", "")
+                credits = int(metadata.get("credits", 0))
+                
+                # Créer ou mettre à jour le coach
+                coach_doc = {
+                    "id": str(uuid.uuid4()),
+                    "email": coach_email,
+                    "name": coach_name,
+                    "phone": metadata.get("customer_phone", ""),
+                    "role": "coach",
+                    "credits": credits,
+                    "pack_id": pack_id,
+                    "stripe_customer_id": session.get("customer"),
+                    "is_active": True,
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                }
+                await db.coaches.update_one(
+                    {"email": coach_email},
+                    {"$setOnInsert": coach_doc},
+                    upsert=True
+                )
+                logger.info(f"[WEBHOOK] Coach créé: {coach_email} avec {credits} crédits")
+                
+                # Envoyer email de bienvenue au coach
+                if RESEND_AVAILABLE and coach_email:
+                    try:
+                        html = f"""<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#0a0a0a;">
+                        <div style="background:linear-gradient(135deg,#d91cd2,#8b5cf6);padding:24px;text-align:center;">
+                        <h1 style="color:white;margin:0;">Bienvenue Coach !</h1></div>
+                        <div style="padding:24px;color:#fff;">
+                        <p>Félicitations {coach_name} !</p>
+                        <p>Ton compte Coach Afroboost est maintenant actif avec <strong>{credits} crédits</strong>.</p>
+                        <p style="color:#a855f7;">Connecte-toi via le bouton "S'identifier" sur afroboosteur.com pour accéder à ton Dashboard personnel.</p>
+                        </div></div>"""
+                        await asyncio.to_thread(resend.Emails.send, {
+                            "from": "Afroboost <notifications@afroboosteur.com>",
+                            "to": [coach_email],
+                            "subject": "Bienvenue Coach Afroboost !",
+                            "html": html
+                        })
+                    except Exception as mail_err:
+                        logger.warning(f"[WEBHOOK] Email coach error: {mail_err}")
+            else:
+                # Paiement Client standard
+                await db.payment_transactions.update_one({"session_id": session.id}, {"$set": {"payment_status": session.payment_status, "status": "completed", "webhook_received_at": datetime.now(timezone.utc).isoformat()}})
+                # v8.1: CREATION AUTOMATIQUE CODE D'ACCES
+                customer_email = session.get("customer_email") or metadata.get("customer_email", "")
+                product_name = metadata.get("product_name", "Abonnement Afroboost")
+                sessions_count = 10 if "10" in product_name else (5 if "5" in product_name else 1)
+                new_code = f"AFR-{str(uuid.uuid4())[:6].upper()}"
+                discount_doc = {"id": str(uuid.uuid4()), "code": new_code, "type": "100%", "value": 100, "assignedEmail": customer_email, "maxUses": sessions_count, "used": 0, "active": True, "courses": [], "created_at": datetime.now(timezone.utc).isoformat(), "source": "stripe_payment", "session_id": session.id}
+                await db.discount_codes.insert_one(discount_doc)
+                logger.info(f"[PAYMENT] Code {new_code} cree pour {customer_email} ({sessions_count} seances)")
+                # v8.1: EMAIL AVEC QR CODE + CODE TEXTE
+                if RESEND_AVAILABLE and RESEND_API_KEY and customer_email:
+                    qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=AFROBOOST:{new_code}&format=png"
+                    html = f"""<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;"><div style="background:linear-gradient(135deg,#d91cd2,#8b5cf6);padding:24px;text-align:center;"><h1 style="color:white;margin:0;font-size:22px;">Bienvenue chez Afroboost</h1></div><div style="padding:24px;color:#fff;"><p style="color:#a855f7;font-size:16px;line-height:1.6;">Merci pour ton achat et bienvenue dans la communaute Afroboost ! <span style="font-size:18px;">&#9889;</span><br><br>Ton energie va faire la difference. Tu trouveras ci-dessous ton code personnel et ton QR Code pour acceder a tes seances.</p><div style="background:rgba(147,51,234,0.15);border:1px solid rgba(147,51,234,0.3);border-radius:12px;padding:20px;margin:20px 0;text-align:center;"><p style="margin:0 0 8px;color:#888;">Ton code d'acces personnel</p><p style="margin:0;color:#d91cd2;font-size:28px;font-weight:bold;letter-spacing:3px;">{new_code}</p><p style="margin:12px 0 0;color:#888;">{sessions_count} seances incluses</p></div><div style="text-align:center;margin:30px 0;"><p style="color:#888;margin-bottom:16px;">Ton QR Code d'acces</p><img src="{qr_url}" alt="QR Code Afroboost" width="150" height="150" style="background:white;padding:10px;border-radius:8px;display:block;margin:0 auto;"/><p style="color:#a855f7;font-size:13px;margin-top:12px;">Presente ce QR Code a l'entree de ton cours.</p></div><div style="text-align:center;margin:30px 0;"><a href="https://afroboosteur.com" style="display:inline-block;background:#d91cd2;color:white;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;">Acceder a mon espace Afroboost</a></div><p style="color:#666;font-size:12px;text-align:center;margin-top:30px;">Conserve ce mail precieusement. A tres vite !</p></div></div>"""
+                    try:
+                        await asyncio.to_thread(resend.Emails.send, {"from": "Afroboost <notifications@afroboosteur.com>", "to": [customer_email], "subject": f"Votre acces Afroboost - {new_code}", "html": html})
+                        logger.info(f"[PAYMENT] Email envoye a {customer_email}")
+                    except Exception as mail_err:
+                        logger.warning(f"[PAYMENT] Email error: {mail_err}")
+                # v8.7: Sync CRM - Creer/MAJ contact (email unique)
+                await db.chat_participants.update_one({"email": customer_email}, {"$set": {"email": customer_email, "name": metadata.get("customer_name", customer_email.split("@")[0]), "source": "stripe_payment", "updated_at": datetime.now(timezone.utc).isoformat()}, "$setOnInsert": {"id": str(uuid.uuid4()), "created_at": datetime.now(timezone.utc).isoformat()}}, upsert=True)
         elif event.type == 'checkout.session.expired':
             session = event.data.object
             await db.payment_transactions.update_one({"session_id": session.id}, {"$set": {"status": "expired", "webhook_received_at": datetime.now(timezone.utc).isoformat()}})
