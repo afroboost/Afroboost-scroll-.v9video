@@ -246,21 +246,16 @@ async def typing_stop(sid, data):
 # ==================== CONSTANTE EMAIL COACH ====================
 COACH_EMAIL = "contact.artboost@gmail.com"
 
-# Créer l'app ASGI combinée - C'EST CELLE-CI QUI EST EXPOSÉE COMME 'app'
+# ASGI app
 app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)
 
-# ==================== HEALTH CHECK (Required for Kubernetes) ====================
-
+# HEALTH CHECK
 @fastapi_app.get("/health")
 async def health_check():
-    """Health check endpoint for Kubernetes liveness/readiness probes"""
+    """Health check Kubernetes"""
     try:
-        # Test MongoDB connection
         await client.admin.command('ping')
-        return JSONResponse(
-            status_code=200,
-            content={"status": "healthy", "database": "connected"}
-        )
+        return JSONResponse(status_code=200, content={"status": "healthy", "database": "connected"})
     except Exception as e:
         logger.error(f"Health check failed: {str(e)}")
         return JSONResponse(
