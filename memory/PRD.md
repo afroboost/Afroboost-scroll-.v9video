@@ -1,5 +1,40 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v8.9.7 - MIGRATION RÉUSSIE - REDIRECTION CORRIGÉE ✅ (27 Février 2026)
+
+### STATUT: VALIDÉ - MIGRATION EXÉCUTÉE - CRÉDITS AFFICHÉS
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7382 lignes** (marge 68) |
+| Migration coach_id | ✅ 7 réservations, 2 contacts migrés |
+| Vitrine /coach/bassi | ✅ 3 offres, 2 cours |
+| Badge crédits | ✅ Affiché dans dashboard |
+| Tests | **13/13 ✅** |
+
+### Accomplissements v8.9.7
+
+| Feature | Description |
+|---------|-------------|
+| Migration Bassi Data | Exécuté `/api/admin/migrate-bassi-data` - 7 réservations tagguées |
+| Affichage crédits | Badge coloré dans l'en-tête du dashboard coach |
+| Grisage tabs | Onglets CRM/Campagnes grisés si crédits=0 |
+| Vitrine Bassi | `/coach/bassi` affiche "Bassi - Afroboost" avec offres/cours |
+| Redirection Stripe | `success_url` utilise dynamiquement le Referer |
+
+### Tests v8.9.7 - Iteration 68
+- Backend: **13/13 ✅**
+- Frontend: **100% ✅**
+- Non-régression: **100% INTACT**
+
+### API Vérifiées
+- `POST /api/admin/migrate-bassi-data` → `{ reservations: 7, contacts: 2 }`
+- `GET /api/coach/profile` → `{ credits: -1, is_super_admin: true }`
+- `GET /api/coach/vitrine/bassi` → `{ coach: "Bassi - Afroboost", offers: 3, courses: 2 }`
+- `GET /api/reservations` → `{ total: 7 }` pour Super Admin
+
+---
+
 ## v8.9.6 - TUNNEL COACH & VITRINE ✅ (27 Février 2026)
 
 ### STATUT: VALIDÉ - TUNNEL RÉPARÉ - VITRINE ACTIVE
