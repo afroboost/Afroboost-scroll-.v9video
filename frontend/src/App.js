@@ -2156,6 +2156,15 @@ function App() {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
+  // v8.9.3: Écouter l'événement "openBecomeCoach" depuis le ChatWidget
+  useEffect(() => {
+    const handleOpenBecomeCoach = () => {
+      setShowBecomeCoach(true);
+    };
+    window.addEventListener('openBecomeCoach', handleOpenBecomeCoach);
+    return () => window.removeEventListener('openBecomeCoach', handleOpenBecomeCoach);
+  }, []);
+
   const t = useCallback((key) => translations[lang][key] || key, [lang]);
 
   useEffect(() => { localStorage.setItem("af_lang", lang); }, [lang]);
