@@ -1,0 +1,65 @@
+{
+  "summary": "v8.9.7 Migration Bassi Data & SaaS Multi-Coach Testing - All backend tests PASSED (13/13), Frontend vitrine verified",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "CoachVitrine - Cours section",
+        "issues": ["Course names are not displayed - only times (18:30) shown. Consider showing course.name or course.title property"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v897_migration_saas.py",
+    "/app/test_reports/pytest/pytest_v897_migration_saas.xml"
+  ],
+  "action_items": [
+    "MINOR: CoachVitrine.js - Course cards only show time '18:30' but not the course name. Check if course.title or course.name property is being used correctly"
+  ],
+  "critical_code_review_comments": [
+    "v8.9.7 Migration endpoint (/api/admin/migrate-bassi-data) correctly migrates reservations, contacts, campaigns to bassi_default",
+    "Coach profile endpoint (/api/coach/profile) correctly returns credits=-1 and is_super_admin=true for Super Admin",
+    "Reservations endpoint correctly filters by coach_id, Super Admin sees ALL (7+ reservations)",
+    "Vitrine endpoint (/api/coach/vitrine/bassi) special case for Bassi working - returns 'Bassi - Afroboost' with bio",
+    "Frontend CoachVitrine.js correctly displays coach profile, offers (3), courses (2)",
+    "Coach dashboard access via triple-click on '© Afroboost 2026' footer working",
+    "Google OAuth modal appears with 'Se connecter avec Google' button"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v897_migration_saas.py"
+  ],
+  "success_rate": {
+    "backend": "100% (13/13 tests passed)",
+    "frontend": "95% (vitrine working, minor display issue with course names)"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com"
+  },
+  "seed_data_creation": "None - used existing migrated data",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "v8.9.7 SAAS Multi-Coach fully tested. Backend: Migration endpoint tags historical data with coach_id=bassi_default, Coach profile returns credits=-1 for Super Admin, Reservations filtered by coach_id (Super Admin sees all 7+), Vitrine endpoint special-cases 'bassi'/'afroboost' usernames. Frontend: /coach/bassi displays coach profile with 3 offers and 2 courses (though course names not visible - only times). Coach dashboard access via triple-click on footer copyright works.",
+  "verified_features_v897": {
+    "MIGRATION_endpoint": "PASSED - POST /api/admin/migrate-bassi-data requires Super Admin, returns migrated counts",
+    "COACH_PROFILE_super_admin": "PASSED - GET /api/coach/profile returns credits=-1, is_super_admin=true for Bassi",
+    "RESERVATIONS_isolation": "PASSED - Super Admin sees 7+ reservations with pagination",
+    "VITRINE_bassi": "PASSED - GET /api/coach/vitrine/bassi returns 'Bassi - Afroboost', 3 offers, 2 courses",
+    "VITRINE_unknown": "PASSED - 404 for unknown coach",
+    "FRONTEND_vitrine": "PASSED - /coach/bassi displays coach with offers and courses",
+    "FRONTEND_coach_access": "PASSED - Triple-click footer opens Google OAuth modal",
+    "NON_REGRESSION_health": "PASSED",
+    "NON_REGRESSION_courses": "PASSED - 2 courses with March dates",
+    "NON_REGRESSION_offers": "PASSED - 3+ offers available"
+  },
+  "screenshots": [
+    ".screenshots/v897_main_page.png - Main page with courses (Session Cardio, Sunday Vibes)",
+    ".screenshots/v897_vitrine_bassi.png - Vitrine showing 'Bassi - Afroboost' with 3 offers and 2 courses",
+    ".screenshots/v897_scrolled_page.png - Footer with '© Afroboost 2026'",
+    ".screenshots/v897_after_click.png - Google OAuth modal 'Connexion Coach'"
+  ]
+}
