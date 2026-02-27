@@ -3730,6 +3730,29 @@ export const ChatWidget = () => {
                       S'identifier comme abonné
                     </button>
                     
+                    {/* Bouton Devenir Coach v8.9.3 - Déplacé depuis le footer */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Émettre un événement pour ouvrir la page Devenir Coach
+                        window.dispatchEvent(new CustomEvent('openBecomeCoach'));
+                      }}
+                      className="text-xs font-medium transition-all hover:scale-105"
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        marginTop: '8px',
+                        borderRadius: '8px',
+                        background: 'transparent',
+                        color: '#D91CD2',
+                        border: '1px solid rgba(217, 28, 210, 0.4)',
+                        cursor: 'pointer'
+                      }}
+                      data-testid="become-coach-chat-btn"
+                    >
+                      Devenir Coach Partenaire
+                    </button>
+                    
                     <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.4)', marginTop: '8px' }}>
                       Vos données sont protégées et utilisées uniquement pour vous contacter.
                     </p>
