@@ -4029,9 +4029,18 @@ Si la question ne concerne pas un produit ou un cours Afroboost, réponds:
 
 # --- Chat Participants (CRM) ---
 @api_router.get("/chat/participants")
-async def get_chat_participants():
-    """Récupère tous les participants du chat (CRM)"""
-    participants = await db.chat_participants.find({}, {"_id": 0}).to_list(1000)
+async def get_chat_participants(request: Request):
+    """Récupère les participants du chat (CRM) - Filtré par coach_id v8.9.5"""
+    caller_email = request.headers.get("X-User-Email", "").lower().strip()
+    
+    # RÈGLE ANTI-CASSE BASSI: Super Admin voit TOUT
+    if is_super_admin(caller_email):
+        participants = await db.chat_participants.find({}, {"_id": 0}).to_list(1000)
+    else:
+        # Coach normal: uniquement ses données (coach_id == son email)
+        participants = await db.chat_participants.find(
+            {"coach_id": caller_email}, {"_id": 0}
+        ).to_list(1000) if caller_email else []
     return participants
 
 @api_router.get("/chat/participants/{participant_id}")
