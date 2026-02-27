@@ -1433,7 +1433,7 @@ async def create_reservation(reservation: ReservationCreate):
                         
                         <div style="text-align: center; margin: 30px 0;">
                             <p style="color: #888; margin-bottom: 16px;">Presentez ce QR Code a l'entree</p>
-                            <img src="{qr_url}" alt="QR Code Reservation" style="width: 180px; height: 180px; background: white; padding: 10px; border-radius: 8px;"/>
+                            <img src="{qr_url}" alt="QR Code Reservation" width="150" height="150" style="background:white;padding:10px;border-radius:8px;display:block;margin:0 auto;"/>
                             <p style="color: #d91cd2; font-weight: 600; margin-top: 12px; font-size: 14px;">Code: {res_code}</p>
                         </div>
                         
