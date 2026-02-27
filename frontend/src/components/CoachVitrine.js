@@ -147,8 +147,8 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                     className="glass rounded-xl p-4"
                     style={{ border: '1px solid rgba(255,255,255,0.1)' }}
                   >
-                    <h3 className="text-white font-medium">{course.title}</h3>
-                    <p className="text-white/50 text-sm">{course.description}</p>
+                    <h3 className="text-white font-medium">{course.name || course.title}</h3>
+                    <p className="text-white/50 text-sm">{course.description || course.locationName}</p>
                     {course.time && <p className="text-purple-400 text-sm mt-2">{course.time}</p>}
                   </div>
                 ))}
