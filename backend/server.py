@@ -1594,7 +1594,6 @@ async def validate_discount_code(data: dict):
 
 @api_router.post("/discount-codes/{code_id}/use")
 async def use_discount_code(code_id: str):
-    """v8.0: Decompte desactive (deja fait dans create_reservation ligne 1327)"""
     return {"success": True, "note": "Decompte gere par create_reservation"}
 
 
