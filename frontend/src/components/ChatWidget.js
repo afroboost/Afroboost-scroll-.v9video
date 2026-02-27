@@ -450,7 +450,7 @@ const MessageBubble = ({ msg, isUser, onParticipantClick, isCommunity, currentUs
         {/* Composant MediaMessage avec CTA */}
         <MediaMessage
           mediaUrl={hasMedia ? msg.media_url : null}
-          description={msg.text}
+          description={messageText}
           cta={ctaConfig}
           onReservationClick={onReservationClick}
           isCompact={true}
