@@ -795,19 +795,15 @@ def format_message_for_frontend(m: dict) -> dict:
         "broadcast": m.get("broadcast", False), "scheduled": m.get("scheduled", False)
     }
 
-# ==================== ROUTES ====================
-
+# ROUTES
 @api_router.get("/")
 async def root():
     return {"message": "Afroboost API"}
 
-# --- Courses ---
 @api_router.get("/courses", response_model=List[Course])
 async def get_courses():
-    # EXCLURE les cours archivés de la liste
     courses_raw = await db.courses.find({"archived": {"$ne": True}}, {"_id": 0}).to_list(100)
     if not courses_raw:
-        # Insert default courses
         default_courses = [
             {"id": str(uuid.uuid4()), "name": "Afroboost Silent – Session Cardio", "weekday": 3, "time": "18:30", "locationName": "Rue des Vallangines 97, Neuchâtel", "mapsUrl": ""},
             {"id": str(uuid.uuid4()), "name": "Afroboost Silent – Sunday Vibes", "weekday": 0, "time": "18:30", "locationName": "Rue des Vallangines 97, Neuchâtel", "mapsUrl": ""}
