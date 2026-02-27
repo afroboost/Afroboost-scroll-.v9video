@@ -3595,7 +3595,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             <h1 className="font-bold text-white" style={{ fontSize: '28px' }}>{t('coachMode')}</h1>
             {/* Affichage de l'utilisateur connecté via Google OAuth */}
             {coachUser && (
-              <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
                 {coachUser.picture && (
                   <img 
                     src={coachUser.picture} 
@@ -3607,6 +3607,29 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 <span className="text-white/60 text-sm">
                   Connecté en tant que <span className="text-purple-400">{coachUser.email}</span>
                 </span>
+                {/* === AFFICHAGE CRÉDITS v8.9.7 === */}
+                {!isSuperAdmin && coachCredits !== null && (
+                  <span 
+                    className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
+                    style={{
+                      background: coachCredits <= 0 ? 'rgba(239,68,68,0.2)' : coachCredits <= 5 ? 'rgba(234,179,8,0.2)' : 'rgba(34,197,94,0.2)',
+                      color: coachCredits <= 0 ? '#ef4444' : coachCredits <= 5 ? '#eab308' : '#22c55e',
+                      border: `1px solid ${coachCredits <= 0 ? 'rgba(239,68,68,0.5)' : coachCredits <= 5 ? 'rgba(234,179,8,0.5)' : 'rgba(34,197,94,0.5)'}`
+                    }}
+                    data-testid="coach-credits-badge"
+                  >
+                    {coachCredits <= 0 ? '⚠️ 0 crédit' : `${coachCredits} crédit${coachCredits > 1 ? 's' : ''}`}
+                  </span>
+                )}
+                {isSuperAdmin && (
+                  <span 
+                    className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
+                    style={{ background: 'rgba(217,28,210,0.2)', color: '#d91cd2', border: '1px solid rgba(217,28,210,0.5)' }}
+                    data-testid="super-admin-badge"
+                  >
+                    ⭐ Super Admin
+                  </span>
+                )}
               </div>
             )}
           </div>
