@@ -3514,6 +3514,14 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
         </div>
       )}
 
+      {/* === PANNEAU SUPER ADMIN v8.9 === */}
+      {showAdminPanel && (
+        <SuperAdminPanel 
+          userEmail={coachUser?.email}
+          onClose={() => setShowAdminPanel(false)}
+        />
+      )}
+
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
           <div>
