@@ -2356,41 +2356,34 @@ async def get_checkout_status(session_id: str):
 
 @api_router.post("/webhook/stripe")
 async def stripe_webhook(request: Request):
-    """
-    Webhook Stripe pour recevoir les événements de paiement.
-    """
+    """Webhook Stripe - Cree automatiquement le code d'acces apres paiement."""
     try:
         body = await request.body()
-        event = stripe.Event.construct_from(
-            stripe.util.json.loads(body), stripe.api_key
-        )
-        
-        # Gérer les événements de paiement
+        event = stripe.Event.construct_from(stripe.util.json.loads(body), stripe.api_key)
         if event.type == 'checkout.session.completed':
             session = event.data.object
-            await db.payment_transactions.update_one(
-                {"session_id": session.id},
-                {"$set": {
-                    "payment_status": session.payment_status,
-                    "status": "completed",
-                    "webhook_received_at": datetime.now(timezone.utc).isoformat()
-                }}
-            )
-            logger.info(f"Payment completed for session: {session.id}")
-            
+            await db.payment_transactions.update_one({"session_id": session.id}, {"$set": {"payment_status": session.payment_status, "status": "completed", "webhook_received_at": datetime.now(timezone.utc).isoformat()}})
+            # v8.1: CREATION AUTOMATIQUE CODE D'ACCES
+            customer_email = session.get("customer_email") or session.metadata.get("customer_email", "")
+            product_name = session.metadata.get("product_name", "Abonnement Afroboost")
+            sessions_count = 10 if "10" in product_name else (5 if "5" in product_name else 1)
+            new_code = f"AFR-{str(uuid.uuid4())[:6].upper()}"
+            discount_doc = {"id": str(uuid.uuid4()), "code": new_code, "type": "100%", "value": 100, "assignedEmail": customer_email, "maxUses": sessions_count, "used": 0, "active": True, "courses": [], "created_at": datetime.now(timezone.utc).isoformat(), "source": "stripe_payment", "session_id": session.id}
+            await db.discount_codes.insert_one(discount_doc)
+            logger.info(f"[PAYMENT] Code {new_code} cree pour {customer_email} ({sessions_count} seances)")
+            # v8.1: EMAIL AVEC QR CODE + CODE TEXTE
+            if RESEND_AVAILABLE and RESEND_API_KEY and customer_email:
+                qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=AFROBOOST:{new_code}"
+                html = f"""<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#0a0a0a;"><div style="background:linear-gradient(135deg,#d91cd2,#8b5cf6);padding:24px;text-align:center;"><h1 style="color:white;margin:0;font-size:22px;">Bienvenue chez Afroboost</h1></div><div style="padding:24px;color:#fff;"><p style="color:#a855f7;">Merci pour votre achat !</p><div style="background:rgba(147,51,234,0.15);border:1px solid rgba(147,51,234,0.3);border-radius:12px;padding:20px;margin:20px 0;"><p style="margin:0 0 8px;color:#888;">Votre code d'acces</p><p style="margin:0;color:#d91cd2;font-size:24px;font-weight:bold;letter-spacing:2px;">{new_code}</p><p style="margin:8px 0 0;color:#888;">{sessions_count} seances incluses</p></div><div style="text-align:center;margin:30px 0;"><p style="color:#888;margin-bottom:16px;">Votre QR Code d'acces</p><img src="{qr_url}" alt="QR Code" style="width:180px;height:180px;background:white;padding:10px;border-radius:8px;"/></div><p style="color:#666;font-size:12px;text-align:center;">Conservez ce mail. Presentez le QR Code ou le code a l'entree.</p></div></div>"""
+                try:
+                    await asyncio.to_thread(resend.Emails.send, {"from": "Afroboost <notifications@afroboosteur.com>", "to": [customer_email], "subject": f"Votre acces Afroboost - {new_code}", "html": html})
+                    logger.info(f"[PAYMENT] Email envoye a {customer_email}")
+                except Exception as mail_err:
+                    logger.warning(f"[PAYMENT] Email error: {mail_err}")
         elif event.type == 'checkout.session.expired':
             session = event.data.object
-            await db.payment_transactions.update_one(
-                {"session_id": session.id},
-                {"$set": {
-                    "status": "expired",
-                    "webhook_received_at": datetime.now(timezone.utc).isoformat()
-                }}
-            )
-            logger.info(f"Payment expired for session: {session.id}")
-        
+            await db.payment_transactions.update_one({"session_id": session.id}, {"$set": {"status": "expired", "webhook_received_at": datetime.now(timezone.utc).isoformat()}})
         return {"received": True}
-        
     except Exception as e:
         logger.error(f"Webhook error: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Webhook error: {str(e)}")
