@@ -514,17 +514,18 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   }, [tab]);
   
   // === FONCTION PARTAGE COACH ===
+  // v8.9.9: Partager le lien de la vitrine coach
   const handleCoachShareLink = async () => {
     try {
-      const shareUrl = window.location.origin;
+      const shareUrl = coachVitrineUrl || window.location.origin;
       await navigator.clipboard.writeText(shareUrl);
       setLinkCopied(true);
       setTimeout(() => setLinkCopied(false), 2000);
-      console.log('[COACH] ✅ Lien copié:', shareUrl);
+      console.log('[COACH] ✅ Lien vitrine copié:', shareUrl);
     } catch (err) {
       // Fallback
       const textArea = document.createElement('textarea');
-      textArea.value = window.location.origin;
+      textArea.value = coachVitrineUrl || window.location.origin;
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand('copy');
