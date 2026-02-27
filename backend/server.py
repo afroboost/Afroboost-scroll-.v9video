@@ -6397,6 +6397,360 @@ async def send_push_to_participant(request: Request):
     }
 
 
+# ==================== SYSTÈME MULTI-COACH v8.9 - ENDPOINTS ====================
+
+# === COACH PACKS (Super Admin Only) ===
+
+@api_router.get("/admin/coach-packs")
+async def get_coach_packs():
+    """Liste tous les packs coach (accessible à tous pour la page Devenir Coach)"""
+    try:
+        packs = await db.coach_packs.find({"visible": True}, {"_id": 0}).to_list(100)
+        return packs
+    except Exception as e:
+        logger.error(f"[COACH-PACKS] Erreur récupération: {e}")
+        return []
+
+@api_router.get("/admin/coach-packs/all")
+async def get_all_coach_packs(request: Request):
+    """Liste tous les packs coach (Super Admin seulement)"""
+    try:
+        # Vérifier l'email de l'appelant via header ou query
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
+        
+        packs = await db.coach_packs.find({}, {"_id": 0}).to_list(100)
+        return packs
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACH-PACKS] Erreur récupération: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/admin/coach-packs")
+async def create_coach_pack(pack: CoachPackCreate, request: Request):
+    """Crée un nouveau pack coach (Super Admin seulement)"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
+        
+        pack_data = {
+            "id": str(uuid.uuid4()),
+            "name": pack.name,
+            "price": pack.price,
+            "credits": pack.credits,
+            "description": pack.description,
+            "features": pack.features,
+            "visible": pack.visible,
+            "stripe_price_id": None,
+            "stripe_product_id": None,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": None
+        }
+        
+        # Créer le produit Stripe si configuré
+        if stripe.api_key:
+            try:
+                stripe_product = stripe.Product.create(
+                    name=f"Pack Coach - {pack.name}",
+                    description=pack.description or f"{pack.credits} crédits"
+                )
+                stripe_price = stripe.Price.create(
+                    product=stripe_product.id,
+                    unit_amount=int(pack.price * 100),  # En centimes
+                    currency="chf"
+                )
+                pack_data["stripe_product_id"] = stripe_product.id
+                pack_data["stripe_price_id"] = stripe_price.id
+                logger.info(f"[STRIPE] Pack créé: {stripe_product.id}")
+            except Exception as stripe_err:
+                logger.warning(f"[STRIPE] Erreur création pack: {stripe_err}")
+        
+        await db.coach_packs.insert_one(pack_data)
+        pack_data.pop("_id", None)
+        
+        logger.info(f"[COACH-PACKS] Pack créé: {pack.name} ({pack.price} CHF, {pack.credits} crédits)")
+        return pack_data
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACH-PACKS] Erreur création: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.put("/admin/coach-packs/{pack_id}")
+async def update_coach_pack(pack_id: str, pack: CoachPackUpdate, request: Request):
+    """Met à jour un pack coach (Super Admin seulement)"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
+        
+        existing = await db.coach_packs.find_one({"id": pack_id})
+        if not existing:
+            raise HTTPException(status_code=404, detail="Pack non trouvé")
+        
+        update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+        
+        if pack.name is not None:
+            update_data["name"] = pack.name
+        if pack.price is not None:
+            update_data["price"] = pack.price
+            # Mettre à jour le prix Stripe si configuré
+            if stripe.api_key and existing.get("stripe_price_id"):
+                try:
+                    # Créer un nouveau prix (Stripe ne permet pas de modifier les prix)
+                    new_price = stripe.Price.create(
+                        product=existing.get("stripe_product_id"),
+                        unit_amount=int(pack.price * 100),
+                        currency="chf"
+                    )
+                    update_data["stripe_price_id"] = new_price.id
+                    logger.info(f"[STRIPE] Prix mis à jour: {new_price.id}")
+                except Exception as stripe_err:
+                    logger.warning(f"[STRIPE] Erreur mise à jour prix: {stripe_err}")
+        if pack.credits is not None:
+            update_data["credits"] = pack.credits
+        if pack.description is not None:
+            update_data["description"] = pack.description
+        if pack.features is not None:
+            update_data["features"] = pack.features
+        if pack.visible is not None:
+            update_data["visible"] = pack.visible
+        
+        await db.coach_packs.update_one({"id": pack_id}, {"$set": update_data})
+        
+        updated = await db.coach_packs.find_one({"id": pack_id}, {"_id": 0})
+        logger.info(f"[COACH-PACKS] Pack mis à jour: {pack_id}")
+        return updated
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACH-PACKS] Erreur mise à jour: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/admin/coach-packs/{pack_id}")
+async def delete_coach_pack(pack_id: str, request: Request):
+    """Supprime un pack coach (Super Admin seulement)"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
+        
+        result = await db.coach_packs.delete_one({"id": pack_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Pack non trouvé")
+        
+        logger.info(f"[COACH-PACKS] Pack supprimé: {pack_id}")
+        return {"success": True, "deleted_id": pack_id}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACH-PACKS] Erreur suppression: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# === COACHS PARTENAIRES ===
+
+@api_router.get("/admin/coaches")
+async def get_coaches(request: Request):
+    """Liste tous les coachs (Super Admin seulement)"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
+        
+        coaches = await db.coaches.find({}, {"_id": 0}).to_list(100)
+        return coaches
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACHES] Erreur récupération: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/coach/profile")
+async def get_coach_profile(request: Request):
+    """Récupère le profil du coach connecté"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not caller_email:
+            raise HTTPException(status_code=401, detail="Email requis")
+        
+        # Super Admin a accès total
+        if is_super_admin(caller_email):
+            return {
+                "id": "super_admin",
+                "email": SUPER_ADMIN_EMAIL,
+                "name": "Super Admin",
+                "role": ROLE_SUPER_ADMIN,
+                "credits": -1,  # Crédits illimités
+                "is_super_admin": True
+            }
+        
+        # Chercher le coach en base
+        coach = await db.coaches.find_one({"email": caller_email.lower()}, {"_id": 0})
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        
+        return coach
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACH] Erreur profil: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/coach/register")
+async def register_coach(coach_data: CoachCreate):
+    """Inscription d'un nouveau coach (après paiement)"""
+    try:
+        # Vérifier si l'email existe déjà
+        existing = await db.coaches.find_one({"email": coach_data.email.lower()})
+        if existing:
+            raise HTTPException(status_code=400, detail="Un coach avec cet email existe déjà")
+        
+        coach = {
+            "id": str(uuid.uuid4()),
+            "email": coach_data.email.lower().strip(),
+            "name": coach_data.name,
+            "phone": coach_data.phone,
+            "bio": coach_data.bio,
+            "photo_url": None,
+            "role": ROLE_COACH,
+            "credits": coach_data.credits,
+            "pack_id": coach_data.pack_id,
+            "stripe_customer_id": None,
+            "stripe_connect_id": None,
+            "is_active": True,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": None,
+            "last_login": None
+        }
+        
+        await db.coaches.insert_one(coach)
+        coach.pop("_id", None)
+        
+        logger.info(f"[COACH] Nouveau coach enregistré: {coach_data.email}")
+        return coach
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACH] Erreur inscription: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/coach/deduct-credit")
+async def deduct_coach_credit(request: Request):
+    """Déduit 1 crédit du solde du coach (pour CRM/Campagne)"""
+    try:
+        body = await request.json()
+        coach_email = body.get("email", "").lower().strip()
+        action = body.get("action", "unknown")  # "crm" ou "campaign"
+        
+        if not coach_email:
+            raise HTTPException(status_code=400, detail="Email requis")
+        
+        # Super Admin a des crédits illimités
+        if is_super_admin(coach_email):
+            return {"success": True, "credits_remaining": -1, "message": "Super Admin - crédits illimités"}
+        
+        coach = await db.coaches.find_one({"email": coach_email})
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        
+        if coach.get("credits", 0) <= 0:
+            raise HTTPException(status_code=402, detail="Solde de crédits insuffisant")
+        
+        # Déduire 1 crédit
+        new_credits = coach.get("credits", 0) - 1
+        await db.coaches.update_one(
+            {"email": coach_email},
+            {"$set": {"credits": new_credits, "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        logger.info(f"[COACH] Crédit déduit pour {coach_email}: action={action}, reste={new_credits}")
+        return {"success": True, "credits_remaining": new_credits, "action": action}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[COACH] Erreur déduction crédit: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/coach/add-credits")
+async def add_coach_credits(request: Request):
+    """Ajoute des crédits au solde d'un coach (Super Admin seulement)"""
+    try:
+        body = await request.json()
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
+        
+        coach_email = body.get("coach_email", "").lower().strip()
+        credits_to_add = body.get("credits", 0)
+        
+        if not coach_email or credits_to_add <= 0:
+            raise HTTPException(status_code=400, detail="Email et crédits requis")
+        
+        coach = await db.coaches.find_one({"email": coach_email})
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        
+        new_credits = coach.get("credits", 0) + credits_to_add
+        await db.coaches.update_one(
+            {"email": coach_email},
+            {"$set": {"credits": new_credits, "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        logger.info(f"[ADMIN] Crédits ajoutés: {coach_email} +{credits_to_add} = {new_credits}")
+        return {"success": True, "credits_total": new_credits, "coach_email": coach_email}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[ADMIN] Erreur ajout crédits: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# === VÉRIFICATION RÔLE ===
+
+@api_router.get("/auth/role")
+async def get_user_role_endpoint(request: Request):
+    """Vérifie le rôle de l'utilisateur connecté"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not caller_email:
+            return {"role": ROLE_USER, "is_super_admin": False, "is_coach": False}
+        
+        if is_super_admin(caller_email):
+            return {
+                "role": ROLE_SUPER_ADMIN,
+                "is_super_admin": True,
+                "is_coach": True,
+                "email": caller_email
+            }
+        
+        # Vérifier si c'est un coach
+        coach = await db.coaches.find_one({"email": caller_email, "is_active": True})
+        if coach:
+            return {
+                "role": ROLE_COACH,
+                "is_super_admin": False,
+                "is_coach": True,
+                "email": caller_email,
+                "coach_id": coach.get("id"),
+                "credits": coach.get("credits", 0)
+            }
+        
+        return {"role": ROLE_USER, "is_super_admin": False, "is_coach": False, "email": caller_email}
+        
+    except Exception as e:
+        logger.error(f"[AUTH] Erreur vérification rôle: {e}")
+        return {"role": ROLE_USER, "is_super_admin": False, "is_coach": False}
+
+
 # === SCHEDULER HEALTH ENDPOINTS (définis avant include_router) ===
 @api_router.get("/scheduler/status")
 async def get_scheduler_status():
