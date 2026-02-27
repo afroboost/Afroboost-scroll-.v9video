@@ -3168,6 +3168,21 @@ function App() {
     />
   );
   
+  // v8.9.6: Vitrine Coach publique
+  if (showCoachVitrine) return (
+    <CoachVitrine 
+      username={showCoachVitrine}
+      onClose={() => {
+        setShowCoachVitrine(null);
+        window.history.pushState({}, '', '/');
+      }}
+      onBack={() => {
+        setShowCoachVitrine(null);
+        window.history.pushState({}, '', '/');
+      }}
+    />
+  );
+  
   if (coachMode) return <CoachDashboard t={t} lang={lang} onBack={handleBackFromCoach} onLogout={handleLogout} coachUser={coachUser} />;
 
   // Filtrer les offres et cours selon visibilité, filtre actif et recherche
