@@ -1774,8 +1774,18 @@ async def sanitize_data():
 
 # --- Campaigns (Marketing Module) ---
 @api_router.get("/campaigns")
-async def get_campaigns():
-    campaigns = await db.campaigns.find({}, {"_id": 0}).sort("createdAt", -1).to_list(100)
+async def get_campaigns(request: Request):
+    """Récupère les campagnes - Filtré par coach_id v8.9.5"""
+    caller_email = request.headers.get("X-User-Email", "").lower().strip()
+    
+    # RÈGLE ANTI-CASSE BASSI: Super Admin voit TOUT
+    if is_super_admin(caller_email):
+        campaigns = await db.campaigns.find({}, {"_id": 0}).sort("createdAt", -1).to_list(100)
+    else:
+        # Coach normal: uniquement ses campagnes
+        campaigns = await db.campaigns.find(
+            {"coach_id": caller_email}, {"_id": 0}
+        ).sort("createdAt", -1).to_list(100) if caller_email else []
     return campaigns
 
 @api_router.get("/campaigns/logs")
