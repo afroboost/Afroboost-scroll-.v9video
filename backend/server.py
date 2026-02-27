@@ -1324,10 +1324,10 @@ async def get_reservations(
     else:
         # Pagination avec tri par date de création (les plus récentes en premier)
         skip = (page - 1) * limit
-        reservations = await db.reservations.find({}, projection).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+        reservations = await db.reservations.find(base_query, projection).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
     
     # Compter le total pour la pagination
-    total_count = await db.reservations.count_documents({})
+    total_count = await db.reservations.count_documents(base_query)
     
     for res in reservations:
         if isinstance(res.get('createdAt'), str):
