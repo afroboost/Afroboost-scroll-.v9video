@@ -745,17 +745,18 @@ class ChatSessionUpdate(BaseModel):
     custom_prompt: Optional[str] = None  # Prompt spécifique au lien
 
 class EnhancedChatMessage(BaseModel):
-    """Message de chat amélioré avec session, sender et suppression logique"""
+    """Message de chat ameliore avec session, sender et suppression logique"""
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     session_id: str
-    sender_id: str  # ID du participant ou "coach" ou "ai"
+    sender_id: str
     sender_name: str
-    sender_type: str = "user"  # "user", "coach", "ai"
+    sender_type: str = "user"
     content: str
-    mode: str = "ai"  # Mode au moment de l'envoi: "ai", "human", "community"
-    is_deleted: bool = False  # Suppression logique
-    notified: bool = False  # Pour les notifications coach/client
+    mode: str = "ai"
+    is_deleted: bool = False
+    is_group: bool = False  # v8.6: True si message de groupe
+    notified: bool = False
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     deleted_at: Optional[str] = None
 
