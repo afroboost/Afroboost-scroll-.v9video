@@ -7030,6 +7030,26 @@ async def get_stripe_connect_status(request: Request):
     except Exception as e:
         logger.error(f"[STRIPE-CONNECT] Erreur statut: {e}")
         return {"connected": False, "status": "error"}
+
+# === MIGRATION COACH_ID v8.9.7 (Super Admin Only) ===
+@api_router.post("/admin/migrate-bassi-data")
+async def migrate_bassi_data(request: Request):
+    """Migre les données existantes vers bassi_default - Super Admin uniquement"""
+    caller_email = request.headers.get("X-User-Email", "").lower().strip()
+    if not is_super_admin(caller_email):
+        raise HTTPException(status_code=403, detail="Super Admin requis")
+    results = {}
+    # Migrer réservations sans coach_id
+    r = await db.reservations.update_many({"coach_id": {"$exists": False}}, {"$set": {"coach_id": DEFAULT_COACH_ID}})
+    results["reservations"] = r.modified_count
+    # Migrer contacts sans coach_id
+    c = await db.chat_participants.update_many({"coach_id": {"$exists": False}}, {"$set": {"coach_id": DEFAULT_COACH_ID}})
+    results["contacts"] = c.modified_count
+    # Migrer campagnes sans coach_id  
+    p = await db.campaigns.update_many({"coach_id": {"$exists": False}}, {"$set": {"coach_id": DEFAULT_COACH_ID}})
+    results["campaigns"] = p.modified_count
+    logger.info(f"[MIGRATION] Données migrées: {results}")
+    return {"success": True, "migrated": results}
 # === SCHEDULER HEALTH ENDPOINTS (définis avant include_router) ===
 @api_router.get("/scheduler/status")
 async def get_scheduler_status():
