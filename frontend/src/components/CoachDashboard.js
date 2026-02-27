@@ -3535,6 +3535,24 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             )}
           </div>
           <div className="flex gap-3 items-center">
+            {/* === BOUTON SUPER ADMIN (visible uniquement pour Bassi) === */}
+            {isSuperAdmin && (
+              <button 
+                onClick={() => setShowAdminPanel(true)}
+                title="Panneau Super Admin"
+                className="px-3 py-2 rounded-lg text-white text-sm flex items-center gap-2"
+                style={{ 
+                  background: 'linear-gradient(135deg, #D91CD2, #8b5cf6)',
+                  border: 'none'
+                }}
+                data-testid="super-admin-btn"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 2L9 9l-7 2 5 5-1 7 6-3 6 3-1-7 5-5-7-2-3-7z" />
+                </svg>
+                Admin
+              </button>
+            )}
             {/* === ICÔNE PARTAGE COACH === */}
             <button 
               onClick={handleCoachShareLink}
