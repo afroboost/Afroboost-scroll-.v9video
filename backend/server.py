@@ -1413,9 +1413,9 @@ async def create_reservation(reservation: ReservationCreate):
     if reservation.userEmail:
         try:
             if RESEND_AVAILABLE and RESEND_API_KEY:
-                # Generer URL QR Code via API externe (Google Charts)
+                # Generer URL QR Code via API externe (QR Server - fiable)
                 qr_data = f"AFROBOOST:{res_code}"
-                qr_url = f"https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl={qr_data}&choe=UTF-8"
+                qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={qr_data}"
                 
                 client_html = f"""
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a;">
