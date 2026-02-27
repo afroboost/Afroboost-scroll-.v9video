@@ -4103,6 +4103,35 @@ export const ChatWidget = () => {
                 )}
 
                 {/* Messages Container - SMOOTH SCROLL: overflow-anchor none pour stabilité mobile */}
+                
+                {/* v8.6: Onglets Privé / Groupe */}
+                {afroboostProfile?.code && (
+                  <div style={{
+                    display: 'flex',
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    padding: '0 16px'
+                  }}>
+                    <button
+                      onClick={() => { setChatMode('private'); }}
+                      style={{
+                        flex: 1, padding: '10px', background: 'none', border: 'none',
+                        borderBottom: chatMode === 'private' ? '2px solid #d91cd2' : '2px solid transparent',
+                        color: chatMode === 'private' ? '#d91cd2' : '#888',
+                        fontSize: '12px', fontWeight: '600', cursor: 'pointer'
+                      }}
+                    >Prive avec Coach</button>
+                    <button
+                      onClick={() => { setChatMode('group'); loadGroupMessages(); }}
+                      style={{
+                        flex: 1, padding: '10px', background: 'none', border: 'none',
+                        borderBottom: chatMode === 'group' ? '2px solid #d91cd2' : '2px solid transparent',
+                        color: chatMode === 'group' ? '#d91cd2' : '#888',
+                        fontSize: '12px', fontWeight: '600', cursor: 'pointer'
+                      }}
+                    >Groupe Afroboost</button>
+                  </div>
+                )}
+                
                 <div 
                   style={{
                     flex: 1,
