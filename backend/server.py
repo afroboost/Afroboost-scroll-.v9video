@@ -644,6 +644,66 @@ class FeatureFlagsUpdate(BaseModel):
     VIDEO_SERVICE_ENABLED: Optional[bool] = None
     STREAMING_SERVICE_ENABLED: Optional[bool] = None
 
+# ==================== SYSTÈME MULTI-COACH v8.9 - MODÈLES ====================
+
+class CoachPack(BaseModel):
+    """Pack d'abonnement pour les coachs partenaires"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str  # Ex: "Pack Starter", "Pack Pro"
+    price: float  # Prix en CHF
+    credits: int  # Nombre de crédits inclus
+    description: str = ""
+    stripe_price_id: Optional[str] = None  # ID du prix Stripe
+    stripe_product_id: Optional[str] = None  # ID du produit Stripe
+    features: List[str] = []  # Liste des fonctionnalités
+    visible: bool = True
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at: Optional[str] = None
+
+class CoachPackCreate(BaseModel):
+    name: str
+    price: float
+    credits: int
+    description: str = ""
+    features: List[str] = []
+    visible: bool = True
+
+class CoachPackUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    credits: Optional[int] = None
+    description: Optional[str] = None
+    features: Optional[List[str]] = None
+    visible: Optional[bool] = None
+
+class Coach(BaseModel):
+    """Profil d'un coach partenaire"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str  # Email unique du coach
+    name: str
+    phone: Optional[str] = None
+    photo_url: Optional[str] = None
+    bio: Optional[str] = None
+    role: str = "coach"  # "coach" ou "super_admin"
+    credits: int = 0  # Solde de crédits actuel
+    stripe_customer_id: Optional[str] = None  # ID client Stripe
+    stripe_connect_id: Optional[str] = None  # ID Stripe Connect pour recevoir les paiements
+    pack_id: Optional[str] = None  # ID du pack actuel
+    is_active: bool = True
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at: Optional[str] = None
+    last_login: Optional[str] = None
+
+class CoachCreate(BaseModel):
+    email: str
+    name: str
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+    pack_id: Optional[str] = None
+    credits: int = 0
+
 # COACH SUBSCRIPTION
 class CoachSubscription(BaseModel):
     model_config = ConfigDict(extra="ignore")
