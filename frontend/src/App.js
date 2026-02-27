@@ -3081,7 +3081,7 @@ function App() {
   };
 
   // Fonction de connexion Google OAuth
-  const handleGoogleLogin = (userData) => {
+  const handleGoogleLogin = async (userData) => {
     // Persister la session coach
     localStorage.setItem('afroboost_coach_mode', 'true');
     localStorage.setItem('afroboost_coach_user', JSON.stringify(userData));
@@ -3090,6 +3090,23 @@ function App() {
     setCoachMode(true);
     setShowCoachLogin(false);
     console.log('[APP] ✅ Connexion coach réussie:', userData?.email);
+    
+    // Vérifier le rôle de l'utilisateur (Super Admin ou Coach)
+    try {
+      const roleRes = await axios.get(`${API}/auth/role`, {
+        headers: { 'X-User-Email': userData?.email || '' }
+      });
+      setUserRole(roleRes.data?.role || 'user');
+      console.log('[APP] Rôle utilisateur:', roleRes.data?.role);
+      
+      // Si Super Admin, proposer d'ouvrir le panneau admin
+      if (roleRes.data?.is_super_admin) {
+        console.log('[APP] Super Admin détecté');
+      }
+    } catch (err) {
+      console.log('[APP] Rôle par défaut');
+      setUserRole('user');
+    }
   };
   
   // Fonction pour quitter le mode coach sans déconnexion
