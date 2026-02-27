@@ -1960,6 +1960,7 @@ function App() {
   const [showSuperAdminPanel, setShowSuperAdminPanel] = useState(false);
   const [userRole, setUserRole] = useState(null); // 'super_admin', 'coach', 'user'
   const [showCoachSearch, setShowCoachSearch] = useState(false); // v8.9.4: Modal recherche coach
+  const [showCoachVitrine, setShowCoachVitrine] = useState(null); // v8.9.6: Username du coach pour vitrine
 
   const [courses, setCourses] = useState([]);
   const [offers, setOffers] = useState([]);
