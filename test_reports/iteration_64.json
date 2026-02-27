@@ -1,0 +1,45 @@
+{
+  "summary": "v8.9.3 Non-regression testing PASSED - All backend APIs intact, frontend changes verified",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v893_non_regression.py",
+    "/app/test_reports/pytest/pytest_v893_non_regression.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "v8.9.3 changes properly implemented - button moved from footer to chat, icon aligned with text"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v893_non_regression.py"
+  ],
+  "success_rate": {
+    "backend": "100% (19/19 tests passed)",
+    "frontend": "100% (all elements verified)"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "v8.9.3 fully tested - Non-regression tests passed: courses, offers, discount-codes, payment-links all intact. Frontend verified: 'Devenir Coach Partenaire' button in chat (data-testid='become-coach-chat-btn'), 'Trouver un coach' aligned with icon, footer no longer contains coach button. Backend redirection to /#coach-dashboard confirmed in server.py line 2543.",
+  "verified_features_v893": {
+    "NON_REGRESSION_courses": "PASSED - GET /api/courses returns 200 with courses list",
+    "NON_REGRESSION_offers": "PASSED - GET /api/offers returns 200 with offers list",
+    "NON_REGRESSION_discount_codes": "PASSED - GET /api/discount-codes returns 200",
+    "NON_REGRESSION_payment_links": "PASSED - GET /api/payment-links returns 200",
+    "FRONTEND_become_coach_chat_btn": "PASSED - Button present in ChatWidget with data-testid='become-coach-chat-btn'",
+    "FRONTEND_coach_search_aligned": "PASSED - 'Trouver un coach' text aligned with icon in flex container",
+    "FRONTEND_edit_pack_testid": "VERIFIED in code - data-testid={`edit-pack-${pack.id}`} present in SuperAdminPanel.js line 327",
+    "BACKEND_coach_dashboard_redirect": "VERIFIED in code - success_url redirects to /#coach-dashboard in server.py line 2543",
+    "FRONTEND_footer_no_coach_btn": "PASSED - 'Devenir Coach' removed from footer"
+  }
+}
