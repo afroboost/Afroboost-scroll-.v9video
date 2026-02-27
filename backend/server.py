@@ -691,11 +691,9 @@ class ChatMessage(BaseModel):
     source: str = "chat_ia"  # Source du contact (lien chat IA)
     link_token: str = ""  # Token du lien pour récupérer le custom_prompt
 
-# ==================== SYSTÈME DE CHAT AMÉLIORÉ ====================
-# Modèles pour la reconnaissance des utilisateurs, sessions et modes de conversation
-
+# CHAT SYSTEM
 class ChatParticipant(BaseModel):
-    """Représente un participant au chat (utilisateur/client)"""
+    """Participant au chat"""
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
