@@ -140,11 +140,10 @@ async def emit_new_message(session_id: str, message_data: dict):
         await sio.emit('message_received', message_data, room=session_id)
         logger.info(f"[SOCKET.IO] Message émis dans session {session_id}")
 
-# ==================== PRIVATE MESSAGE SOCKET.IO ====================
+# SOCKET.IO - PRIVATE MESSAGE
 @sio.event
 async def join_private_conversation(sid, data):
-    """
-    Un client rejoint une conversation privée pour recevoir les messages en temps réel.
+    """Client rejoint conversation privee pour temps reel."""
     data = { "conversation_id": "xxx", "participant_id": "xxx" }
     """
     conversation_id = data.get("conversation_id")
