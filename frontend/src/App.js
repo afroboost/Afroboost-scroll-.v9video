@@ -28,7 +28,7 @@ import PaymentSuccessPage from "./components/PaymentSuccessPage";
 import MediaViewer from "./components/MediaViewer";
 import BecomeCoachPage from "./components/BecomeCoachPage";
 import SuperAdminPanel from "./components/SuperAdminPanel";
-import CoachSearch from "./components/CoachSearch";
+import { CoachSearchModal } from "./components/CoachSearch";
 import { useDataCache, invalidateCache } from "./hooks/useDataCache";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
