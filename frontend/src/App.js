@@ -3365,18 +3365,7 @@ function App() {
           <MediaDisplay url={concept.heroImageUrl} className="hero-media-container mb-8" />
         )}
 
-        {/* Icône Recherche Coach v8.9.3 - Alignée et centrée */}
-        <div className="flex justify-center items-center gap-4 mb-6">
-          <span className="text-white/40 text-sm">Trouver un coach</span>
-          <CoachSearch 
-            onSelectCoach={(coach) => {
-              console.log('[APP] Coach sélectionné:', coach);
-              // Possibilité future: rediriger vers la page du coach
-            }}
-          />
-        </div>
-
-        {/* Barre de Recherche + Navigation par onglets (Tout, Cours, Shop) */}
+        {/* Barre de Recherche + Navigation par onglets (Tout, Cours, Shop) + Icône Coach alignée v8.9.4 */}
         <NavigationBar 
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
@@ -3384,6 +3373,7 @@ function App() {
           onSearchChange={setSearchQuery}
           showSearch={true}
           showFilters={true}
+          onCoachClick={() => setShowCoachSearch(true)}
         />
 
         {/* Message si aucun résultat */}
