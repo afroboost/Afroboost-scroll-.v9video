@@ -283,6 +283,11 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com";
   const isSuperAdmin = coachUser?.email?.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
   
+  // v8.9.5: Helper pour créer les headers avec l'email coach (isolation des données)
+  const getCoachHeaders = () => ({
+    headers: { 'X-User-Email': coachUser?.email || '' }
+  });
+  
   // === PANNEAU SUPER ADMIN ===
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   
