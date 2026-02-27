@@ -4104,6 +4104,16 @@ function App() {
         
         {/* Widget Chat IA flottant */}
         <ChatWidget />
+        
+        {/* v8.9.4: Modal recherche coach (déclenchée par l'icône dans NavigationBar) */}
+        <CoachSearchModal
+          isOpen={showCoachSearch}
+          onClose={() => setShowCoachSearch(false)}
+          onSelectCoach={(coach) => {
+            console.log('[APP] Coach sélectionné:', coach);
+            setShowCoachSearch(false);
+          }}
+        />
       </div>
     </div>
   );
