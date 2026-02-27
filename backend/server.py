@@ -2449,6 +2449,65 @@ async def stripe_webhook(request: Request):
         logger.error(f"Webhook error: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Webhook error: {str(e)}")
 
+# === STRIPE CHECKOUT POUR COACHS PARTENAIRES v8.9 ===
+@api_router.post("/stripe/create-coach-checkout")
+async def create_coach_checkout(request: Request):
+    """
+    Crée une session Stripe Checkout pour l'inscription d'un nouveau coach.
+    Après paiement, le coach recevra ses crédits et son accès.
+    """
+    try:
+        body = await request.json()
+        price_id = body.get("price_id")
+        pack_id = body.get("pack_id")
+        email = body.get("email", "").lower().strip()
+        name = body.get("name", "")
+        phone = body.get("phone", "")
+        promo_code = body.get("promo_code", "")
+        
+        if not price_id or not email or not name:
+            raise HTTPException(status_code=400, detail="price_id, email et name requis")
+        
+        # Récupérer les infos du pack
+        pack = await db.coach_packs.find_one({"id": pack_id})
+        if not pack:
+            raise HTTPException(status_code=404, detail="Pack non trouvé")
+        
+        # Créer la session Stripe Checkout
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{
+                "price": price_id,
+                "quantity": 1
+            }],
+            mode="payment",
+            success_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/coach-success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}",
+            customer_email=email,
+            metadata={
+                "type": "coach_registration",
+                "pack_id": pack_id,
+                "pack_name": pack.get("name", ""),
+                "credits": str(pack.get("credits", 0)),
+                "customer_name": name,
+                "customer_email": email,
+                "customer_phone": phone,
+                "promo_code": promo_code
+            }
+        )
+        
+        logger.info(f"[COACH-CHECKOUT] Session créée pour {email}, pack={pack.get('name')}")
+        return {"checkout_url": checkout_session.url, "session_id": checkout_session.id}
+        
+    except HTTPException:
+        raise
+    except stripe.error.StripeError as e:
+        logger.error(f"[COACH-CHECKOUT] Stripe error: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        logger.error(f"[COACH-CHECKOUT] Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # --- Concept ---
 @api_router.get("/concept", response_model=Concept)
 async def get_concept():
