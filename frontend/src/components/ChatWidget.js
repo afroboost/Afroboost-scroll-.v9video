@@ -882,6 +882,16 @@ export const ChatWidget = () => {
     playSoundIfAllowed(type, soundEnabled, silenceAutoEnabled);
   }, [soundEnabled, silenceAutoEnabled]);
   
+  // v8.6: Charger messages de groupe
+  const loadGroupMessages = useCallback(async () => {
+    try {
+      const res = await axios.get(`${API}/chat/group/messages?limit=100`);
+      setGroupMessages(res.data || []);
+    } catch (err) {
+      console.warn('[GROUP] Erreur chargement:', err);
+    }
+  }, []);
+  
   // Fonction pour copier le lien du site
   const handleShareLink = async () => {
     try {
