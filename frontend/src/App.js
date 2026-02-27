@@ -4146,6 +4146,11 @@ function App() {
           onSelectCoach={(coach) => {
             console.log('[APP] Coach sélectionné:', coach);
             setShowCoachSearch(false);
+            // v8.9.6: Rediriger vers la vitrine du coach
+            if (coach?.id) {
+              setShowCoachVitrine(coach.id);
+              window.history.pushState({}, '', `/coach/${coach.id}`);
+            }
           }}
         />
       </div>
