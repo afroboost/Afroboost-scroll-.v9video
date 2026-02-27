@@ -307,15 +307,19 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // Helper: crédits insuffisants (pour griser les boutons)
   const hasInsufficientCredits = !isSuperAdmin && coachCredits !== null && coachCredits !== -1 && coachCredits <= 0;
 
-  // Charger profil coach (crédits) au démarrage
+  // Charger profil coach (crédits + username) au démarrage
   useEffect(() => {
     if (coachUser?.email) {
       axios.get(`${BACKEND_URL}/api/coach/profile`, {
         headers: { 'X-User-Email': coachUser.email }
       }).then(res => {
         setCoachCredits(res.data?.credits ?? 0);
+        // v8.9.9: Récupérer username pour vitrine
+        const username = res.data?.name?.toLowerCase().replace(/\s+/g, '-') || res.data?.id || coachUser.email.split('@')[0];
+        setCoachUsername(isSuperAdmin ? 'bassi' : username);
       }).catch(() => {
         setCoachCredits(isSuperAdmin ? -1 : 0);
+        setCoachUsername(isSuperAdmin ? 'bassi' : null);
       });
     }
   }, [coachUser?.email, isSuperAdmin]);
