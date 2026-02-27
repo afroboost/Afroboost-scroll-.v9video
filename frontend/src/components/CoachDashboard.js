@@ -550,8 +550,8 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Charger les réservations avec pagination (20 dernières)
-        const resPromise = axios.get(`${API}/reservations?page=1&limit=20`);
+        // v8.9.5: Charger les réservations avec isolation coach_id
+        const resPromise = axios.get(`${API}/reservations?page=1&limit=20`, getCoachHeaders());
         const [res, crs, off, usr, lnk, cpt, cds] = await Promise.all([
           resPromise, axios.get(`${API}/courses`), axios.get(`${API}/offers`),
           axios.get(`${API}/users`), axios.get(`${API}/payment-links`), axios.get(`${API}/concept`), 
