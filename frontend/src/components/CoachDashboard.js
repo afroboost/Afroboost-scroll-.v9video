@@ -537,7 +537,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const loadReservations = async (page = 1, limit = 20) => {
     setLoadingReservations(true);
     try {
-      const res = await axios.get(`${API}/reservations?page=${page}&limit=${limit}`);
+      const res = await axios.get(`${API}/reservations?page=${page}&limit=${limit}`, getCoachHeaders());
       setReservations(res.data.data);
       setReservationPagination(res.data.pagination);
     } catch (err) {
