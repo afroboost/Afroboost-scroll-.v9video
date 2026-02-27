@@ -3479,8 +3479,7 @@ async def chat_with_ai(data: ChatMessage):
     if not ai_config.get("enabled"):
         return {"response": "L'assistant IA est actuellement désactivé. Veuillez contacter le coach directement.", "responseTime": 0}
     
-    # === 2.5 DÉTECTION MODE STRICT (AVANT construction du contexte) ===
-    # Vérifier si on a un link_token avec custom_prompt
+    # === 2.5 DETECTION MODE STRICT (lien avec custom_prompt) ===
     link_token = data.link_token.strip() if data.link_token else ""
     if not link_token and data.source and data.source.startswith("link_"):
         link_token = data.source.replace("link_", "")
@@ -3499,9 +3498,9 @@ async def chat_with_ai(data: ChatMessage):
                 if custom_prompt:
                     CUSTOM_PROMPT = custom_prompt
                     use_strict_mode = True
-                    logger.info(f"[CHAT-IA] 🔒 Mode STRICT détecté pour lien {link_token}")
+                    logger.info(f"[CHAT-IA] Mode STRICT lien {link_token[:8]}")
         except Exception as e:
-            logger.warning(f"[CHAT-IA] Erreur récupération custom_prompt pour {link_token}: {e}")
+            logger.warning(f"[CHAT-IA] Erreur custom_prompt: {e}")
     
     # === 3. CONSTRUIRE LE CONTEXTE DYNAMIQUE ===
     if use_strict_mode:
