@@ -5466,26 +5466,13 @@ async def get_ai_response_with_session(request: Request):
         logger.info(f"[CHAT-AI-RESPONSE] 🔒 Mode STRICT détecté")
     
     # CONSTRUCTION DU CONTEXTE
-    logger.info("[CHAT-AI-RESPONSE] 🔄 Construction du contexte...")
+    logger.info("[CHAT-AI-RESPONSE] Construction contexte...")
     
     if use_strict_mode:
-        # MODE STRICT: Contexte minimaliste sans aucune info de vente
-        context = "\n\n========== MODE STRICT - LIEN PARTENARIAT ==========\n"
-        context += "Tu es l'assistant Afroboost avec un OBJECTIF SPÉCIFIQUE défini ci-dessous.\n"
-        context += "Tu n'as accès à AUCUNE information de prix, tarif ou lien de paiement.\n"
-        
-        # Prénom du client
-        context += f"\n👤 INTERLOCUTEUR: {participant_name}\n"
-        
-        # Concept uniquement (pas de prix)
-        try:
-            concept = await db.concept.find_one({"id": "concept"}, {"_id": 0})
-            if concept and concept.get('description'):
-                context += f"\n📌 CONCEPT AFROBOOST:\n{concept.get('description', '')[:500]}\n"
-        except Exception as e:
-            pass
-        
-        logger.info("[CHAT-AI-RESPONSE] 🔒 Contexte STRICT construit (sans prix/Twint)")
+        # v8.5: ISOLATION TOTALE - UNIQUEMENT le custom_prompt du lien
+        context = f"\n\n=== INSTRUCTIONS SPECIFIQUES DU LIEN ===\n{CUSTOM_PROMPT}\n"
+        context += f"\nInterlocuteur: {participant_name}\n"
+        logger.info("[CHAT-AI-RESPONSE] v8.5: Isolation totale")
     else:
         # MODE STANDARD: Contexte complet avec toutes les données de vente
         context = "\n\n========== CONNAISSANCES DU SITE AFROBOOST ==========\n"
