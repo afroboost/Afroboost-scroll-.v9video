@@ -55,7 +55,7 @@
     "frontend": "Not tested (requires Google OAuth authentication)"
   },
   "test_credentials": {
-    "API_URL": "https://go-live-v7.preview.emergentagent.com"
+    "API_URL": "https://crm-sync-preview-1.preview.emergentagent.com"
   },
   "seed_data_creation": "Test campaign created and deleted during tests. No persistent test data.",
   "retest_needed": false,
