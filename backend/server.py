@@ -6869,6 +6869,147 @@ async def get_user_role_endpoint(request: Request):
         return {"role": ROLE_USER, "is_super_admin": False, "is_coach": False}
 
 
+# === RECHERCHE DE COACH (PUBLIC) ===
+@api_router.get("/coaches/search")
+async def search_coaches(q: str = ""):
+    """Recherche de coachs par nom ou email (public pour la page d'accueil)"""
+    try:
+        if not q or len(q) < 2:
+            return []
+        
+        # Recherche insensible à la casse
+        query = {
+            "is_active": True,
+            "$or": [
+                {"name": {"$regex": q, "$options": "i"}},
+                {"email": {"$regex": q, "$options": "i"}}
+            ]
+        }
+        coaches = await db.coaches.find(query, {
+            "_id": 0, "id": 1, "name": 1, "photo_url": 1, "bio": 1
+        }).to_list(10)
+        
+        return coaches
+    except Exception as e:
+        logger.error(f"[SEARCH] Erreur recherche coach: {e}")
+        return []
+
+@api_router.get("/coaches/public/{coach_id}")
+async def get_public_coach_profile(coach_id: str):
+    """Profil public d'un coach (pour QR code scan)"""
+    try:
+        coach = await db.coaches.find_one(
+            {"id": coach_id, "is_active": True},
+            {"_id": 0, "id": 1, "name": 1, "photo_url": 1, "bio": 1, "email": 1}
+        )
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        return coach
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[SEARCH] Erreur profil coach: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# === STRIPE CONNECT POUR COACHS v8.9.2 ===
+@api_router.post("/coach/stripe-connect/onboard")
+async def create_stripe_connect_onboard(request: Request):
+    """Crée un lien d'onboarding Stripe Connect pour un coach"""
+    try:
+        body = await request.json()
+        coach_email = body.get("email", "").lower().strip()
+        
+        if not coach_email:
+            raise HTTPException(status_code=400, detail="Email requis")
+        
+        # Vérifier que le coach existe
+        coach = await db.coaches.find_one({"email": coach_email, "is_active": True})
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        
+        # Si le coach a déjà un compte Connect, créer un lien de dashboard
+        if coach.get("stripe_connect_id"):
+            login_link = stripe.AccountLink.create(
+                account=coach["stripe_connect_id"],
+                type="account_onboarding",
+                refresh_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/coach/settings",
+                return_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/coach/settings?stripe=success"
+            )
+            return {"url": login_link.url, "account_id": coach["stripe_connect_id"]}
+        
+        # Créer un nouveau compte Express Connect
+        account = stripe.Account.create(
+            type="express",
+            email=coach_email,
+            capabilities={
+                "card_payments": {"requested": True},
+                "transfers": {"requested": True}
+            },
+            metadata={"coach_id": coach.get("id"), "coach_email": coach_email}
+        )
+        
+        # Sauvegarder l'ID Connect
+        await db.coaches.update_one(
+            {"email": coach_email},
+            {"$set": {"stripe_connect_id": account.id, "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        # Créer le lien d'onboarding
+        account_link = stripe.AccountLink.create(
+            account=account.id,
+            type="account_onboarding",
+            refresh_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/coach/settings",
+            return_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/coach/settings?stripe=success"
+        )
+        
+        logger.info(f"[STRIPE-CONNECT] Compte créé pour {coach_email}: {account.id}")
+        return {"url": account_link.url, "account_id": account.id}
+        
+    except HTTPException:
+        raise
+    except stripe.error.StripeError as e:
+        logger.error(f"[STRIPE-CONNECT] Erreur Stripe: {e}")
+        raise HTTPException(status_code=500, detail=f"Erreur Stripe: {str(e)}")
+    except Exception as e:
+        logger.error(f"[STRIPE-CONNECT] Erreur: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/coach/stripe-connect/status")
+async def get_stripe_connect_status(request: Request):
+    """Vérifie le statut du compte Stripe Connect d'un coach"""
+    try:
+        coach_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not coach_email:
+            raise HTTPException(status_code=401, detail="Email requis")
+        
+        coach = await db.coaches.find_one({"email": coach_email})
+        if not coach:
+            return {"connected": False, "status": "not_found"}
+        
+        connect_id = coach.get("stripe_connect_id")
+        if not connect_id:
+            return {"connected": False, "status": "not_started"}
+        
+        # Vérifier le statut du compte
+        try:
+            account = stripe.Account.retrieve(connect_id)
+            return {
+                "connected": True,
+                "status": "active" if account.charges_enabled else "pending",
+                "account_id": connect_id,
+                "charges_enabled": account.charges_enabled,
+                "payouts_enabled": account.payouts_enabled
+            }
+        except stripe.error.StripeError:
+            return {"connected": False, "status": "error"}
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[STRIPE-CONNECT] Erreur statut: {e}")
+        return {"connected": False, "status": "error"}
+
+
 # === SCHEDULER HEALTH ENDPOINTS (définis avant include_router) ===
 @api_router.get("/scheduler/status")
 async def get_scheduler_status():
