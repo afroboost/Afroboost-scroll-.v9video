@@ -821,6 +821,9 @@ export const ChatWidget = () => {
   const [subscriberFormData, setSubscriberFormData] = useState({ name: '', whatsapp: '', email: '', code: '' });
   const [validatingCode, setValidatingCode] = useState(false); // Loading pendant validation du code
   
+  // === v8.9.9: VÉRIFICATION COACH INSCRIT ===
+  const [isRegisteredCoach, setIsRegisteredCoach] = useState(false);
+  
   // === PROFIL ABONNÉ VALIDÉ (afroboost_profile) ===
   const [afroboostProfile, setAfroboostProfile] = useState(getStoredProfile);
   const [profilePhoto, setProfilePhoto] = useState(() => {
