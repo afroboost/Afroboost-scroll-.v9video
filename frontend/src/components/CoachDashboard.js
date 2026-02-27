@@ -304,7 +304,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // Charger profil coach (crédits) au démarrage
   useEffect(() => {
     if (coachUser?.email) {
-      axios.get(`${BACKEND_URL}/api/coach/me`, {
+      axios.get(`${BACKEND_URL}/api/coach/profile`, {
         headers: { 'X-User-Email': coachUser.email }
       }).then(res => {
         setCoachCredits(res.data?.credits ?? 0);
