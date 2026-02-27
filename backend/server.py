@@ -1614,12 +1614,7 @@ async def validate_discount_code(data: dict):
 
 @api_router.post("/discount-codes/{code_id}/use")
 async def use_discount_code(code_id: str):
-    """Incremente le compteur d'utilisation d'un code
-    NOTE v8.0: Desactive car le decompte est fait dans create_reservation.
-    Garde pour compatibilite API mais ne fait plus rien pour eviter double decompte.
-    """
-    # v8.0: Decompte desactive (deja fait dans create_reservation ligne 1327)
-    # await db.discount_codes.update_one({"id": code_id}, {"$inc": {"used": 1}})
+    """v8.0: Decompte desactive (deja fait dans create_reservation ligne 1327)"""
     return {"success": True, "note": "Decompte gere par create_reservation"}
 
 
