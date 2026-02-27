@@ -3118,6 +3118,26 @@ function App() {
 
   if (showSplash) return <SplashScreen logoUrl={concept.logoUrl} />;
   if (showCoachLogin) return <CoachLoginModal t={t} onLogin={handleGoogleLogin} onCancel={() => setShowCoachLogin(false)} />;
+  
+  // Page "Devenir Coach"
+  if (showBecomeCoach) return (
+    <BecomeCoachPage 
+      onClose={() => setShowBecomeCoach(false)} 
+      onSuccess={(coach) => {
+        console.log('[APP] Coach inscrit:', coach);
+        setShowBecomeCoach(false);
+      }}
+    />
+  );
+  
+  // Panneau Super Admin
+  if (showSuperAdminPanel && coachUser?.email) return (
+    <SuperAdminPanel 
+      userEmail={coachUser.email}
+      onClose={() => setShowSuperAdminPanel(false)}
+    />
+  );
+  
   if (coachMode) return <CoachDashboard t={t} lang={lang} onBack={handleBackFromCoach} onLogout={handleLogout} coachUser={coachUser} />;
 
   // Filtrer les offres et cours selon visibilité, filtre actif et recherche
