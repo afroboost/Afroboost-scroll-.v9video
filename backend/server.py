@@ -5959,9 +5959,13 @@ async def send_coach_response(request: Request):
         "created_at": coach_message.created_at
     })
     # === PUSH NOTIFICATION: Alerter l'abonné si app fermée (skip si socket actif) ===
+    # v7.2: Ajout fallback email si push echoue
     participant_id = session.get("participant_id") or (session.get("participant_ids") or [None])[0]
     if participant_id:
-        asyncio.create_task(send_push_notification(participant_id, "Afroboost", f"Nouveau message de {coach_name}", None, session_id))
+        push_sent = await send_push_notification(participant_id, "Afroboost", f"Nouveau message de {coach_name}", None, session_id)
+        # Si push echoue, envoyer un email de backup
+        if not push_sent:
+            asyncio.create_task(send_backup_email(participant_id, message_text))
     return {"success": True, "message_id": coach_message.id, "mode": session.get("mode")}
 
 # --- Private Chat from Community ---
