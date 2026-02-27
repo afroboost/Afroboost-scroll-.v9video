@@ -5154,10 +5154,8 @@ async def generate_shareable_link(request: Request):
     }
     """
     body = await request.json()
-    title = body.get("title", "Chat Afroboost")
-    custom_prompt = body.get("custom_prompt")  # Nullable - si vide/null, sera None
-    
-    # Normaliser: si chaîne vide ou whitespace only, mettre à None
+    title = body.get("title", "").strip() or f"Lien-{str(uuid.uuid4())[:6]}"
+    custom_prompt = body.get("custom_prompt")
     if custom_prompt and isinstance(custom_prompt, str):
         custom_prompt = custom_prompt.strip() if custom_prompt.strip() else None
     
