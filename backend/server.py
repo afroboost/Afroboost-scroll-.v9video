@@ -6191,14 +6191,14 @@ async def send_backup_email(participant_id: str, message_preview: str):
     html_content = f"""
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="background: linear-gradient(135deg, #d91cd2, #8b5cf6); padding: 20px; border-radius: 12px 12px 0 0; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">💬 Afroboost</h1>
+            <h1 style="color: white; margin: 0; font-size: 24px;">Afroboost</h1>
         </div>
         <div style="background: #1a1a1a; padding: 30px; color: #ffffff; border-radius: 0 0 12px 12px;">
             <p style="font-size: 16px; margin-bottom: 20px;">
-                Bonjour {name} 👋
+                Bonjour {name},
             </p>
             <p style="font-size: 14px; color: #cccccc; margin-bottom: 20px;">
-                Vous avez reçu une réponse sur Afroboost :
+                Vous avez recu une reponse sur Afroboost :
             </p>
             <div style="background: rgba(139, 92, 246, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 3px solid #8b5cf6;">
                 <p style="margin: 0; font-size: 14px; color: #ffffff;">
@@ -6210,7 +6210,7 @@ async def send_backup_email(participant_id: str, message_preview: str):
                 Voir la conversation
             </a>
             <p style="font-size: 12px; color: #666666; margin-top: 30px;">
-                Cet email a été envoyé car vous avez une notification en attente sur Afroboost.
+                Cet email a ete envoye car vous avez une notification en attente sur Afroboost.
             </p>
         </div>
     </div>
