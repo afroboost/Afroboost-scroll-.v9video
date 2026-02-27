@@ -211,15 +211,12 @@ async def avatar_updated(sid, data):
             'user_name': user_name,
             'photo_url': photo_url
         }, skip_sid=sid)
-        logger.info(f"[SOCKET.IO] 📷 Avatar mis à jour: {user_name} -> {photo_url}")
+        logger.info(f"[SOCKET.IO] Avatar MAJ: {user_name}")
 
-# ==================== TYPING INDICATOR ====================
+# TYPING INDICATOR
 @sio.event
 async def typing_start(sid, data):
-    """
-    Un utilisateur commence à taper.
-    data = { "session_id": "xxx", "user_name": "Coach Bassi", "user_type": "coach" }
-    """
+    """Debut frappe."""
     session_id = data.get("session_id")
     user_name = data.get("user_name", "Quelqu'un")
     user_type = data.get("user_type", "user")
