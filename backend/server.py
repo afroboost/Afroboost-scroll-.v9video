@@ -1405,9 +1405,56 @@ async def create_reservation(reservation: ReservationCreate):
                 }
                 
                 email_response = await asyncio.to_thread(resend.Emails.send, params)
-                logger.info(f"[NOTIFICATION] Email envoyé: {email_response}")
+                logger.info(f"[NOTIFICATION] Email coach envoye: {email_response}")
         except Exception as e:
-            logger.warning(f"[NOTIFICATION] Erreur email: {str(e)}")
+            logger.warning(f"[NOTIFICATION] Erreur email coach: {str(e)}")
+    
+    # === v7.2: ENVOI QR CODE PAR EMAIL AU CLIENT ===
+    if reservation.userEmail:
+        try:
+            if RESEND_AVAILABLE and RESEND_API_KEY:
+                # Generer URL QR Code via API externe (Google Charts)
+                qr_data = f"AFROBOOST:{res_code}"
+                qr_url = f"https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl={qr_data}&choe=UTF-8"
+                
+                client_html = f"""
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a;">
+                    <div style="background: linear-gradient(135deg, #d91cd2, #8b5cf6); padding: 24px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 22px;">Votre reservation est confirmee</h1>
+                    </div>
+                    <div style="padding: 24px; color: #fff;">
+                        <p style="color: #a855f7; font-size: 16px; margin-bottom: 20px;">Bonjour {reservation.userName},</p>
+                        
+                        <div style="background: rgba(147, 51, 234, 0.15); border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                            <p style="margin: 0 0 8px; color: #888;">Cours reserve</p>
+                            <p style="margin: 0; color: #fff; font-size: 18px; font-weight: 600;">{reservation.courseName}</p>
+                            <p style="margin: 8px 0 0; color: #a855f7;">{reservation.courseTime} - {reservation.datetime}</p>
+                        </div>
+                        
+                        <div style="text-align: center; margin: 30px 0;">
+                            <p style="color: #888; margin-bottom: 16px;">Presentez ce QR Code a l'entree</p>
+                            <img src="{qr_url}" alt="QR Code Reservation" style="width: 180px; height: 180px; background: white; padding: 10px; border-radius: 8px;"/>
+                            <p style="color: #d91cd2; font-weight: 600; margin-top: 12px; font-size: 14px;">Code: {res_code}</p>
+                        </div>
+                        
+                        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; text-align: center;">
+                            <p style="color: #666; font-size: 12px; margin: 0;">Merci de votre confiance. A tres bientot !</p>
+                        </div>
+                    </div>
+                </div>
+                """
+                
+                client_params = {{
+                    "from": "Afroboost <notifications@afroboosteur.com>",
+                    "to": [reservation.userEmail],
+                    "subject": f"Votre reservation Afroboost - {reservation.courseName}",
+                    "html": client_html
+                }}
+                
+                client_email = await asyncio.to_thread(resend.Emails.send, client_params)
+                logger.info(f"[QR-EMAIL] Email client envoye a {reservation.userEmail}: {client_email}")
+        except Exception as e:
+            logger.warning(f"[QR-EMAIL] Erreur email client: {str(e)}")
     
     return res_obj
 
