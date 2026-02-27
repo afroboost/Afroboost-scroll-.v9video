@@ -324,12 +324,16 @@ const SuperAdminPanel = ({ userEmail, onClose }) => {
                         <button
                           onClick={() => startEditPack(pack)}
                           className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10"
+                          data-testid={`edit-pack-${pack.id}`}
+                          title="Modifier ce pack"
                         >
                           <EditIcon />
                         </button>
                         <button
                           onClick={() => handleDeletePack(pack.id)}
                           className="p-1.5 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          data-testid={`delete-pack-${pack.id}`}
+                          title="Supprimer ce pack"
                         >
                           <TrashIcon />
                         </button>
