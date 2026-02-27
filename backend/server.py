@@ -4497,6 +4497,14 @@ async def get_session_messages(session_id: str, include_deleted: bool = False):
     raw = await db.chat_messages.find(query, {"_id": 0}).sort("created_at", 1).to_list(500)
     return [format_message_for_frontend(m) for m in raw]
 
+# v8.6: Endpoint messages de groupe
+@api_router.get("/chat/group/messages")
+async def get_group_messages(limit: int = 100):
+    """Recupere les messages de groupe (is_group=True ou session_id=group)"""
+    query = {"$or": [{"is_group": True}, {"session_id": "group"}], "is_deleted": {"$ne": True}}
+    raw = await db.chat_messages.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
+    return [format_message_for_frontend(m) for m in reversed(raw)]
+
 
 # ==================== ENDPOINT SYNC "RAMASSER" ====================
 @api_router.get("/messages/sync")
