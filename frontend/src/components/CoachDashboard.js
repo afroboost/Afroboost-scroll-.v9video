@@ -3400,13 +3400,19 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
     } catch (err) { console.error("Error updating tracking:", err); }
   };
 
-  const tabs = [
+  // v8.9.5: Tabs dynamiques avec "Mon Stripe" pour les coachs (pas Bassi)
+  const baseTabs = [
     { id: "reservations", label: t('reservations') }, { id: "concept", label: t('conceptVisual') },
     { id: "courses", label: t('courses') }, { id: "offers", label: t('offers') },
     { id: "payments", label: t('payments') }, { id: "codes", label: t('promoCodes') },
     { id: "campaigns", label: "📢 Campagnes" },
     { id: "conversations", label: unreadCount > 0 ? `💬 Conversations (${unreadCount})` : "💬 Conversations" }
   ];
+  
+  // Ajouter "Mon Stripe" pour les coachs partenaires (pas Bassi)
+  const tabs = !isSuperAdmin 
+    ? [...baseTabs, { id: "stripe", label: "💳 Mon Stripe" }]
+    : baseTabs;
 
   return (
     <div className="w-full min-h-screen p-6 section-gradient">
