@@ -4149,14 +4149,14 @@ export const ChatWidget = () => {
                     <MessageSkeleton count={4} />
                   )}
                   
-                  {/* === MESSAGES: Affichés dès que disponibles (cache ou API) === */}
-                  {messages.map((msg, idx) => (
+                  {/* === MESSAGES: Affichés selon mode (privé ou groupe) === */}
+                  {(chatMode === 'group' ? groupMessages : messages).map((msg, idx) => (
                     <MemoizedMessageBubble 
                       key={msg.id || idx} 
                       msg={msg} 
                       isUser={msg.type === 'user' && msg.senderId === participantId}
                       onParticipantClick={startPrivateChat}
-                      isCommunity={isCommunityMode}
+                      isCommunity={chatMode === 'group'}
                       currentUserId={participantId}
                       profilePhotoUrl={profilePhoto}
                       onReservationClick={() => setShowReservationPanel(true)}
