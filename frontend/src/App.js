@@ -3356,6 +3356,16 @@ function App() {
           <MediaDisplay url={concept.heroImageUrl} className="hero-media-container mb-8" />
         )}
 
+        {/* Icône Recherche Coach v8.9.2 */}
+        <div className="flex justify-center mb-4">
+          <CoachSearch 
+            onSelectCoach={(coach) => {
+              console.log('[APP] Coach sélectionné:', coach);
+              // Possibilité future: rediriger vers la page du coach
+            }}
+          />
+        </div>
+
         {/* Barre de Recherche + Navigation par onglets (Tout, Cours, Shop) */}
         <NavigationBar 
           activeFilter={activeFilter}
