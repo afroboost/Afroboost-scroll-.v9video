@@ -2540,7 +2540,7 @@ async def create_coach_checkout(request: Request):
                 "quantity": 1
             }],
             mode="payment",
-            success_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/coach-success?session_id={{CHECKOUT_SESSION_ID}}",
+            success_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/#coach-dashboard?session_id={{CHECKOUT_SESSION_ID}}&welcome=true",
             cancel_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}",
             customer_email=email,
             metadata={
