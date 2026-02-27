@@ -1293,49 +1293,34 @@ async def get_user_profile(participant_id: str):
 # --- Reservations ---
 @api_router.get("/reservations")
 async def get_reservations(
+    request: Request,
     page: int = 1,
     limit: int = 20,
     all_data: bool = False
 ):
     """
-    Get reservations with pagination for performance optimization.
+    Get reservations with pagination - Filtré par coach_id v8.9.5
     - page: Page number (default 1)
     - limit: Items per page (default 20)
     - all_data: If True, returns all reservations (for export CSV)
     """
-    # Projection optimisée: ne récupérer que les champs nécessaires pour l'affichage initial
+    caller_email = request.headers.get("X-User-Email", "").lower().strip()
+    
+    # RÈGLE ANTI-CASSE BASSI: Super Admin voit TOUT
+    base_query = {} if is_super_admin(caller_email) else {"coach_id": caller_email} if caller_email else {"coach_id": "__no_access__"}
+    
+    # Projection optimisée
     projection = {
-        "_id": 0,
-        "id": 1,
-        "reservationCode": 1,
-        "userName": 1,
-        "userEmail": 1,
-        "userWhatsapp": 1,
-        "courseName": 1,
-        "courseTime": 1,
-        "datetime": 1,
-        "offerName": 1,
-        "totalPrice": 1,
-        "quantity": 1,
-        "validated": 1,
-        "validatedAt": 1,
-        "createdAt": 1,
-        "selectedDates": 1,
-        "selectedDatesText": 1,
-        "selectedVariants": 1,
-        "variantsText": 1,
-        "isProduct": 1,
-        "shippingStatus": 1,
-        "trackingNumber": 1,
-        # === NOUVEAUX CHAMPS POUR LE TABLEAU COACH ===
-        "promoCode": 1,
-        "source": 1,
-        "type": 1
+        "_id": 0, "id": 1, "reservationCode": 1, "userName": 1, "userEmail": 1,
+        "userWhatsapp": 1, "courseName": 1, "courseTime": 1, "datetime": 1,
+        "offerName": 1, "totalPrice": 1, "quantity": 1, "validated": 1,
+        "validatedAt": 1, "createdAt": 1, "selectedDates": 1, "selectedDatesText": 1,
+        "selectedVariants": 1, "variantsText": 1, "isProduct": 1, "shippingStatus": 1,
+        "trackingNumber": 1, "promoCode": 1, "source": 1, "type": 1
     }
     
     if all_data:
-        # Pour l'export CSV, récupérer tous les champs
-        reservations = await db.reservations.find({}, {"_id": 0}).sort("createdAt", -1).to_list(10000)
+        reservations = await db.reservations.find(base_query, {"_id": 0}).sort("createdAt", -1).to_list(10000)
     else:
         # Pagination avec tri par date de création (les plus récentes en premier)
         skip = (page - 1) * limit
