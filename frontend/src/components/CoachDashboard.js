@@ -24,6 +24,7 @@ import { QRScannerModal } from "./QRScanner";
 import ReservationTab from "./coach/ReservationTab"; // Import Reservation Tab
 import CampaignManager from "./coach/CampaignManager"; // Import Campaign Manager
 import { parseMediaUrl, getMediaThumbnail } from "../services/MediaParser"; // Media Parser
+import SuperAdminPanel from "./SuperAdminPanel"; // v8.9 Super Admin Panel
 
 // === API BACKEND URL (UNIQUE) ===
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
