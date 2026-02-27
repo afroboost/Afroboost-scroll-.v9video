@@ -6508,6 +6508,63 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 </ul>
               </div>
             </div>
+            
+            {/* === v8.9.9: MA VITRINE PUBLIQUE === */}
+            <div className="glass rounded-xl p-6" style={{ border: '1px solid rgba(217, 28, 210, 0.3)' }}>
+              <h2 className="text-xl font-bold text-white mb-4">🏪 Ma Vitrine Publique</h2>
+              <p className="text-white/70 mb-6">
+                Partagez votre vitrine avec vos clients. Ils pourront y voir vos cours et offres.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-6 items-center">
+                {/* QR Code */}
+                {coachVitrineUrl && (
+                  <div className="glass rounded-lg p-4 bg-white" data-testid="coach-vitrine-qr">
+                    <QRCodeSVG 
+                      value={coachVitrineUrl}
+                      size={150}
+                      bgColor="#FFFFFF"
+                      fgColor="#1a1a2e"
+                      level="H"
+                      includeMargin={true}
+                    />
+                  </div>
+                )}
+                
+                {/* Infos + Actions */}
+                <div className="flex-1 space-y-4">
+                  <div className="glass rounded-lg p-4" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                    <h4 className="text-white font-medium text-sm mb-1">URL de ma vitrine</h4>
+                    <p className="text-purple-400 text-sm break-all" data-testid="coach-vitrine-url">
+                      {coachVitrineUrl || 'Chargement...'}
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleCoachShareLink}
+                      className="flex-1 py-2 rounded-lg text-white text-sm font-semibold transition-all hover:scale-105"
+                      style={{ background: linkCopied ? 'rgba(34, 197, 94, 0.3)' : 'linear-gradient(135deg, #d91cd2, #8b5cf6)' }}
+                      data-testid="copy-vitrine-link"
+                    >
+                      {linkCopied ? '✓ Copié !' : '📋 Copier le lien'}
+                    </button>
+                    <button
+                      onClick={() => coachVitrineUrl && window.open(coachVitrineUrl, '_blank')}
+                      className="py-2 px-4 rounded-lg text-white text-sm font-semibold glass"
+                      style={{ border: '1px solid rgba(217, 28, 210, 0.4)' }}
+                      data-testid="open-vitrine"
+                    >
+                      🔗 Voir
+                    </button>
+                  </div>
+                  
+                  <p className="text-white/50 text-xs">
+                    💡 Imprimez le QR Code pour vos flyers ou affichez-le dans votre salle !
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
