@@ -1,5 +1,35 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v8.9.3 - PROTOCOLE NON-RÉGRESSION ✅ (27 Février 2026)
+
+### STATUT: VALIDÉ - ZÉRO RÉGRESSION
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7378 lignes** (marge 72) |
+| Cours Fitness | ✅ INTACTS |
+| Offres Clients | ✅ INTACTS |
+| QR Codes | ✅ INTACTS |
+| Paiements | ✅ INTACTS |
+| Tests | **19/19 ✅** |
+
+### Modifications v8.9.3
+
+| Élément | Avant | Après |
+|---------|-------|-------|
+| Bouton "Devenir Coach" | Footer | Chat (sous S'identifier) |
+| Icône recherche coach | Non alignée | Alignée avec texte |
+| Bouton Edit pack | Sans testid | data-testid ajouté |
+| Redirection achat coach | /coach-success | /#coach-dashboard |
+| Bouton Stripe Connect | Absent | Visible (coachs only) |
+
+### Tests v8.9.3 - Iteration 64
+- Non-régression: **4/4 ✅**
+- Backend: **19/19 ✅**
+- Frontend: **5/5 ✅**
+
+---
+
 ## v8.9.2 - FINALISATION FRANCHISE ✅ (27 Février 2026)
 
 ### STATUT: COMPLÉTÉ - BOUCLIER ACTIVÉ
