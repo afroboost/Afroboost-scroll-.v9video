@@ -6905,36 +6905,49 @@ async def get_public_coach_profile(coach_id: str):
 # === VITRINE COACH v8.9.6 ===
 @api_router.get("/coach/vitrine/{username}")
 async def get_coach_vitrine(username: str):
-    """Vitrine publique d'un coach avec ses offres et cours - v8.9.6"""
+    """Vitrine publique d'un coach avec ses offres et cours - v8.9.7"""
     try:
-        # Chercher le coach par nom (username) ou email ou id
-        coach = await db.coaches.find_one(
-            {"$or": [
-                {"name": {"$regex": f"^{username}$", "$options": "i"}},
-                {"email": username.lower()},
-                {"id": username}
-            ], "is_active": True},
-            {"_id": 0, "id": 1, "name": 1, "photo_url": 1, "bio": 1, "email": 1}
-        )
-        if not coach:
-            raise HTTPException(status_code=404, detail="Coach non trouvé")
-        
-        coach_id = coach.get("email", "").lower()
+        # v8.9.7: Cas spécial pour Bassi (Super Admin) 
+        if username.lower() in ["bassi", "afroboost", SUPER_ADMIN_EMAIL.lower()]:
+            # Bassi n'est pas dans coaches, utiliser DEFAULT_COACH_ID
+            coach = {
+                "id": "bassi",
+                "name": "Bassi - Afroboost",
+                "email": SUPER_ADMIN_EMAIL,
+                "photo_url": None,
+                "bio": "Coach Afroboost - Fitness & Bien-être"
+            }
+            coach_id = DEFAULT_COACH_ID  # "bassi_default"
+        else:
+            # Chercher le coach par nom (username) ou email ou id
+            coach = await db.coaches.find_one(
+                {"$or": [
+                    {"name": {"$regex": f"^{username}$", "$options": "i"}},
+                    {"email": username.lower()},
+                    {"id": username}
+                ], "is_active": True},
+                {"_id": 0, "id": 1, "name": 1, "photo_url": 1, "bio": 1, "email": 1}
+            )
+            if not coach:
+                raise HTTPException(status_code=404, detail="Coach non trouvé")
+            coach_id = coach.get("email", "").lower()
         
         # Récupérer les offres du coach (filtrées par coach_id)
         offers = await db.offers.find(
-            {"coach_id": coach_id, "visible": {"$ne": False}}, {"_id": 0}
+            {"$or": [{"coach_id": coach_id}, {"coach_id": {"$exists": False}}]}, {"_id": 0}
         ).to_list(20)
         
         # Récupérer les cours du coach
         courses = await db.courses.find(
-            {"coach_id": coach_id, "visible": {"$ne": False}}, {"_id": 0}
+            {"$or": [{"coach_id": coach_id}, {"coach_id": {"$exists": False}}]}, {"_id": 0}
         ).to_list(20)
         
         return {
             "coach": coach,
             "offers": offers,
-            "courses": courses
+            "courses": courses,
+            "courses_count": len(courses),
+            "offers_count": len(offers)
         }
     except HTTPException:
         raise
