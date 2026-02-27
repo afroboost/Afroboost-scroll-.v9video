@@ -278,6 +278,13 @@ const COACH_TAB_KEY = 'afroboost_coach_tab';
 const COACH_SESSION_KEY = 'afroboost_coach_session';
 
 const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
+  // Email Super Admin
+  const SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com";
+  const isSuperAdmin = coachUser?.email?.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+  
+  // === PANNEAU SUPER ADMIN ===
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  
   // === PERSISTANCE ONGLET : Restaurer l'onglet depuis localStorage ===
   const [tab, setTab] = useState(() => {
     try {
