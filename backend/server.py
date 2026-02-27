@@ -1444,12 +1444,12 @@ async def create_reservation(reservation: ReservationCreate):
                 </div>
                 """
                 
-                client_params = {{
+                client_params = {
                     "from": "Afroboost <notifications@afroboosteur.com>",
                     "to": [reservation.userEmail],
                     "subject": f"Votre reservation Afroboost - {reservation.courseName}",
                     "html": client_html
-                }}
+                }
                 
                 client_email = await asyncio.to_thread(resend.Emails.send, client_params)
                 logger.info(f"[QR-EMAIL] Email client envoye a {reservation.userEmail}: {client_email}")
