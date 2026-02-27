@@ -2168,6 +2168,23 @@ function App() {
     return () => window.removeEventListener('openBecomeCoach', handleOpenBecomeCoach);
   }, []);
 
+  // v8.9.6: Détecter l'URL /coach/[username] pour afficher la vitrine
+  useEffect(() => {
+    const checkCoachVitrine = () => {
+      const path = window.location.pathname;
+      const match = path.match(/^\/coach\/(.+)$/);
+      if (match && match[1]) {
+        setShowCoachVitrine(match[1]);
+      }
+    };
+    checkCoachVitrine();
+    
+    // Écouter les changements d'URL
+    const handlePopState = () => checkCoachVitrine();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const t = useCallback((key) => translations[lang][key] || key, [lang]);
 
   useEffect(() => { localStorage.setItem("af_lang", lang); }, [lang]);
