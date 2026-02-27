@@ -196,13 +196,10 @@ async def dm_typing_stop(sid, data):
             'is_typing': False
         }, room=room_name, skip_sid=sid)
 
-# ==================== AVATAR UPDATE (Sync Temps Réel) ====================
+# AVATAR UPDATE
 @sio.event
 async def avatar_updated(sid, data):
-    """
-    Un utilisateur a mis à jour son avatar - notifier tous les participants.
-    data = { "user_id": "xxx", "user_name": "xxx", "photo_url": "/api/uploads/profiles/xxx.jpg" }
-    """
+    """MAJ avatar temps reel."""
     user_id = data.get("user_id")
     user_name = data.get("user_name", "Utilisateur")
     photo_url = data.get("photo_url")
