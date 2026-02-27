@@ -1132,6 +1132,24 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // === MÉDIA LINKS STATE (Lecteur Afroboost) ===
   const [mediaLinks, setMediaLinks] = useState([]);
   const [showMediaLinkForm, setShowMediaLinkForm] = useState(false);
+  
+  // v8.6: Envoi message de groupe
+  const sendGroupMessage = async (messageText, mediaUrl = null) => {
+    if (!messageText.trim()) return;
+    try {
+      const response = await axios.post(`${API}/chat/group-message`, {
+        message: messageText,
+        coach_name: "Coach Bassi",
+        media_url: mediaUrl
+      });
+      console.log('[GROUP] Message envoye:', response.data);
+      return response.data;
+    } catch (err) {
+      console.error('[GROUP] Erreur:', err);
+      throw err;
+    }
+  };
+  
   const [newMediaLink, setNewMediaLink] = useState({
     slug: '',
     video_url: '',
