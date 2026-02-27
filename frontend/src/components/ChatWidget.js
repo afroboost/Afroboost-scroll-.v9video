@@ -319,8 +319,9 @@ const InlineCtaButton = ({ label, url }) => {
  * Couleurs: Violet (#8B5CF6) pour le Coach, Gris foncé pour les membres/IA
  */
 const MessageBubble = ({ msg, isUser, onParticipantClick, isCommunity, currentUserId, profilePhotoUrl, onReservationClick }) => {
-  // Convertir le texte en HTML avec liens cliquables ET emojis parsés
-  const htmlContent = parseMessageContent(msg.text);
+  // v7.2: Fallback robuste pour texte (content OU text, jamais vide)
+  const messageText = msg.content || msg.text || '';
+  const htmlContent = parseMessageContent(messageText);
   const isOtherUser = isCommunity && msg.type === 'user' && msg.senderId && msg.senderId !== currentUserId;
   
   // === DÉTECTION AUTOMATIQUE DES MÉDIAS DANS LE TEXTE ===
@@ -336,7 +337,7 @@ const MessageBubble = ({ msg, isUser, onParticipantClick, isCommunity, currentUs
     return null;
   };
   
-  const detectedMedia = detectMediaInText(msg.text);
+  const detectedMedia = detectMediaInText(messageText);
   
   // Déterminer si c'est un message du Coach HUMAIN (pas l'IA)
   const isCoachMessage = msg.type === 'coach' || msg.is_admin === true || msg.role === 'coach';
