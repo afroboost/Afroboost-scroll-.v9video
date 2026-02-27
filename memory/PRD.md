@@ -1,5 +1,43 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v8.9.5 - ISOLATION ÉTANCHE MULTI-TENANT ✅ (27 Février 2026)
+
+### STATUT: VALIDÉ - FORTERESSE ACTIVÉE
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7382 lignes** (marge 68) |
+| Isolation coach_id | ✅ FONCTIONNELLE |
+| Bassi voit TOUT | ✅ CONFIRMÉ |
+| Coach isolé | ✅ CONFIRMÉ |
+| Tests | **15/15 ✅** |
+
+### Isolation Multi-Tenant v8.9.5
+
+| Endpoint | Bassi | Autre Coach |
+|----------|-------|-------------|
+| /reservations | Toutes (7) | 0 |
+| /campaigns | Toutes | 0 |
+| /chat/participants | Tous | 0 |
+
+### Fonctionnalités v8.9.5
+
+1. **Filtrage coach_id** sur 3 endpoints critiques
+2. **Règle Anti-Casse Bassi** : Super Admin voit TOUT
+3. **Onglet "Mon Stripe"** : Visible pour coachs (pas Bassi)
+4. **Header X-User-Email** : Envoyé par le frontend
+
+### Tests v8.9.5 - Iteration 66
+- Isolation Backend: **7/7 ✅**
+- Non-régression: **4/4 ✅**
+- Frontend: **4/4 ✅**
+
+### Cours de Mars intacts
+- Session Cardio: 04.03, 11.03, 18.03, 25.03
+- Sunday Vibes: 01.03, 08.03, 15.03, 22.03
+
+---
+
 ## v8.9.4 - PROTOCOLE FORTERESSE ✅ (27 Février 2026)
 
 ### STATUT: VALIDÉ - BOUCLIER TOTAL ACTIF
