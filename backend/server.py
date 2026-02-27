@@ -6915,6 +6915,46 @@ async def get_public_coach_profile(coach_id: str):
         logger.error(f"[SEARCH] Erreur profil coach: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# === VITRINE COACH v8.9.6 ===
+@api_router.get("/coach/vitrine/{username}")
+async def get_coach_vitrine(username: str):
+    """Vitrine publique d'un coach avec ses offres et cours - v8.9.6"""
+    try:
+        # Chercher le coach par nom (username) ou email ou id
+        coach = await db.coaches.find_one(
+            {"$or": [
+                {"name": {"$regex": f"^{username}$", "$options": "i"}},
+                {"email": username.lower()},
+                {"id": username}
+            ], "is_active": True},
+            {"_id": 0, "id": 1, "name": 1, "photo_url": 1, "bio": 1, "email": 1}
+        )
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        
+        coach_id = coach.get("email", "").lower()
+        
+        # Récupérer les offres du coach (filtrées par coach_id)
+        offers = await db.offers.find(
+            {"coach_id": coach_id, "visible": {"$ne": False}}, {"_id": 0}
+        ).to_list(20)
+        
+        # Récupérer les cours du coach
+        courses = await db.courses.find(
+            {"coach_id": coach_id, "visible": {"$ne": False}}, {"_id": 0}
+        ).to_list(20)
+        
+        return {
+            "coach": coach,
+            "offers": offers,
+            "courses": courses
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[VITRINE] Erreur: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # === STRIPE CONNECT POUR COACHS v8.9.2 ===
 @api_router.post("/coach/stripe-connect/onboard")
 async def create_stripe_connect_onboard(request: Request):
