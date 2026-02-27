@@ -5831,12 +5831,16 @@ Si la question ne concerne pas un produit ou un cours Afroboost, réponds:
             context += "\n--- FIN DES INSTRUCTIONS ---\n"
             logger.info("[CHAT-AI-RESPONSE] ✅ Mode STANDARD - Campaign Prompt injecté (len: " + str(len(CAMPAIGN_PROMPT)) + ")")
         else:
-            logger.info("[CHAT-AI-RESPONSE] ✅ Mode STANDARD - Pas de Campaign Prompt")
+            logger.info("[CHAT-AI-RESPONSE] Mode STANDARD - Pas de Campaign Prompt")
     
-    # Assemblage final du prompt système
-    full_system_prompt = ai_config.get("systemPrompt", "Tu es l'assistant IA d'Afroboost.") + context
+    # v8.4: Assemblage final - PRIORITE: Prompt Lien > Prompt Campagne > Prompt Systeme
+    if use_strict_mode and CUSTOM_PROMPT:
+        full_system_prompt = context  # Prompt du lien REMPLACE tout
+        logger.info("[CHAT-AI-RESPONSE] v8.4: Prompt Lien actif")
+    else:
+        full_system_prompt = ai_config.get("systemPrompt", "Tu es l'assistant IA d'Afroboost.") + context
     
-    logger.info("[CHAT-AI-RESPONSE] ✅ Contexte construit")
+    logger.info("[CHAT-AI-RESPONSE] Contexte construit")
     
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
