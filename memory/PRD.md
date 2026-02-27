@@ -1,5 +1,38 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v8.9.6 - TUNNEL COACH & VITRINE ✅ (27 Février 2026)
+
+### STATUT: VALIDÉ - TUNNEL RÉPARÉ - VITRINE ACTIVE
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7422 lignes** (marge 28) ⚠️ |
+| Endpoint Vitrine | ✅ FONCTIONNEL |
+| Route /coach/[username] | ✅ ACTIVE |
+| Non-régression | **100% INTACT** |
+| Tests | **14/14 ✅** |
+
+### Fonctionnalités v8.9.6
+
+| Feature | Description |
+|---------|-------------|
+| Endpoint Vitrine | GET /api/coach/vitrine/{username} |
+| Retour | Profil coach + offres + cours filtrés |
+| Route Frontend | /coach/[username] → CoachVitrine.js |
+| Erreur 404 | "Coach non trouvé" avec bouton Retour |
+
+### Tests v8.9.6 - Iteration 67
+- Backend: **14/14 ✅**
+- Frontend: **100% ✅**
+- Cours de Mars: **INTACTS ✅**
+
+### Tunnel Fitness vérifié
+- Session Cardio: 04.03, 11.03, 18.03, 25.03
+- Sunday Vibes: 01.03, 08.03, 15.03, 22.03
+- Réservations Bassi: 7 ✅
+
+---
+
 ## v8.9.5 - ISOLATION ÉTANCHE MULTI-TENANT ✅ (27 Février 2026)
 
 ### STATUT: VALIDÉ - FORTERESSE ACTIVÉE
