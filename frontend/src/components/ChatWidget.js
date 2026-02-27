@@ -1285,6 +1285,13 @@ export const ChatWidget = () => {
     }
   }, [afroboostProfile?.code, afroboostProfile?.email]);
 
+  // v7.2: Charger l'eligibilite au montage pour afficher le compteur de cours
+  useEffect(() => {
+    if (afroboostProfile?.code && afroboostProfile?.email) {
+      checkReservationEligibility();
+    }
+  }, [afroboostProfile?.code, afroboostProfile?.email, checkReservationEligibility]);
+
   // === HANDLER CLIC BOUTON RÉSERVATION ===
   const handleReservationClick = useCallback(async () => {
     // BLINDAGE: Bloquer en mode Vue Visiteur
