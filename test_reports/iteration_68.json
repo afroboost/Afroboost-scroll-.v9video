@@ -29,11 +29,12 @@
     "Google OAuth modal appears with 'Se connecter avec Google' button"
   ],
   "updated_files": [
-    "/app/backend/tests/test_v897_migration_saas.py"
+    "/app/backend/tests/test_v897_migration_saas.py",
+    "/app/frontend/src/components/CoachVitrine.js"
   ],
   "success_rate": {
     "backend": "100% (13/13 tests passed)",
-    "frontend": "95% (vitrine working, minor display issue with course names)"
+    "frontend": "100% (vitrine fixed and working)"
   },
   "test_credentials": {
     "super_admin_email": "contact.artboost@gmail.com"
