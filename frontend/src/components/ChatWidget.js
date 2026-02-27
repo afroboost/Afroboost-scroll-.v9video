@@ -1781,6 +1781,24 @@ export const ChatWidget = () => {
         }
       });
       
+      // v8.6: ÉCOUTER LES MESSAGES DE GROUPE
+      socket.on('group_message', (messageData) => {
+        console.log('[SOCKET.IO] Message groupe recu:', messageData);
+        setGroupMessages(prev => {
+          const msgId = messageData.id;
+          if (prev.some(m => m.id === msgId)) return prev;
+          return [...prev, {
+            id: msgId, type: 'coach', text: messageData.text || '',
+            sender: messageData.sender || 'Coach Bassi', is_group: true,
+            created_at: messageData.created_at, media_url: messageData.media_url
+          }];
+        });
+        // Notification si en mode groupe
+        if (chatMode === 'group' && !document.hasFocus()) {
+          playSoundIfEnabled('coach');
+        }
+      });
+      
       // === ÉCOUTER L'INDICATEUR DE SAISIE ===
       socket.on('user_typing', (data) => {
         console.log('[SOCKET.IO] ⌨️ Typing event:', data);
