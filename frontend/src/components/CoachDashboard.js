@@ -1397,7 +1397,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
         axios.get(`${API}/conversations`, {
           params: { page, limit: 20, query: searchQuery }
         }),
-        axios.get(`${API}/chat/participants`),
+        axios.get(`${API}/chat/participants`, getCoachHeaders()),
         axios.get(`${API}/chat/links`)
       ]);
       
