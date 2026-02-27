@@ -1,187 +1,159 @@
-<analysis>An analysis of the user's requests and the AI's actions has been performed. Here is the summary:
+<analysis>**original_problem_statement:**
+The user wants to transform the existing Afroboost application into a multi-coach SaaS platform. The application owner, Bassi (), will act as the Super Admin with complete control over coach subscription packs and access to all data.
 
-**original_problem_statement:**
-The user's goal is to enhance the Coach Bassi application through a series of missions, transforming the user experience and backend functionality. The core focus has been on creating a sophisticated, hybrid chatbot experience that differentiates between regular visitors and identified subscribers, while progressively moving towards an ultra-minimalist UI design philosophy.
+**PRODUCT REQUIREMENTS:**
+1.  **Refactor & Optimize:** Clean up the codebase by removing the legacy Articles and Medias modules to reduce the line count of  below a target of 7200 lines, while staying under a hard limit of 7450 lines.
+2.  **Hierarchy & Access Control:**
+    *   **Super Admin:** Bassi has exclusive access to a Super Admin panel for managing the platform.
+    *   **Partner Coaches:** Can sign up, purchase credit packs, and access an isolated dashboard to manage their own clients, courses, and campaigns.
+    *   **Data Isolation:** All data (contacts, reservations, campaigns, etc.) must be strictly segregated per coach using a . Bassi, as Super Admin, must have visibility over all data on the platform.
+3.  **SaaS Monetization:**
+    *   The Super Admin must be able to create, update, and delete Coach Packs (defining price and number of credits) directly from the UI, with changes automatically syncing to Stripe.
+    *   Coach actions, such as sending campaigns or using the CRM, must consume credits from their balance.
+4.  **UI/UX & Features:**
+    *   Implement a Devenir Coach (Become a Coach) page and signup flow.
+    *   Add a homepage feature to search for coaches.
+    *   Create a public-facing vitrine (storefront) page for each coach at a unique URL ().
+5.  **Non-Regression Clause:** All existing functionality for Bassi's core fitness business (client payments, course bookings, QR codes) must remain 100% intact and unaffected by the new SaaS features.
 
-The missions in this session included:
-1.  **Hybrid Chatbot**: Implement two distinct user journeys in . A visitor path with a classic chat bubble, and a subscriber path unlocked by a valid promo code, which enables a full-screen mode, persists the user's profile in , and grants access to a 1-click booking interface.
-2.  **Critical Bug Fixes**: Resolve a major blocker in the reservation flow where the Confirm button was unresponsive due to backend validation errors and frontend state issues. This involved making the promo code validation case-insensitive and fixing data payloads.
-3.  **Coach Notifications**: Implement automated email notifications to the coach via Resend upon successful subscriber reservations.
-4.  **Session Persistence & UI Polish**: Ensure both coach and subscriber sessions persist after a page refresh (F5). Systematically replace all text-based buttons in the chat headers with minimalist, wireframe-style SVG icons.
-5.  **Social Features (DM & Avatars)**: Implement the backend and frontend foundation for Direct Messaging (DMs) between users and add functionality for users to upload and crop a profile picture.
-
-**User's preferred language**: Français
+**User's preferred language**: français
 
 **what currently exists?**
-The application consists of a React frontend and a FastAPI/MongoDB backend.
--   **Backend ()**: A monolithic FastAPI server that has been significantly enhanced. It now handles:
-    -   Robust user/group management and campaign scheduling.
-    -   Advanced promo code validation (case-insensitive, handles null emails).
-    -   A reservation system that triggers email notifications to the coach via Resend.
-    -   A complete set of endpoints and socket listeners for Direct Messaging (private chats).
-    -   An endpoint () for uploading, resizing, and saving user profile pictures, served via a new static route ().
--   **Frontend**:
-    -   : The monolithic coach interface. Session persistence has been added (the active tab is saved to ), and the reservations list now features clickable  links for WhatsApp.
-    -   : This component has undergone a massive transformation. It now manages a complex hybrid state for visitors vs. subscribers using  in . The UI has been refactored to an ultra-minimalist design, replacing text buttons with SVG icons. It includes a complete, but not fully tested, frontend implementation for DMs and a profile picture upload system that includes a client-side cropping modal ().
+The application has been successfully transformed into a foundational multi-coach SaaS platform. The legacy Articles and Medias modules have been removed, bringing the  file down to ~7340 lines (from 7450).
+
+A Super Admin role and a dedicated panel have been implemented for Bassi, allowing management of coach subscription packs with automatic Stripe integration. A full signup flow for new coaches exists via a Devenir Coach page.
+
+The core multi-tenant architecture is in place: key database collections now use a  for data isolation, and API endpoints have been secured to enforce this separation. A critical rule allows the Super Admin to bypass all filters, ensuring full data visibility. A public storefront for coaches () has also been created.
 
 **Last working item**:
--   **Last item agent was working:** The agent was in the middle of MISSION : DM INTERACTIFS, RECADRAGE PHOTO ET UI ULTRA-MINIMALISTE. It had just finished adding the client-side image cropping modal to the  component. This modal appears when a user selects a profile picture, allowing them to crop it before the final upload.
--   **Status:** IN PROGRESS
--   **Agent Testing Done:** N
--   **Which testing method agent to use?** both
--   **User Testing Done:** N
+    - Last item agent was working: The agent was executing **Mission v8.9.7**. The primary goal was to ensure the data integrity of the new multi-tenant system. This involved creating a one-time data migration script to assign  to all of Bassi's pre-existing data (contacts, reservations, etc.), guaranteeing he would not lose access to any historical records after the data isolation filters were activated.
+    - Status: IN PROGRESS
+    - Agent Testing Done: Y
+    - Which testing method agent to use? backend testing agent
+    - User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Complete and Test Profile Picture Cropping Flow (P0)**
-    -   **Attempted fixes:** The agent successfully added the  modal and the logic to open it when a file is selected.
-    -   **Next debug checklist:**
-        1.  In , ensure the  function correctly generates the cropped image blob from the modal.
-        2.  Verify the client-side compression resizes the image to 200x200px.
-        3.  Trigger the  function with the final blob to send it to the  backend endpoint.
-        4.  Confirm the backend saves the file successfully.
-        5.  Ensure the frontend UI updates to display the new avatar in  and other relevant locations.
-    -   **Why fix this issue and what will be achieved with the fix?** This will complete the Module Identité mission, providing a key social feature and a more personalized user experience.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** both
-    -   **Blocked on other issue:** None
-
--   **Issue 2: End-to-End Test of Direct Messaging (DM) Feature (P1)**
-    -   **Attempted fixes:** The backend endpoints and frontend state/functions are fully implemented. The  handler is connected.
-    -   **Next debug checklist:**
-        1.  As a coach, open a group chat (e.g., Les lionnes).
-        2.  Click on the name of a participant in a message bubble.
-        3.  Verify the UI correctly switches to a private chat view with that participant.
-        4.  Send a message in the private chat and confirm it appears for both users.
-        5.  Verify the unread message badge (red dot) appears on the menu icon for the recipient.
-    -   **Why fix this issue and what will be achieved with the fix?** To validate and finalize the Module Social DM mission, a major feature addition.
-    -   **Status:** TESTING PENDING
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** both
-    -   **Blocked on other issue:** None
+  - Issue 1: Run the  data migration script. (P0)
+  - Issue 2: Implement the credit consumption system for coaches. (P1)
+  - Issue 3: Implement Stripe Connect for partner coaches. (P2)
+  
+  Issues Detail:
+  - Issue 1: 
+     - **Description**: An endpoint () was created to tag all legacy documents with . This is a critical one-time task to ensure Bassi retains access to all his historical data. The endpoint has been created but has not yet been executed.
+     - **Next debug checklist**:
+       - Use  to call the  endpoint.
+       - Verify via API calls that Bassi's dashboard continues to show all his historical data (e.g., his 7 existing reservations).
+     - **Why fix this issue and what will be achieved with the fix?**: This finalizes the data isolation architecture, safeguarding all of the original user's data and preventing it from becoming inaccessible under the new multi-coach filtering rules.
+     - **Status**:  NOT STARTED
+     - **Is recurring issue?** N
+     - **Should Test frontend/backend/both after fix?** Both
+     - **Blocked on other issue**: None
+  - Issue 2: 
+     - **Description**: The platform needs to deduct credits from a coach's balance when they use features like the CRM or send marketing campaigns. The data models support credits, but the backend logic to decrement them is missing.
+     - **Next debug checklist**:
+       - Identify all API endpoints that should consume credits.
+       - Add logic to these endpoints to check a coach's credit balance, return an error if it's zero, and decrement the balance upon successful use.
+       - Ensure the Super Admin (Bassi) is exempt from all credit deductions.
+     - **Why fix this issue and what will be achieved with the fix?**: This implements the core monetization logic of the SaaS model.
+     - **Status**:  NOT STARTED
+     - **Is recurring issue?** N
+     - **Should Test frontend/backend/both after fix?** Both
+     - **Blocked on other issue**: None
+  - Issue 3: 
+     - **Description**: Partner coaches need the ability to connect their own Stripe accounts to receive payments for their services. The basic backend endpoints and a UI tab exist, but the full onboarding and payment processing flow is not implemented.
+     - **Next debug checklist**:
+       - Connect the frontend Connecter mon Stripe button to the backend onboarding API.
+       - Handle the redirect flow to and from Stripe's onboarding page.
+       - Modify the Stripe webhook to correctly handle events from connected accounts.
+     - **Why fix this issue and what will be achieved with the fix?**: This enables the platform to function as a true marketplace where coaches can manage their own revenue.
+     - **Status**:  NOT STARTED
+     - **Is recurring issue?** N
+     - **Should Test frontend/backend/both after fix?** Both
+     - **Blocked on other issue**: None
 
 **In progress Task List**:
--   **Task 1: Finalize MISSION : DM INTERACTIFS, RECADRAGE PHOTO ET UI ULTRA-MINIMALISTE (P0)**
-    -   **Where to resume:** . The immediate focus is to complete the photo cropping flow and then perform a full end-to-end test of both the photo upload and the Direct Messaging features.
-    -   **What will be achieved with this?** A fully functional, polished chat widget with advanced social features (DMs, avatars) and a consistent, ultra-minimalist icon-based UI.
-    -   **Status:** IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** both
-    -   **Blocked on something:** None
+  There are no multi-step tasks currently in progress. The work is focused on the pending issues listed above.
 
 **Upcoming and Future Tasks**
--   **Upcoming Tasks:**
-    -   (P1) **Finalize WhatsApp Configuration:** A recurring external dependency requiring the user to activate their Twilio number.
--   **Future Tasks:**
-    -   (P2) **CRITICAL Refactor :** This >8000 line monolithic component is a major source of technical debt and must be broken down into smaller components.
-    -   (P2) **Refactor :** This component is now extremely complex and should be modularized (e.g., , , , ).
-    -   (P2) **Add Message Reactions & Read Receipts:** Implement emoji reactions (👍 ❤️ 😂) and WhatsApp-style read receipts (✓✓).
-    -   (P2) **Add Analytics Dashboard:** Create a new dashboard for viewing application analytics.
+    Upcoming Tasks:
+    - **(P1)** Finalize the coach dashboard UI to clearly display the current credit balance.
+    - **(P2)** Implement frontend logic to disable UI features (e.g., Send Campaign button) when a coach's credit balance is zero.
+    
+    Future Tasks:
+    - **(CRITICAL)** Decompose the monolithic  file into a modular structure (e.g., routers, services, models) to overcome the 7450-line limit and improve maintainability.
+    - Refactor large frontend components like  and  into smaller, more manageable sub-components.
 
 **Completed work in this session**
--   **Hybrid Chatbot Implemented (DONE):** Created distinct visitor and subscriber journeys in  using  for persistence.
--   **Critical Reservation Flow Fixed (DONE):** Repaired the Confirm Reservation button by fixing backend validation ( promo codes, handling  emails) and frontend payload errors ( field). Added loading states and user feedback.
--   **Coach Email Notifications (DONE):** Integrated Resend to automatically email the coach upon a new subscriber reservation, fixing the sender domain to a verified one.
--   **Session Persistence (DONE):** Implemented robust session persistence using  for both the coach and subscribers, preventing logout on page refresh (F5).
--   **Ultra-Minimalist UI Overhaul (DONE):** Replaced all text-based buttons in the chat headers with minimalist, wireframe-style SVG icons, grouping actions into dropdown menus.
--   **Direct Messaging (DM) Foundation (DONE):** Verified a complete backend for DMs and implemented the entire frontend logic for state management and UI switching.
--   **Profile Photo Upload (DONE):** Created a backend endpoint to handle image uploads, resizing, and storage. Integrated a frontend file input and initiated the cropping modal implementation.
--   **Coach Dashboard UI Tweaks (DONE):** Made the WhatsApp number in the reservations list a clickable  link and ensured new reservation data (, ) is correctly projected from the API.
-
-**Earlier issues found/mentioned but not fixed**
--   **Issue 1: WhatsApp Channel Configuration on Twilio.**
-    -   **Debug checklist:** The user needs to complete the setup and activation of their Twilio number in the Twilio console.
-    -   **Why to solve this issue and what will be achieved with this?** This is required to make the WhatsApp campaign features fully operational.
-    -   **Should Test frontend/backend/both after fix:** Backend
-    -   **Is recurring issue?** Y
-
-**Known issue recurrence from previous fork**
--   **Issue recurrence in previous fork:** Fragility of .
--   **Recurrence count:** 2 (from previous fork, no new issues in this file this session).
--   **Status:** RESOLVED (for now, but the file remains a high-priority refactoring target).
+- **Code Refactoring:** Successfully removed Articles and Medias modules from both backend and frontend, reducing  from 7450 to ~7340 lines.
+- **SaaS Architecture:** Implemented Super Admin role, a management panel for Coach Packs with automatic Stripe integration, and a complete signup flow for new coaches.
+- **Multi-Tenant Data Isolation:** Secured key API endpoints with  filtering, while ensuring the Super Admin retains universal data access. Created a migration script for legacy data.
+- **Frontend Features:** Created a Devenir Coach page, a coach search modal, and a public vitrine (storefront) for each coach. Fixed all requested UI/UX issues, including button placement and icon alignment.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Hybrid UI/UX:** Managing distinct user journeys (visitor vs. subscriber) within a single component () based on  state.
--   **Ultra-Minimalist Design:** A strong emphasis on replacing all textual buttons with clean, wireframe SVG icons, improving aesthetics and reducing clutter.
--   **Client-Side Image Processing:** Using  to implement a user-friendly cropping modal and compressing images in the browser before uploading to save bandwidth and standardize avatar size.
--   **Robust Session Persistence:** Using  and  hooks in both  (for coach) and  (for subscriber) to ensure user sessions survive a full page refresh (F5).
--   **Direct Messaging Architecture:** A complete implementation pattern with backend endpoints (), Socket.IO events for real-time updates, and frontend state management for switching between public and private chat contexts.
+- **Backend:** FastAPI (Python)
+- **Frontend:** React.js
+- **Database:** MongoDB
+- **Architecture:** Monolithic backend () being transitioned to a multi-tenant SaaS model.
+- **Data Isolation:** Uses a  field in MongoDB collections and a custom  HTTP header to filter data per coach at the API level.
+- **Payments:** Stripe for platform and coach payments. Stripe Connect is planned for coach payouts.
+- **Critical Constraint:** A hard limit of 7450 lines in  dictates a strong focus on code optimization.
 
 **key DB schema**
--   ****: Now implicitly handles Direct Messages through fields like , , and .
--   ****, ****, ****, ****, ****, ****: No schema changes, but usage has been refined.
+- **coaches**: 
+- **coach_packs**: 
+- **chat_participants (contacts)**: 
+- **reservations**: 
+- **campaigns**: 
 
 **All files of reference**
--   : The central component for this session's work.
--   : The backend monolith, heavily updated.
--   : Modified to handle coach session persistence.
--   : Modified for UI tweaks and session persistence.
--   : Updated multiple times to reflect mission completion.
+- : The monolithic backend file. Heavily modified to add the entire SaaS architecture. Currently at ~7340 lines.
+- : Main frontend component, handles routing and state for the new pages and roles.
+- : Dashboard UI, modified to add coach-specific features like the Mon Stripe tab.
+- : **New file**. UI for the Super Admin to manage coach packs.
+- : **New file**. Signup page for new coaches.
+- : **New file**. Modal UI for the coach search feature.
+- : **New file**. Public storefront page for individual coaches.
 
 **Areas that need refactoring**:
--   **:** CRITICAL. Still over 8000 lines and the highest priority for refactoring.
--   **:** CRITICAL. This component's complexity has exploded. It urgently needs to be broken down into smaller, manageable sub-components (e.g., , , , , ).
--   **:** A monolithic file that would benefit from being modularized into separate files for routes, models, and services.
+- ****: **CRITICAL**. The file is dangerously close to its hard limit of 7450 lines. It must be broken down into a modular structure (routers, services, etc.) before significant new features can be added.
+- ****: This component remains excessively large (over 6000 lines) and should be decomposed into smaller, reusable components.
 
 **key api endpoints**
--   : Made more robust (case-insensitive, handles optional ).
--   : Logic updated to send email notifications and payload fixed.
--   : Projection updated to include , , .
--   ** (New)**: Handles upload, resizing, and saving of profile pictures.
--   **DM Endpoints (Verified)**:
-    -   
-    -   
-    -   
-    -   And others for unread counts and listing conversations.
+- : (Super Admin) Create a new coach pack.
+- : (Super Admin) Update a coach pack.
+- : (Super Admin) One-time endpoint to assign  to legacy documents.
+- : Creates Stripe checkout for a coach buying a pack.
+- : Fetches public data for a coach's storefront page.
+- : Fetches reservations, filtered by .
 
 **Critical Info for New Agent**
--   **Langue :** Répondez **exclusivement en Français**.
--   **Current Task:** Your immediate priority is to finish the DM, Photo Cropping, and Minimalist UI mission. This means wiring up the photo cropping modal in  and performing an end-to-end test of both DMs and the photo upload flow.
--   **Design Philosophy:** Adhere strictly to the ultra-minimalist UI. All new interactive elements should be icon-based (thin, wireframe SVG), not text.
--   **High-Risk Files:**  and  are extremely large and complex. Edit with caution. Refactoring them is a high-priority future task.
--   **Coach Login:** Access the coach dashboard via **three rapid clicks on the copyright text** in the page footer.
+- ** LINE LIMIT:** You are working with a buffer of only ~110 lines. Prioritize optimization and code reduction. Do not add new features without a plan to stay under the 7450-line limit. Refactoring is the only sustainable path forward.
+- **NON-REGRESSION IS PARAMOUNT:** The original fitness coaching business (course bookings, payments for clients, QR codes) must remain 100% functional. All new SaaS logic is built around the existing, working system.
+- **DATA MIGRATION PENDING:** The migration script to assign  to all legacy data has been created but **not yet run**. This is the highest priority next step to ensure data integrity.
 
 **documents and test reports created in this job**
--    (updated multiple times)
--   
+-  (Updated)
 
 **Last 10 User Messages and any pending HUMAN messages**
--   **Message 10:** (MISSION) Finalize the DM interaction, add a circular photo cropping tool before upload, and ensure the UI remains 100% icon-based and filigree.
--   **Message 9:** (MISSION) Optimize the DM feature and profile photo upload with client-side compression and a 200px size limit.
--   **Message 8:** (MISSION) Implement DMs, profile photo uploads, and an ultra-minimalist design with zero text in headers.
--   **Message 7:** (MISSION) Implement an ultra-minimalist UI using only thin, wireframe icons provided in an image, and ensure session persistence on refresh (F5).
--   **Message 6:** (MISSION) Add Share and Logout icons to the coach chat header and ensure the refresh button updates the conversation list without losing the session.
--   **Message 5:** (MISSION) Stabilize the coach session to survive a page refresh (F5) by using  and add share/logout buttons to the main coach dashboard header.
--   **Message 4:** (MISSION) Add Share and session management options (e.g., Mode Visiteur) to the subscriber chat header, allowing users to minimize the chat and restore it in one click.
--   **Message 3:** (MISSION) Send an automatic email notification to the coach upon a new subscriber reservation and verify the coach dashboard correctly displays all reservation data, including a clickable WhatsApp link.
--   **Message 2:** (MISSION) Fix the critical bug where the Confirm Reservation button was stuck. This required backend fixes for promo code validation and frontend fixes for payload data and error handling.
--   **Message 1:** (MISSION) Create a hybrid chatbot experience distinguishing between subscribers (who get a full-screen booking UI after validation) and visitors (who get a classic chat bubble).
+- The user has provided a series of iterative requests (v8.9 to v8.9.7) to build out the SaaS platform, focusing on UX tweaks, data isolation, and ensuring zero regression on existing features. The last request was to clean up , create the data migration script, and verify all tunnels and storefronts were operational.
 
 **Project Health Check:**
--   **Broken:** YES. The profile picture upload flow is incomplete. The cropping modal has been added to the UI but its output is not yet connected to the upload function.
--   **Mocked:** No
+- **Functional:** Yes.
+- **Brittle:** EXTREMELY. The monolithic nature and size of  is a critical risk to future development and stability.
 
 **3rd Party Integrations**
--   **OpenAI**: AI Chat
--   **Resend**: Emails
--   **Twilio**: WhatsApp (pending user config)
--   **socket.io-client / python-socketio**: Real-time chat
--   **html5-qrcode**: QR code scanning
--   **APScheduler**: Background job scheduling
--   **react-image-crop**: New, for client-side image cropping.
+- **Stripe:** Payment processing.
+- **Resend:** Transactional emails.
+- **api.qrserver.com:** QR code generation.
 
 **Testing status**
--   **Testing agent used after significant changes:** YES
--   **Troubleshoot agent used after agent stuck in loop:** NO
--   **Test files created:** None
--   **Known regressions:** None on completed tasks.
+- **Testing agent used after significant changes:** YES
+- **Test files created:** None
+- **Known regressions:** None
 
 **Credentials to test flow:**
--   Coach Email:  (access via 3 clicks on copyright text)
--   Client Email: Any other email (e.g., )
--   Valid Promo Codes: , 
-
-**What agent forgot to execute**
--   The agent was actively implementing the photo cropping feature when the session ended. It did not forget any tasks, but the current one is unfinished. The next logical step is to connect the output of the cropping modal to the upload function.</analysis>
+- **Super Admin Email:** 
+- **Access Method:** Login with Google, then triple-click the © Afroboost 2026 text in the website footer to open the login modal.</analysis>

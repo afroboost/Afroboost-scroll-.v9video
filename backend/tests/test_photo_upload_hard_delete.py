@@ -20,7 +20,7 @@ from PIL import Image
 # Base URL from environment
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://crm-sync-preview-1.preview.emergentagent.com"
+    BASE_URL = "https://saas-coach-hub.preview.emergentagent.com"
 
 
 class TestPhotoUpload:

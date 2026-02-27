@@ -48,7 +48,7 @@
   "test_credentials": {
     "coach_email": "contact.artboost@gmail.com",
     "coach_access": "Triple-click on '© Afroboost'",
-    "api_base": "https://crm-sync-preview-1.preview.emergentagent.com/api"
+    "api_base": "https://saas-coach-hub.preview.emergentagent.com/api"
   },
   "seed_data_creation": "Test campaigns created and cleaned up during testing",
   "retest_needed": false,

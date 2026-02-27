@@ -7,7 +7,7 @@ import requests
 import json
 import uuid
 
-BACKEND_URL = "https://crm-sync-preview-1.preview.emergentagent.com"
+BACKEND_URL = "https://saas-coach-hub.preview.emergentagent.com"
 BASE_API_URL = f"{BACKEND_URL}/api"
 
 def test_delete_participant_corrected():

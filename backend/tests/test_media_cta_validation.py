@@ -21,7 +21,7 @@ import sys
 sys.path.insert(0, '/app/backend')
 from media_handler import get_media_type, extract_youtube_id, drive_to_direct_url, detect_media_in_text, is_media_url
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://crm-sync-preview-1.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://saas-coach-hub.preview.emergentagent.com')
 
 class TestPromoCodeValidation:
     """Test promo code PROMO20SECRET validation"""
