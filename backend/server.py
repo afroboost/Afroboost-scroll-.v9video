@@ -2358,6 +2358,8 @@ async def stripe_webhook(request: Request):
                     logger.info(f"[PAYMENT] Email envoye a {customer_email}")
                 except Exception as mail_err:
                     logger.warning(f"[PAYMENT] Email error: {mail_err}")
+            # v8.7: Sync CRM - Creer/MAJ contact (email unique)
+            await db.chat_participants.update_one({"email": customer_email}, {"$set": {"email": customer_email, "name": session.metadata.get("customer_name", customer_email.split("@")[0]), "source": "stripe_payment", "updated_at": datetime.now(timezone.utc).isoformat()}, "$setOnInsert": {"id": str(uuid.uuid4()), "created_at": datetime.now(timezone.utc).isoformat()}}, upsert=True)
         elif event.type == 'checkout.session.expired':
             session = event.data.object
             await db.payment_transactions.update_one({"session_id": session.id}, {"$set": {"status": "expired", "webhook_received_at": datetime.now(timezone.utc).isoformat()}})
