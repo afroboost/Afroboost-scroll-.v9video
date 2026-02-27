@@ -1,5 +1,50 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v8.9.2 - FINALISATION FRANCHISE ✅ (27 Février 2026)
+
+### STATUT: COMPLÉTÉ - BOUCLIER ACTIVÉ
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7378 lignes** (sous limite 7450) |
+| Recherche Coach | ✅ IMPLÉMENTÉE |
+| Stripe Connect | ✅ PRÊT |
+| Isolation coach_id | ✅ DEFAULT_COACH_ID |
+| Tests Backend | **23/23 ✅** |
+| Tests Frontend | **100% ✅** |
+
+### Fonctionnalités v8.9.2
+
+#### 1. Recherche Coach (Public)
+| Endpoint | Description |
+|----------|-------------|
+| GET /api/coaches/search?q=xxx | Recherche par nom/email (min 2 chars) |
+| GET /api/coaches/public/{id} | Profil public pour QR scan |
+
+#### 2. Stripe Connect
+| Endpoint | Description |
+|----------|-------------|
+| POST /api/coach/stripe-connect/onboard | Créer compte Express |
+| GET /api/coach/stripe-connect/status | Vérifier état du compte |
+
+#### 3. Isolation Données
+```python
+DEFAULT_COACH_ID = "bassi_default"  # Données existantes = Bassi
+get_coach_filter(email)  # Filtre MongoDB par coach
+```
+
+#### 4. UI/UX
+- Icône Coach: Cercle fin 2px violet #D91CD2
+- Modal recherche avec Error Boundary
+- Colonne Stripe dans table admin
+
+### Tests v8.9.2 - Iteration 63
+- Backend: **23/23 tests ✅**
+- Frontend: **100% ✅**
+- Non-régression: **Tous OK ✅**
+
+---
+
 ## v8.9 - MISSION SAAS : ARCHITECTURE MULTI-COACH ✅ (27 Février 2026)
 
 ### STATUT: EN COURS
