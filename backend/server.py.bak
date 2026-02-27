@@ -1239,6 +1239,8 @@ async def upload_user_photo(file: UploadFile = File(...), participant_id: str = 
     except Exception as e:
         logger.error(f"[UPLOAD] ❌ Erreur traitement image: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur traitement image: {str(e)}")
+
+
 @api_router.get("/users/{participant_id}/profile")
 async def get_user_profile(participant_id: str):
     """
@@ -1286,6 +1288,8 @@ async def get_user_profile(participant_id: str):
         "photo_url": None,
         "message": "Profil non trouvé"
     }
+
+
 # --- Reservations ---
 @api_router.get("/reservations")
 async def get_reservations(
@@ -1664,6 +1668,8 @@ async def validate_discount_code(data: dict):
 @api_router.post("/discount-codes/{code_id}/use")
 async def use_discount_code(code_id: str):
     return {"success": True, "note": "Decompte gere par create_reservation"}
+
+
 @api_router.post("/check-reservation-eligibility")
 async def check_reservation_eligibility(data: dict):
     """Vérifie si un utilisateur peut réserver avec son code."""
@@ -1700,6 +1706,8 @@ async def check_reservation_eligibility(data: dict):
         "maxUses": max_uses,
         "remaining": max_uses - used if max_uses > 0 else "illimité"
     }
+
+
 # ==================== SANITIZE DATA (Nettoyage des données fantômes) ====================
 
 @api_router.post("/sanitize-data")
@@ -3332,6 +3340,8 @@ async def _get_twilio_config():
             return account_sid, auth_token, from_number
     
     return None, None, None
+
+
 async def send_whatsapp_direct(to_phone: str, message: str, media_url: str = None, campaign_id: str = None, campaign_name: str = None) -> dict:
     """
     Fonction interne pour envoyer un message WhatsApp via Twilio.
@@ -3455,6 +3465,8 @@ async def send_whatsapp_direct(to_phone: str, message: str, media_url: str = Non
             logger.error(f"[WHATSAPP-DIAG] Impossible d'enregistrer l'exception: {log_err}")
         
         return {"status": "error", "error": str(e), "error_code": "EXCEPTION"}
+
+
 @api_router.post("/send-whatsapp")
 async def send_whatsapp_message(request: SendWhatsAppRequest):
     """
@@ -4647,6 +4659,8 @@ async def get_group_messages(limit: int = 100):
     query = {"$or": [{"is_group": True}, {"session_id": "group"}], "is_deleted": {"$ne": True}}
     raw = await db.chat_messages.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
     return [format_message_for_frontend(m) for m in reversed(raw)]
+
+
 # ==================== ENDPOINT SYNC "RAMASSER" ====================
 @api_router.get("/messages/sync")
 async def sync_messages(session_id: str, since: Optional[str] = None, limit: int = 100):
@@ -4665,6 +4679,8 @@ async def sync_messages(session_id: str, since: Optional[str] = None, limit: int
     messages = [format_message_for_frontend(m) for m in raw]
     sync_ts = datetime.now(timezone.utc).isoformat()
     return {"success": True, "session_id": session_id, "count": len(messages), "messages": messages, "synced_at": sync_ts, "server_time_utc": sync_ts}
+
+
 @api_router.get("/messages/sync/all")
 async def sync_all_messages(participant_id: str, since: Optional[str] = None, limit: int = 200):
     """
@@ -4705,6 +4721,8 @@ async def sync_all_messages(participant_id: str, since: Optional[str] = None, li
         "messages": messages,
         "synced_at": datetime.now(timezone.utc).isoformat()
     }
+
+
 @api_router.post("/chat/messages")
 async def create_chat_message(message: EnhancedChatMessageCreate):
     """
@@ -6499,6 +6517,8 @@ async def send_push_to_participant(request: Request):
         "email_sent": email_sent,
         "participant_id": participant_id
     }
+
+
 # ==================== SYSTÈME MULTI-COACH v8.9 - ENDPOINTS ====================
 
 # === COACH PACKS (Super Admin Only) ===
@@ -6851,6 +6871,8 @@ async def get_user_role_endpoint(request: Request):
     except Exception as e:
         logger.error(f"[AUTH] Erreur vérification rôle: {e}")
         return {"role": ROLE_USER, "is_super_admin": False, "is_coach": False}
+
+
 # === RECHERCHE DE COACH (PUBLIC) ===
 @api_router.get("/coaches/search")
 async def search_coaches(q: str = ""):
@@ -7030,6 +7052,8 @@ async def get_stripe_connect_status(request: Request):
     except Exception as e:
         logger.error(f"[STRIPE-CONNECT] Erreur statut: {e}")
         return {"connected": False, "status": "error"}
+
+
 # === SCHEDULER HEALTH ENDPOINTS (définis avant include_router) ===
 @api_router.get("/scheduler/status")
 async def get_scheduler_status():
@@ -7256,6 +7280,8 @@ def scheduler_job():
     global SCHEDULER_LAST_HEARTBEAT
     scheduler_job_engine(mongo_client_sync, SCHEDULER_HEARTBEAT_REF)
     SCHEDULER_LAST_HEARTBEAT = SCHEDULER_HEARTBEAT_REF[0]
+
+
 @fastapi_app.on_event("startup")
 async def startup_scheduler():
     """Lance APScheduler avec persistance MongoDB au démarrage du serveur."""
@@ -7337,4 +7363,60 @@ async def shutdown_db_client():
     client.close()
     mongo_client_sync.close()
     logger.info("[SYSTEM] Arrete")
+
+
+
+
 # END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
