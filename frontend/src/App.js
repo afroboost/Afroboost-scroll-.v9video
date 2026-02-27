@@ -1952,6 +1952,11 @@ function App() {
     return null;
   });
   const [validationCode, setValidationCode] = useState(null); // For /validate/:code URL
+  
+  // === SYSTÈME MULTI-COACH v8.9 ===
+  const [showBecomeCoach, setShowBecomeCoach] = useState(false);
+  const [showSuperAdminPanel, setShowSuperAdminPanel] = useState(false);
+  const [userRole, setUserRole] = useState(null); // 'super_admin', 'coach', 'user'
 
   const [courses, setCourses] = useState([]);
   const [offers, setOffers] = useState([]);
