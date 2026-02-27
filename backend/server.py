@@ -3504,24 +3504,11 @@ async def chat_with_ai(data: ChatMessage):
     
     # === 3. CONSTRUIRE LE CONTEXTE DYNAMIQUE ===
     if use_strict_mode:
-        # MODE STRICT: Contexte minimal (pas de cours/tarifs/vente)
-        context = "\n\n========== MODE STRICT - LIEN SPÉCIFIQUE ==========\n"
-        context += "Tu es l'assistant Afroboost avec un OBJECTIF SPÉCIFIQUE défini ci-dessous.\n"
-        context += "NE PARLE PAS de cours, tarifs, abonnements ou vente SAUF si explicitement demandé dans les instructions.\n"
-        
-        # Prénom du client seulement
+        # v8.5: ISOLATION TOTALE - UNIQUEMENT le custom_prompt du lien
+        context = f"\n\n=== INSTRUCTIONS SPECIFIQUES DU LIEN ===\n{CUSTOM_PROMPT}\n"
         if first_name:
-            context += f"\n👤 INTERLOCUTEUR: {first_name}\n"
-        
-        # Concept/Description UNIQUEMENT (pas les offres/cours)
-        try:
-            concept = await db.concept.find_one({"id": "concept"}, {"_id": 0})
-            if concept and concept.get('description'):
-                context += f"\n📌 CONCEPT AFROBOOST:\n{concept.get('description', '')[:500]}\n"
-        except Exception as e:
-            pass
-        
-        logger.info("[CHAT-IA] 🔒 Contexte STRICT construit (sans cours/tarifs)")
+            context += f"\nInterlocuteur: {first_name}\n"
+        logger.info("[CHAT-IA] v8.5: Isolation totale activee")
     else:
         # MODE STANDARD: Contexte complet avec cours/tarifs/vente
         context = "\n\n========== CONNAISSANCES DU SITE AFROBOOST ==========\n"
