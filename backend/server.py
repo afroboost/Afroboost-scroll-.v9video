@@ -163,15 +163,12 @@ async def leave_private_conversation(sid, data):
     if conversation_id:
         room_name = f"pm_{conversation_id}"
         await sio.leave_room(sid, room_name)
-        logger.info(f"[SOCKET.IO] Client {sid} a quitté la conversation privée {conversation_id}")
+        logger.info(f"[SOCKET.IO] Client {sid} a quitte la conversation privee {conversation_id}")
 
-# ==================== DM TYPING INDICATOR (Messages Privés) ====================
+# DM TYPING
 @sio.event
 async def dm_typing_start(sid, data):
-    """
-    Un utilisateur commence à taper dans un DM.
-    data = { "conversation_id": "xxx", "user_id": "xxx", "user_name": "xxx" }
-    """
+    """Debut frappe DM."""
     conversation_id = data.get("conversation_id")
     user_name = data.get("user_name", "Quelqu'un")
     user_id = data.get("user_id")
