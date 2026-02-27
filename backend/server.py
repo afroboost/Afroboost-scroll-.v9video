@@ -1588,6 +1588,8 @@ async def validate_discount_code(data: dict):
             if assigned.lower() != user_email.lower():
                 return {"valid": False, "message": "Code réservé à un autre compte"}
     
+    # v8.7: Sync CRM si email fourni
+    if user_email: await db.chat_participants.update_one({"email": user_email}, {"$set": {"email": user_email, "name": data.get("name", user_email.split("@")[0]), "source": "chat_login", "updated_at": datetime.now(timezone.utc).isoformat()}, "$setOnInsert": {"id": str(uuid.uuid4()), "created_at": datetime.now(timezone.utc).isoformat()}}, upsert=True)
     return {"valid": True, "code": code}
 
 @api_router.post("/discount-codes/{code_id}/use")
