@@ -2519,6 +2519,15 @@ async def create_coach_checkout(request: Request):
         if not pack:
             raise HTTPException(status_code=404, detail="Pack non trouvé")
         
+        # v8.9.7: Détecter l'URL frontend depuis le Referer ou utiliser l'env
+        referer = request.headers.get("Referer", "")
+        if referer:
+            from urllib.parse import urlparse
+            parsed = urlparse(referer)
+            frontend_url = f"{parsed.scheme}://{parsed.netloc}"
+        else:
+            frontend_url = os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')
+        
         # Créer la session Stripe Checkout
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=["card"],
@@ -2527,8 +2536,8 @@ async def create_coach_checkout(request: Request):
                 "quantity": 1
             }],
             mode="payment",
-            success_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}/#coach-dashboard?session_id={{CHECKOUT_SESSION_ID}}&welcome=true",
-            cancel_url=f"{os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')}",
+            success_url=f"{frontend_url}/#coach-dashboard?session_id={{CHECKOUT_SESSION_ID}}&welcome=true",
+            cancel_url=f"{frontend_url}/#devenir-coach",
             customer_email=email,
             metadata={
                 "type": "coach_registration",
