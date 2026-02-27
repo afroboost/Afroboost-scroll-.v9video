@@ -247,6 +247,7 @@ COACH_EMAIL = "contact.artboost@gmail.com"
 # ==================== SYSTÈME MULTI-COACH v8.9 ====================
 # Super Admin: Contrôle total sur les offres, les coachs et les tarifs
 SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"
+DEFAULT_COACH_ID = "bassi_default"  # ID par défaut pour les données existantes
 
 # Rôles disponibles
 ROLE_SUPER_ADMIN = "super_admin"
@@ -257,12 +258,19 @@ def get_user_role(email: str) -> str:
     """Détermine le rôle d'un utilisateur basé sur son email"""
     if email and email.lower().strip() == SUPER_ADMIN_EMAIL.lower():
         return ROLE_SUPER_ADMIN
-    # Vérifier si l'email correspond à un coach enregistré (sera vérifié en DB)
-    return ROLE_USER  # Par défaut, utilisateur standard
+    return ROLE_USER
 
 def is_super_admin(email: str) -> bool:
     """Vérifie si l'email est celui du Super Admin"""
     return email and email.lower().strip() == SUPER_ADMIN_EMAIL.lower()
+
+def get_coach_filter(email: str) -> dict:
+    """Retourne le filtre MongoDB pour l'isolation des données coach"""
+    if is_super_admin(email):
+        # Super Admin voit tout (ses données + données sans coach_id)
+        return {"$or": [{"coach_id": {"$exists": False}}, {"coach_id": DEFAULT_COACH_ID}]}
+    # Coach normal - uniquement ses propres données
+    return {"coach_id": email.lower().strip()}
 
 # ASGI app
 app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)
