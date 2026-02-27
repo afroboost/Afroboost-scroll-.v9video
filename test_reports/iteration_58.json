@@ -1,0 +1,117 @@
+{
+  "summary": "Iteration 58 - Mobile Visibility & Positioning Tests. Verified: 1) Input bar z-index 9999 ✅, 2) Input bar position sticky ✅, 3) Send button 44x44px ✅, 4) Chat input font-size 16px ✅, 5) Flexbox structure (Emoji left, Input middle, Send right) ✅, 6) 100dvh for fullscreen mode ✅. BUG FOUND: WhatsApp button position on mobile is 20px instead of 100px due to CSS media query override.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ChatWidget.js - WhatsApp Button",
+        "issue": "CSS media query @media (max-width: 640px) at line 2131 sets 'bottom: 20px !important' which overrides the inline style 'bottom: 100px'. WhatsApp button appears at bottom 20px on mobile instead of 100px.",
+        "selector": "[data-testid='chat-widget-button']",
+        "priority": "HIGH",
+        "fix_location": "Line 2131 in ChatWidget.js",
+        "fix_suggestion": "Change 'bottom: 20px !important;' to 'bottom: 100px !important;'"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "TEST 1 - Desktop viewport WhatsApp button position: bottom=100px, right=20px ✅",
+    "TEST 2 - Chat window opens correctly ✅",
+    "TEST 3 - Form submission works ✅",
+    "TEST 4 - Input bar z-index: 9999 ✅",
+    "TEST 5 - Input bar position: sticky ✅",
+    "TEST 6 - Input bar bottom: 0px ✅",
+    "TEST 7 - Send button size: 44px x 44px ✅",
+    "TEST 8 - Emoji button visible ✅",
+    "TEST 9 - Chat input font-size: 16px (Safari iOS zoom fix) ✅",
+    "TEST 10 - Chat input flex: 1 1 0% ✅",
+    "TEST 11 - Chat input minWidth: 0px ✅",
+    "TEST 12 - Input bar visible on mobile ✅",
+    "TEST 13 - Send button visible on mobile ✅",
+    "TEST 14 - Flexbox structure verified (Emoji left x=13, Input middle x=61, Send right x=333) ✅",
+    "TEST 15 - 100dvh implemented for fullscreen mode (lines 2237-2239) ✅"
+  ],
+  "failed_tests": [
+    "TEST 16 - WhatsApp button mobile position: Expected bottom=100px, Got bottom=20px ❌ (CSS media query override bug)"
+  ],
+  "test_report_links": [
+    "/app/test_reports/iteration_58.json"
+  ],
+  "action_items": [
+    "FIX REQUIRED: In ChatWidget.js line 2131, change 'bottom: 20px !important;' to 'bottom: 100px !important;' to fix WhatsApp button position on mobile"
+  ],
+  "critical_code_review_comments": [
+    "Line 2131: CSS media query overrides inline style - 'bottom: 20px !important' should be 'bottom: 100px !important'",
+    "Lines 3274-3287: Input bar correctly has z-index: 9999, position: sticky, bottom: 0",
+    "Lines 3290-3412: Flexbox structure correctly implemented with 3 sections (Left: Emoji+Reservations, Middle: Input, Right: Send)",
+    "Lines 2237-2239: 100dvh correctly used for fullscreen mode",
+    "Line 3379: font-size: 16px correctly set for Safari iOS zoom fix",
+    "Lines 3396-3397: Send button correctly sized at 44x44px"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only testing)",
+    "frontend": "94% (15/16 tests passed)"
+  },
+  "test_credentials": {
+    "promo_code": "basxx",
+    "required_email": "bassicustomshoes@gmail.com",
+    "alternative_code": "PROMO20SECRET",
+    "coach_access": "Triple-click on '© Afroboost'",
+    "api_base": "https://go-live-v7.preview.emergentagent.com/api"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 58 verified mobile positioning features. All features work EXCEPT WhatsApp button position on mobile. Bug: CSS media query at line 2131 sets 'bottom: 20px !important' which overrides inline style 'bottom: 100px'. Fix: Change line 2131 to 'bottom: 100px !important'. All other features verified: z-index 9999, position sticky, 44x44px send button, 16px font-size, flexbox structure, 100dvh for fullscreen.",
+  "features_verified": {
+    "whatsapp_button_desktop": {
+      "status": "working",
+      "position": "bottom: 100px, right: 20px"
+    },
+    "whatsapp_button_mobile": {
+      "status": "BUG",
+      "expected": "bottom: 100px",
+      "actual": "bottom: 20px",
+      "cause": "CSS media query override at line 2131"
+    },
+    "input_bar_z_index": {
+      "status": "working",
+      "value": "9999"
+    },
+    "input_bar_position": {
+      "status": "working",
+      "value": "sticky, bottom: 0"
+    },
+    "send_button_size": {
+      "status": "working",
+      "value": "44px x 44px"
+    },
+    "chat_input_font_size": {
+      "status": "working",
+      "value": "16px (Safari iOS zoom fix)"
+    },
+    "flexbox_structure": {
+      "status": "working",
+      "structure": "Left (Emoji+Reservations) | Middle (Input flex:1) | Right (Send marginLeft:auto)"
+    },
+    "fullscreen_100dvh": {
+      "status": "working",
+      "location": "lines 2237-2239"
+    }
+  },
+  "bug_rca": {
+    "issue": "WhatsApp button positioned at bottom 20px on mobile instead of 100px",
+    "root_cause": "CSS media query @media (max-width: 640px) at line 2131 contains 'bottom: 20px !important' which overrides the inline style 'bottom: 100px' set at line 2153",
+    "reproduction_steps": [
+      "1. Open the app on mobile viewport (width < 640px)",
+      "2. Observe WhatsApp button position",
+      "3. Button appears at bottom 20px instead of 100px"
+    ],
+    "fix": "Change line 2131 from 'bottom: 20px !important;' to 'bottom: 100px !important;'"
+  }
+}

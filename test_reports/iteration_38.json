@@ -1,0 +1,93 @@
+{
+  "summary": "Backend Testing Complete - Notification System and Guard Rails. All 16 tests PASSED. Notification endpoints (GET /api/notifications/unread, PUT /api/notifications/mark-read) work correctly. New messages have notified=false by default. AI Guard Rails verified: café congolais recognized at 10 CHF, Twint payment link provided when asked about payment. CRM search and pagination functional.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Test Backend 1: GET /api/notifications/unread?target=coach returns count and messages ✅",
+    "Test Backend 1b: GET /api/notifications/unread?target=client returns count and messages ✅",
+    "Test Backend 1c: GET /api/notifications/unread with session_id filter works ✅",
+    "Test Backend 2: PUT /api/notifications/mark-read with message_ids works ✅",
+    "Test Backend 2b: PUT /api/notifications/mark-read with all_for_target works ✅",
+    "Test Backend 2c: PUT /api/notifications/mark-read with session_id filter works ✅",
+    "Test Backend 3: New messages have notified=false by default ✅",
+    "Test Backend 3b: Message notified field updates to true after mark-read ✅",
+    "Test Garde-Fou 1: AI recognizes café congolais at 10 CHF ✅",
+    "Test Garde-Fou 2: AI mentions Twint link when asked about payment ✅",
+    "Test CRM: GET /api/conversations returns paginated results ✅",
+    "Test CRM: Search with query parameter works ✅",
+    "Test CRM: Pagination works for infinite scroll ✅",
+    "Test Health: Health endpoint accessible ✅",
+    "Test Offers: Offers endpoint returns data ✅",
+    "Test Courses: Courses endpoint returns data ✅"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_notifications_guardrails.py",
+    "/app/test_reports/pytest/pytest_notifications_guardrails.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Notification system correctly implemented with notified field in EnhancedChatMessage model (line 555)",
+    "GET /api/notifications/unread correctly filters by sender_type (user for coach, ai/coach for client)",
+    "PUT /api/notifications/mark-read supports both message_ids array and all_for_target bulk update",
+    "AI context injection includes Twint payment URL when configured (lines 2725-2749)",
+    "AI context includes product inventory with prices for café congolais recognition"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_notifications_guardrails.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "N/A (backend only testing requested)"
+  },
+  "test_credentials": {
+    "test_user": {
+      "firstName": "NotificationTest",
+      "email": "notif@test.com",
+      "whatsapp": "+41790000000"
+    }
+  },
+  "seed_data_creation": "Test participants and sessions created and cleaned up automatically by pytest fixtures",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Notification system fully functional. GET /api/notifications/unread returns {count, messages, target}. PUT /api/notifications/mark-read accepts {message_ids: []} or {all_for_target: 'coach'|'client', session_id?: string}. New messages have notified=false by default. AI guard rails working: café congolais at 10 CHF recognized, Twint link (https://twint.ch/pay/afroboost-test-123) provided for payment questions. CRM pagination and search working correctly.",
+  "api_verification": {
+    "notification_endpoints": {
+      "GET /api/notifications/unread": {
+        "params": ["target (coach|client)", "session_id (optional)"],
+        "response": {"count": "int", "messages": "array", "target": "string"},
+        "status": "WORKING"
+      },
+      "PUT /api/notifications/mark-read": {
+        "body_options": ["message_ids: string[]", "all_for_target: coach|client", "session_id: string (optional)"],
+        "response": {"success": "boolean", "marked_count": "int"},
+        "status": "WORKING"
+      }
+    },
+    "guard_rails": {
+      "cafe_congolais": {
+        "test_query": "Combien coûte le café congolais ?",
+        "ai_response": "Le café congolais coûte 10.0 CHF",
+        "status": "WORKING"
+      },
+      "twint_payment": {
+        "test_query": "Comment je peux payer ?",
+        "ai_response": "Includes Twint link: https://twint.ch/pay/afroboost-test-123",
+        "status": "WORKING"
+      }
+    },
+    "crm": {
+      "GET /api/conversations": {
+        "pagination": "Working (total=6, pages=2 with limit=5)",
+        "search": "Working (query parameter filters results)",
+        "status": "WORKING"
+      }
+    }
+  }
+}

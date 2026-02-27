@@ -1,0 +1,81 @@
+{
+  "summary": "Iteration 60 - Photo Upload Engine & Hard Delete Testing. All 12 tests passed. Photo upload saves files physically to /app/backend/uploads/profiles/ and updates photo_url in MongoDB. Hard delete removes courses and associated reservations from MongoDB completely.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "TEST 1 - API Health: healthy, database connected ✅",
+    "TEST 2 - Upload photo creates physical file on server ✅",
+    "TEST 3 - Upload photo updates DB (users + chat_participants collections) ✅",
+    "TEST 4 - Invalid file type (non-image) correctly rejected with 400 ✅",
+    "TEST 5 - Get user profile endpoint returns photo_url from DB ✅",
+    "TEST 6 - Non-existent profile returns success: false with message ✅",
+    "TEST 7 - Create and hard delete course - course removed from DB ✅",
+    "TEST 8 - Hard delete with reservations - both course and reservations deleted ✅",
+    "TEST 9 - Hard delete non-existent course handled correctly ✅",
+    "TEST 10 - Archive (soft delete) vs hard delete both work correctly ✅",
+    "TEST 11 - Static file serving for uploaded photos working ✅",
+    "TEST 12 - Test data cleanup completed ✅"
+  ],
+  "failed_tests": [],
+  "test_report_links": [
+    "/app/backend/tests/test_photo_upload_hard_delete.py",
+    "/app/test_reports/pytest/pytest_photo_upload_hard_delete.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "POST /api/users/upload-photo (lines 1126-1207): Correctly uses PIL to resize images to 200x200 max, saves to /app/backend/uploads/profiles/, updates both 'users' and 'chat_participants' collections",
+    "GET /api/users/{participant_id}/profile (lines 1210-1256): Searches in 'users' first, then 'chat_participants' as fallback, returns photo_url from DB",
+    "DELETE /api/courses/{course_id} (lines 905-949): Hard delete removes course, all associated reservations, and emits Socket.IO event for real-time sync",
+    "Static file serving mounted at /api/uploads/profiles (line 339): Files accessible via URL returned by upload endpoint"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_photo_upload_hard_delete.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "N/A (backend-only testing)"
+  },
+  "test_credentials": {
+    "api_base": "https://go-live-v7.preview.emergentagent.com/api"
+  },
+  "seed_data_creation": "Test courses and reservations created and cleaned up during testing. Test photos remain in /app/backend/uploads/profiles/ with prefix 'test_'",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 60 verified photo upload engine and hard delete features. Photo upload: POST /api/users/upload-photo accepts multipart form with 'file' and 'participant_id', saves to /app/backend/uploads/profiles/, updates photo_url in users and chat_participants collections. Hard delete: DELETE /api/courses/{course_id} removes course and all associated reservations from MongoDB. Archive endpoint PUT /api/courses/{course_id}/archive still available for soft delete.",
+  "features_verified": {
+    "photo_upload": {
+      "endpoint": "POST /api/users/upload-photo",
+      "status": "working",
+      "physical_save": "/app/backend/uploads/profiles/",
+      "db_update": "users and chat_participants collections",
+      "validation": "Rejects non-image files with 400"
+    },
+    "get_profile": {
+      "endpoint": "GET /api/users/{participant_id}/profile",
+      "status": "working",
+      "source_priority": "users collection first, then chat_participants"
+    },
+    "hard_delete_course": {
+      "endpoint": "DELETE /api/courses/{course_id}",
+      "status": "working",
+      "deletes": ["course", "associated reservations", "chat_sessions with courseId"],
+      "socket_event": "course_deleted emitted for real-time sync"
+    },
+    "archive_course": {
+      "endpoint": "PUT /api/courses/{course_id}/archive",
+      "status": "working",
+      "behavior": "Sets archived: true, course hidden from GET /api/courses"
+    },
+    "static_file_serving": {
+      "mount_path": "/api/uploads/profiles",
+      "status": "working"
+    }
+  }
+}

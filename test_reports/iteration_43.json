@@ -1,0 +1,73 @@
+{
+  "summary": "Frontend Testing V4 - Afroboost Chat Widget. 2/4 tests PASSED, 2/4 tests have ISSUES. Persistence and regular user security work correctly. Coach admin menu visibility has a BUG. Socket.IO connects but WebSocket closes prematurely.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ChatWidget.js",
+        "issue": "Admin menu (three dots) NOT visible for coach user. Condition 'step === chat && isCoachMode' is never true because when isCoachMode=true, useEffect sets step='coach' (line 620)",
+        "selector": "[data-testid='chat-menu-btn']",
+        "priority": "HIGH",
+        "root_cause": "Line 617-622: useEffect overrides step to 'coach' when isCoachMode is true, but admin menu condition requires step='chat'",
+        "fix_suggestion": "Change condition on line 1103 from 'step === chat && isCoachMode' to '(step === chat || step === coach) && isCoachMode'"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Socket.IO WebSocket connection",
+        "issue": "WebSocket connection closes before being established. Console shows: 'WebSocket is closed before the connection is established'",
+        "affected_selectors": [],
+        "note": "Socket.IO falls back to polling transport, so real-time messaging may still work but with higher latency"
+      }
+    ],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "TEST 1 - Persistence: User 'TestUser' with email 'test@test.com' created, widget closed, F5 refresh, widget reopened → Chat displayed directly with 'Ravi de te revoir, TestUser!' message ✅",
+    "TEST 2 - Security (regular user): User with email 'test@test.com' → Admin menu (three dots) NOT visible ✅",
+    "TEST 4 - Socket.IO: Connection attempt logged '[SOCKET.IO] 🔌 Connexion à...' and '[AUTH] Email: contact.artboost@gmail.com, isCoach: true' ✅"
+  ],
+  "failed_tests": [
+    "TEST 3 - Security (coach): User with email 'contact.artboost@gmail.com' → Admin menu (three dots) NOT visible ❌ (BUG: step='coach' instead of 'chat')"
+  ],
+  "test_report_links": [
+    "/app/test_reports/iteration_43.json"
+  ],
+  "action_items": [
+    "FIX CRITICAL: ChatWidget.js line 1103 - Change admin menu visibility condition from 'step === chat && isCoachMode' to '(step === chat || step === coach) && isCoachMode' OR add isCoachMode check without step condition",
+    "INVESTIGATE: WebSocket connection closing prematurely - may need to check backend Socket.IO configuration or CORS settings"
+  ],
+  "critical_code_review_comments": [
+    "BUG: Lines 617-622 set step='coach' when isCoachMode=true, but line 1103 requires step='chat' for admin menu visibility - these conditions conflict",
+    "The admin menu should be visible for coach in BOTH 'chat' and 'coach' steps",
+    "Socket.IO WebSocket transport fails, falling back to polling - check backend CORS/WebSocket configuration"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "50% (2/4 tests passed)"
+  },
+  "test_credentials": {
+    "regular_user": "test@test.com",
+    "coach_email": "contact.artboost@gmail.com"
+  },
+  "seed_data_creation": "Created test users during testing (TestUser, Coach Bassi)",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Persistence works correctly using localStorage keys: af_chat_client, af_chat_session, afroboost_identity. Regular user security works - admin menu hidden. Coach admin menu has a bug - condition conflict between step and isCoachMode. Socket.IO connects but WebSocket closes prematurely.",
+  "rca_of_the_issue": {
+    "issue": "Coach admin menu not visible",
+    "root_cause": "In ChatWidget.js, when coach logs in: 1) handleSmartEntry sets step='chat' and isCoachMode=true (line 663, 687), 2) useEffect (lines 617-622) then overrides step to 'coach', 3) Admin menu condition (line 1103) requires 'step === chat && isCoachMode' which is never true",
+    "reproduction_steps": [
+      "1. Clear localStorage",
+      "2. Open chat widget",
+      "3. Fill form with email 'contact.artboost@gmail.com'",
+      "4. Submit form",
+      "5. Observe: 'Mode Coach' view shown with sessions list, but NO admin menu (three dots) visible"
+    ],
+    "mitigation": "Change line 1103 from 'step === chat && isCoachMode' to 'isCoachMode' (remove step check) OR '(step === chat || step === coach) && isCoachMode'"
+  }
+}

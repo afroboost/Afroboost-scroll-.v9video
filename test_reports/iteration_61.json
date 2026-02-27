@@ -1,0 +1,98 @@
+{
+  "summary": "Iteration 61 - Media (YouTube/Drive) and CTA Button Validation. All 20 backend tests passed. Frontend chat widget works with promo code authentication. Media detection code is implemented in ChatWidget.js and MediaParser.js. Backend media_handler.py module correctly detects YouTube/Drive/Image URLs.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "TEST 1 - PROMO20SECRET validation: code valid with 20% discount ✅",
+    "TEST 2 - Invalid promo code correctly rejected ✅",
+    "TEST 3 - Reservation eligibility with PROMO20SECRET returns canReserve=true ✅",
+    "TEST 4 - Courses API returns course list with 4 date buttons ✅",
+    "TEST 5 - Messages sync returns YouTube messages ✅",
+    "TEST 6 - Messages sync returns Google Drive messages ✅",
+    "TEST 7 - Messages sync returns CTA button messages (cta_text, cta_link) ✅",
+    "TEST 8 - Messages sync includes server_time_utc timestamp ✅",
+    "TEST 9 - Backend media_handler: YouTube detection (youtube.com/watch) ✅",
+    "TEST 10 - Backend media_handler: YouTube short URL (youtu.be) detection ✅",
+    "TEST 11 - Backend media_handler: YouTube embed URL detection ✅",
+    "TEST 12 - Backend media_handler: YouTube Shorts URL detection ✅",
+    "TEST 13 - Backend media_handler: Google Drive file URL detection ✅",
+    "TEST 14 - Backend media_handler: Google Drive open URL detection ✅",
+    "TEST 15 - Backend media_handler: Direct image URL detection ✅",
+    "TEST 16 - extract_youtube_id helper function ✅",
+    "TEST 17 - drive_to_direct_url helper function ✅",
+    "TEST 18 - detect_media_in_text function ✅",
+    "TEST 19 - is_media_url function ✅",
+    "TEST 20 - API Health endpoint ✅"
+  ],
+  "failed_tests": [],
+  "test_report_links": [
+    "/app/backend/tests/test_media_cta_validation.py",
+    "/app/test_reports/pytest/pytest_media_cta_validation.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ChatWidget.js (lines 131-270): InlineYouTubePlayer, InlineDriveImage, InlineCtaButton components correctly implemented with data-testid attributes",
+    "ChatWidget.js (lines 282-293): detectMediaInText function scans message text for YouTube/Drive/Image URLs using MediaParser",
+    "ChatWidget.js (lines 498-513): Inline media components rendered based on detectedMedia type and cta_text/cta_link fields",
+    "MediaParser.js: parseMediaUrl correctly handles youtube.com, youtu.be, youtube.com/shorts, drive.google.com/file/d/, direct images",
+    "media_handler.py: Backend module mirrors frontend logic for server-side media detection"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_media_cta_validation.py"
+  ],
+  "success_rate": {
+    "backend": "100% (20/20 tests passed)",
+    "frontend": "95% - Subscriber form works, chat loads, 4 date buttons visible"
+  },
+  "test_credentials": {
+    "promo_code": "PROMO20SECRET",
+    "test_email": "testmedia@test.com",
+    "api_base": "https://go-live-v7.preview.emergentagent.com/api"
+  },
+  "seed_data_creation": "Test messages with YouTube, Drive, and CTA inserted into session 5b49c35b-4a6f-4b75-9891-4e12d2e9a33e for /api/messages/sync endpoint testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 61 validated media detection and CTA button functionality. YouTube/Drive/CTA inline components are implemented in ChatWidget.js with data-testid attributes (inline-youtube, inline-drive-image, inline-cta-button, youtube-thumbnail-btn). The /api/messages/sync endpoint returns messages with timestamps for mobile polling. PROMO20SECRET (20% discount) validates successfully. Reservation calendar displays 4 dates correctly.",
+  "features_verified": {
+    "promo_code_validation": {
+      "endpoint": "POST /api/discount-codes/validate",
+      "status": "working",
+      "test_code": "PROMO20SECRET",
+      "discount_type": "percent",
+      "discount_value": 20
+    },
+    "reservation_eligibility": {
+      "endpoint": "POST /api/check-reservation-eligibility",
+      "status": "working"
+    },
+    "courses_api": {
+      "endpoint": "GET /api/courses",
+      "status": "working",
+      "visible_courses": 1,
+      "date_buttons": 4
+    },
+    "messages_sync": {
+      "endpoint": "GET /api/messages/sync",
+      "status": "working",
+      "returns": ["youtube_messages", "drive_messages", "cta_messages", "server_time_utc"]
+    },
+    "frontend_media_detection": {
+      "youtube_inline_player": "InlineYouTubePlayer component with thumbnail + play button",
+      "drive_inline_image": "InlineDriveImage component with fallback link",
+      "cta_button": "InlineCtaButton component with gradient styling",
+      "data_testid_attributes": ["inline-youtube", "youtube-thumbnail-btn", "inline-drive-image", "drive-fallback", "inline-cta-button"]
+    },
+    "backend_media_handler": {
+      "module": "/app/backend/media_handler.py",
+      "status": "working",
+      "supported_formats": ["youtube.com/watch", "youtu.be", "youtube.com/embed", "youtube.com/shorts", "drive.google.com/file/d/", "drive.google.com/open?id=", "jpg/png/gif/webp/svg", "mp4/webm/ogg/mov"]
+    }
+  }
+}

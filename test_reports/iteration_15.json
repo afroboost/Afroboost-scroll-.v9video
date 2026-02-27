@@ -1,0 +1,71 @@
+{
+  "summary": "Tested visibility regression fix for offers and courses. All critical tests passed: offers with visible=false ('Cours à l'unité') are correctly hidden on client side, while offers with visible=true ('TESTORRR', 'shoes', 'pappa') are displayed. Courses filtering also works correctly - archived and hidden courses are not shown. Dynamic appName and logoUrl in manifest.json and Coach Dashboard are working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/concept",
+        "issue": "logoUrl and faviconUrl fields contain HTML code fragments (user input error, not a bug)",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Hero section",
+        "issues": ["YouTube video shows 'Video unavailable' - the configured YouTube URL may be invalid or restricted"]
+      }
+    ]
+  },
+  "passed_tests": [
+    "CRITICAL: 'Cours à l'unité' (visible=false) is NOT displayed on client side",
+    "'TESTORRR' (visible=true, isProduct=false) appears after session selection",
+    "'shoes' (visible=true, isProduct=true) is displayed in shop section",
+    "'pappa' (visible=true, isProduct=true) is displayed in shop section",
+    "'Session Cardio' course (visible=true, archived=false) is displayed",
+    "'Sunday Vibes' course (visible=true, archived=false) is displayed",
+    "'hello' course (archived=true) is NOT displayed",
+    "'copie' course (visible=false) is NOT displayed",
+    "Main title uses concept.appName dynamically ('Afroboost')",
+    "'Tout' filter shows both sessions and shop sections",
+    "'Shop' filter hides sessions section, shows only products",
+    "Coach Dashboard 'Concept & Visuel' tab has 'Identité de l'application' section",
+    "'Nom de l'application' input field works and persists to database",
+    "'URL du Logo' input field works with logo preview",
+    "/api/manifest.json uses appName for short_name and name",
+    "/api/manifest.json uses logoUrl for PWA icons",
+    "API health check passes",
+    "All 15 pytest backend tests passed"
+  ],
+  "test_report_links": [
+    "/app/tests/test_visibility_regression.py",
+    "/app/test_reports/pytest/pytest_visibility.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Visibility fix in App.js (lines 2813-2823) correctly uses 'visible === true' instead of 'visible !== false' for strict filtering",
+    "Products filter: o.isProduct === true && o.visible === true",
+    "Services filter: !o.isProduct && o.visible === true",
+    "Courses filter: c.visible === true && c.archived !== true",
+    "manifest.json endpoint (server.py lines 1343-1420) correctly uses concept.appName and concept.logoUrl/faviconUrl"
+  ],
+  "updated_files": [
+    "/app/tests/test_visibility_regression.py"
+  ],
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "100% (11/11 UI tests passed)"
+  },
+  "test_credentials": {
+    "coach_email": "coach@afroboost.com",
+    "coach_password": "afroboost123",
+    "coach_access": "Triple click on '© Afroboost 2026' copyright text at bottom of page"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Visibility regression fix verified. Key filtering logic: visible === true (strict equality) filters out offers/courses with visible=false or undefined. Service offers (isProduct=false) only appear in the offers slider AFTER user selects a session date - this is expected UX behavior. Products (isProduct=true) appear in the shop section immediately. The 3 navigation filters (Tout, Cours, Shop) work correctly to show/hide sections."
+}

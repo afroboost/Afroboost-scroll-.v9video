@@ -1,0 +1,75 @@
+{
+  "summary": "Iteration 48 - ChatWidget Hybrid Mode Testing. All features verified: Visitor form (3 fields), Subscriber form (4 fields), promo code validation via API, localStorage persistence, fullscreen mode for subscribers, calendar icon visibility conditional on subscriber status.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "TEST 1 - Visitor form: 3 fields (prénom, whatsapp, email) + green 'Commencer le chat' button ✅",
+    "TEST 2 - 'S'identifier comme abonné' button visible in visitor form ✅",
+    "TEST 3 - Subscriber form: 4 fields (nom complet, whatsapp, email, code promo) ✅",
+    "TEST 4 - Promo code validation via API /api/discount-codes/validate ✅",
+    "TEST 5 - PROMO20SECRET code validates for any email (no assignedEmail restriction) ✅",
+    "TEST 6 - basxx code validates ONLY for bassicustomshoes@gmail.com ✅",
+    "TEST 7 - basxx code rejected for wrong email with 'Code réservé à un autre compte' message ✅",
+    "TEST 8 - Subscriber profile persisted in localStorage(afroboost_profile) ✅",
+    "TEST 9 - Fullscreen mode activated automatically for subscribers (1920x1080) ✅",
+    "TEST 10 - Calendar icon visible ONLY for subscribers with valid code ✅",
+    "TEST 11 - Reservation panel shows promo code badge and course list ✅",
+    "TEST 12 - Visitor mode: bubble chat (380px width), NO calendar icon, NO fullscreen ✅",
+    "TEST 13 - Header shows '💎 Abonné • {name}' for subscribers ✅",
+    "TEST 14 - Header shows '💪 Coach Bassi' for visitors ✅"
+  ],
+  "failed_tests": [],
+  "test_report_links": [
+    "/app/backend/tests/test_chatwidget_hybrid.py",
+    "/app/test_reports/pytest/pytest_chatwidget_hybrid.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ChatWidget.js correctly implements dual experience based on afroboost_profile in localStorage",
+    "getStoredProfile() function properly checks for valid profile with code and name",
+    "handleSubscriberFormSubmit() validates code via API before saving profile",
+    "Calendar icon (data-testid='calendar-btn') conditionally rendered: {afroboostProfile?.code && (...)}",
+    "Fullscreen mode initialized via getInitialFullscreen() which checks for stored profile",
+    "API /api/discount-codes/validate correctly handles: case-insensitive codes, assignedEmail null check, courseId optional"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_chatwidget_hybrid.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 pytest tests passed)",
+    "frontend": "100% (14/14 Playwright tests passed)"
+  },
+  "test_credentials": {
+    "public_promo_code": "PROMO20SECRET (20% discount, no email restriction)",
+    "restricted_promo_code": "basxx (30 CHF, reserved for bassicustomshoes@gmail.com)"
+  },
+  "seed_data_creation": "Created test users via smart-entry API during testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "ChatWidget hybrid mode fully functional. Two distinct paths: 1) VISITOR: 3-field form → bubble chat (380px) → no calendar icon, 2) SUBSCRIBER: 4-field form with code validation → fullscreen mode → calendar icon for reservations. Profile stored in localStorage key 'afroboost_profile'. API validation handles case-insensitive codes and optional courseId for identification flow.",
+  "features_verified": {
+    "visitor_form_3_fields": true,
+    "subscriber_form_4_fields": true,
+    "subscriber_button_visible": true,
+    "promo_code_api_validation": true,
+    "localStorage_persistence": true,
+    "fullscreen_for_subscribers": true,
+    "calendar_icon_conditional": true,
+    "reservation_panel_with_badge": true,
+    "visitor_bubble_chat": true,
+    "email_restricted_codes": true
+  },
+  "api_endpoints_tested": [
+    "POST /api/discount-codes/validate - Promo code validation",
+    "POST /api/chat/smart-entry - User identification and session creation",
+    "GET /api/courses - Available courses for reservation",
+    "GET /api/health - API health check"
+  ]
+}

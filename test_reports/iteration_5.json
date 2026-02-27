@@ -1,0 +1,71 @@
+{
+  "summary": "Tested Campaign Module (Gestionnaire de Campagnes) features: multi-date scheduling, WhatsApp link generation, and error indicators. Backend: 31/31 tests passed. Frontend: Critical bug found - infinite re-render loop when launching campaigns with invalid phone numbers.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "critical": [
+      {
+        "component": "CoachDashboard - Campaign Module",
+        "issue": "Infinite re-render loop: 'Too many re-renders. React limits the number of renders to prevent an infinite loop.' This occurs when launching a campaign because addCampaignLog() is called inside generateWhatsAppLink() during render, causing state updates during render.",
+        "selector": "generateWhatsAppLink function (line ~1021)",
+        "priority": "HIGH",
+        "fix_suggestion": "Move addCampaignLog call outside of render cycle - use useEffect or callback instead of calling setState during render"
+      }
+    ],
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "Backend API: 31/31 tests passed (23 existing + 8 new campaign tests)",
+    "Campaign API: GET /api/campaigns - returns list of campaigns",
+    "Campaign API: POST /api/campaigns - creates immediate campaign (status: draft)",
+    "Campaign API: POST /api/campaigns with scheduledAt - creates scheduled campaign (status: scheduled)",
+    "Campaign API: GET /api/campaigns/{id} - returns single campaign",
+    "Campaign API: PUT /api/campaigns/{id} - updates campaign",
+    "Campaign API: POST /api/campaigns/{id}/launch - launches campaign (status: sending)",
+    "Campaign API: DELETE /api/campaigns/{id} - deletes campaign",
+    "Phone Formatting: Swiss numbers correctly normalized (0765203363 -> 41765203363)",
+    "Campaign Form: All fields present (name, message, media URL, format, channels, scheduling)",
+    "Multi-date Scheduling: '+ Ajouter une date' button works, adds date/time slots",
+    "Multi-date Scheduling: Remove slot (✕) button works",
+    "Multi-date Scheduling: Info text 'Chaque date créera une ligne distincte avec le statut Programmé' displayed",
+    "WhatsApp Link Format: Uses https://api.whatsapp.com/send?phone=41XXXXXXXXX&text=... (correct for link preview)",
+    "WhatsApp Link: Media URL placed at end of message (enables link preview)",
+    "Campaign History: Shows campaigns with statuses (En cours, Brouillon, Programmé)",
+    "Campaign Details: Shows contact list with 'Envoyer' buttons and progression indicator"
+  ],
+  "test_report_links": [
+    "/app/tests/test_afroboost_api.py",
+    "/app/tests/test_campaigns_api.py",
+    "/app/test_reports/pytest/pytest_results_campaigns.xml"
+  ],
+  "action_items": [
+    "CRITICAL: Fix infinite re-render bug in generateWhatsAppLink() - move addCampaignLog() call outside render cycle",
+    "The addCampaignLog() function at line ~1021 in App.js is called during render when phone is invalid, causing setState during render",
+    "Suggested fix: Remove addCampaignLog from generateWhatsAppLink, instead track errors in a ref or handle in useEffect"
+  ],
+  "critical_code_review_comments": [
+    "Line 1021: addCampaignLog() called inside generateWhatsAppLink() causes infinite re-render when phone is invalid",
+    "generateWhatsAppLink is called during render (in JSX), so any setState call inside it triggers re-render loop",
+    "Same issue exists in generateEmailLink() at line ~1043"
+  ],
+  "updated_files": [
+    "/app/tests/test_campaigns_api.py"
+  ],
+  "success_rate": {
+    "backend": "100% (31/31 tests passed)",
+    "frontend": "80% (Campaign form and multi-date scheduling work, but launch with invalid phones causes crash)"
+  },
+  "test_credentials": {
+    "coach_email": "coach@afroboost.com",
+    "coach_password": "afroboost123",
+    "coach_access": "3 rapid clicks on '© Afroboost 2026' copyright text"
+  },
+  "seed_data_creation": "Created test user with invalid phone: 'Invalid Phone User' (email: invalid@test.com, whatsapp: '123')",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Campaign module mostly working. CRITICAL BUG: When launching a campaign that includes contacts with invalid phone numbers, the app crashes with 'Too many re-renders' error. Root cause: addCampaignLog() is called inside generateWhatsAppLink() during render. The fix requires moving the logging outside the render cycle. Multi-date scheduling, WhatsApp link format (api.whatsapp.com/send), and campaign CRUD all work correctly."
+}
