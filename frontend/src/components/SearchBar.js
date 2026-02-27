@@ -71,7 +71,8 @@ export const NavigationBar = ({
   searchQuery = '', 
   onSearchChange,
   showSearch = true,
-  showFilters = true
+  showFilters = true,
+  onCoachClick = null  // v8.9.4: Callback pour ouvrir la recherche coach
 }) => {
   const [localSearch, setLocalSearch] = useState(searchQuery);
   
