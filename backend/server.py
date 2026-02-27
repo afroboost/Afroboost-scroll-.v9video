@@ -3869,10 +3869,9 @@ async def get_chat_participant(participant_id: str):
     if not participant:
         raise HTTPException(status_code=404, detail="Participant non trouvé")
     return participant
-
 @api_router.post("/chat/participants")
 async def create_chat_participant(participant: ChatParticipantCreate):
-    """Crée un nouveau participant"""
+    """Cree un nouveau participant"""
     participant_obj = ChatParticipant(**participant.model_dump())
     await db.chat_participants.insert_one(participant_obj.model_dump())
     return participant_obj.model_dump()
