@@ -409,17 +409,37 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
   );
 };
 
-// === COMPOSANT PRINCIPAL v9.5.2 ===
+// === COMPOSANT PRINCIPAL v9.5.3 ===
 const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
   const [partners, setPartners] = useState([]);
+  const [filteredPartners, setFilteredPartners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [mutedStates, setMutedStates] = useState({});
   const [likedStates, setLikedStates] = useState({});
   const [pausedStates, setPausedStates] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const sliderRef = useRef(null);
   const scrollTimeout = useRef(null);
+  const searchInputRef = useRef(null);
+  
+  // v9.5.3: Filtrer les partenaires par nom
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredPartners(partners);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = partners.filter(p => {
+        const name = (p.platform_name || p.name || '').toLowerCase();
+        const bio = (p.bio || p.description || '').toLowerCase();
+        return name.includes(query) || bio.includes(query);
+      });
+      setFilteredPartners(filtered);
+    }
+    setActiveIndex(0);
+  }, [searchQuery, partners]);
   
   // Restaurer la position de scroll
   useEffect(() => {
