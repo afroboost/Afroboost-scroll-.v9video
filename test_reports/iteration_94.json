@@ -1,0 +1,87 @@
+{
+  "summary": "Mission v9.3.1 - SÉCURITÉ STORAGE, FIX BOUTON & PAIEMENT - All features verified. Backend 11/11 tests passed, Frontend UI fully functional.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/pytest/pytest_v931_mission.xml",
+    "/app/backend/tests/test_v931_mission.py"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ server.py lines 1276-1365: /api/coach/upload-asset - Isolated storage by coach_id with email sanitization (@ → _at_, . → _)",
+    "✅ server.py lines 1368-1387: /api/check-partner/{email} - Server-side partner verification returns is_partner, email, name, has_credits",
+    "✅ server.py lines 371-376: /uploads/coaches mounted at /api/uploads/coaches for isolated coach assets",
+    "✅ ChatWidget.js lines 844-867: useEffect checkPartnerStatus calls /api/check-partner/{email} on mount",
+    "✅ CoachVitrine.js lines 993-1053: Payment buttons (Stripe/TWINT/PayPal) displayed when slot selected AND payment links configured",
+    "✅ CoachVitrine.js lines 924-964: Code Promo field with 'Valider' button in booking modal"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v931_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com",
+    "test_coach_email": "bassicustomshoes@gmail.com",
+    "api_url": "https://partner-platform-6.preview.emergentagent.com"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.3.1 verified successfully. Key verifications: (1) Homepage shows 4 dates for Session Cardio (mer. 04.03, 11.03, 18.03, 25.03) + 4 for Sunday Vibes. (2) API /api/check-partner/bassicustomshoes@gmail.com returns {is_partner: true, name: 'Henri BASSI', has_credits: true}. (3) API /api/check-partner/unknown@test.com returns {is_partner: false}. (4) /uploads/coaches directory exists and mounted at /api/uploads/coaches. (5) Upload endpoint /api/coach/upload-asset requires X-User-Email header, creates isolated folder per coach_id. (6) Vitrine booking modal shows payment buttons (Stripe visible) when slot selected. (7) Code Promo field with 'Valider' button visible in booking modal. (8) Chat widget shows 'Devenir Partenaire' button for visitors. (9) ANTI-RÉGRESSION: 7 Bassi reservations confirmed.",
+  "verified_features_v931": {
+    "STORAGE_ISOLATION": "VERIFIED - /uploads/coaches/{coach_folder}/ with email sanitization",
+    "CHECK_PARTNER_API_COACH": "VERIFIED - bassicustomshoes@gmail.com returns is_partner=true, name=Henri BASSI",
+    "CHECK_PARTNER_API_NON_COACH": "VERIFIED - unknown@test.com returns is_partner=false",
+    "HOMEPAGE_MARCH_DATES": "VERIFIED - 8 date buttons: Session Cardio (04.03, 11.03, 18.03, 25.03) + Sunday Vibes",
+    "PAYMENT_BUTTONS_ON_SLOT_SELECTION": "VERIFIED - 'Payer avec Stripe' button displayed in booking modal",
+    "CODE_PROMO_FIELD": "VERIFIED - 'Code Promo (optionnel)' input with 'Valider' button",
+    "CHAT_BUTTON_INTELLIGENT": "VERIFIED - Shows 'Devenir Partenaire' for visitors",
+    "BASSI_RESERVATIONS_ANTI_REGRESSION": "VERIFIED - 7 reservations confirmed (ANTI-RÉGRESSION PASSED)"
+  },
+  "api_verification": {
+    "check_partner_coach": {
+      "url": "GET /api/check-partner/bassicustomshoes@gmail.com",
+      "result": "{is_partner: true, email: 'bassicustomshoes@gmail.com', name: 'Henri BASSI', has_credits: true}"
+    },
+    "check_partner_non_coach": {
+      "url": "GET /api/check-partner/unknown@test.com",
+      "result": "{is_partner: false, email: 'unknown@test.com'}"
+    },
+    "upload_asset_requires_auth": {
+      "url": "POST /api/coach/upload-asset",
+      "result": "401 without X-User-Email header"
+    },
+    "upload_asset_with_auth": {
+      "url": "POST /api/coach/upload-asset",
+      "header": "X-User-Email: test-coach@example.com",
+      "result": "200, url contains /api/uploads/coaches/test-coach_at_example_com/"
+    },
+    "reservations_count": {
+      "url": "GET /api/reservations",
+      "header": "X-User-Email: contact.artboost@gmail.com",
+      "result": "pagination.total = 7"
+    }
+  },
+  "playwright_screenshots": [
+    ".screenshots/test_v931_homepage.png - Homepage with March dates (Sessions Cardio + Sunday Vibes)",
+    ".screenshots/test_v931_chat_open.png - Chat widget with 'Devenir Partenaire' button",
+    ".screenshots/test_v931_vitrine.png - CoachVitrine with animated header + offers",
+    ".screenshots/test_v931_booking_modal.png - Booking modal with Code Promo field + Stripe payment button"
+  ],
+  "pytest_results": {
+    "total_tests": 11,
+    "passed": 11,
+    "failed": 0,
+    "test_file": "/app/backend/tests/test_v931_mission.py"
+  }
+}
