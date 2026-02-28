@@ -1,5 +1,49 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.4 - FORCE AFFICHAGE PARTENAIRE & FIX REDIRECTION ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.4 COMPLÈTE
+
+| Problème | Solution |
+|----------|----------|
+| Dashboard blanc possible | `safeCoachUser = coachUser \|\| {}` protection |
+| Redirection perdue après Google OAuth | `localStorage.redirect_to_dash` = MÉMOIRE MORTE |
+| Hash non reconnu | `#partner-dashboard` alias de `#coach-dashboard` |
+
+### Modifications v9.2.4
+
+| Fichier | Modification |
+|---------|--------------|
+| CoachDashboard.js | Ligne 315: `safeCoachUser = coachUser \|\| {}` |
+| App.js | Lignes 42-73: `detectStripeSuccess()` + `redirect_to_dash` |
+| App.js | Lignes 2146-2181: Support `#partner-dashboard` |
+| App.js | Lignes 3295-3312: `handleGoogleLogin` vérifie `redirect_to_dash` |
+
+### Flux de Propulsion v9.2.4 (MÉMOIRE MORTE)
+
+```
+1. Stripe ?success=true détecté AVANT React
+   ↓
+2. localStorage.redirect_to_dash = 'true' 
+   localStorage.afroboost_redirect_message = '🎉 Paiement validé...'
+   ↓
+3. URL nettoyée, hash = #partner-dashboard
+   ↓
+4. Si déjà connecté → Dashboard immédiat
+   Si non connecté → Modal login avec message bienvenue
+   ↓
+5. handleGoogleLogin vérifie redirect_to_dash
+   ↓
+6. Redirection FORCÉE vers dashboard + message affiché
+```
+
+### Tests v9.2.4 - Iteration 87
+- Backend: **100%** ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi (04/03/2026)** ✅
+
+---
+
 ## v9.2.3 - BRANCHEMENT PARTENAIRE & PROPULSION RÉELLE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.3 COMPLÈTE
