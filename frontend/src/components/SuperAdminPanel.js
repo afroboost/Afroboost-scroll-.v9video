@@ -415,18 +415,34 @@ const SuperAdminPanel = ({ userEmail, onClose }) => {
                             </span>
                           </td>
                           <td className="px-4 py-3 text-center">
-                            <button
-                              onClick={() => {
-                                const credits = prompt('Combien de crédits ajouter ?', '10');
-                                if (credits && parseInt(credits) > 0) {
-                                  handleAddCredits(coach.email, parseInt(credits));
-                                }
-                              }}
-                              className="px-2 py-1 rounded text-xs font-medium text-purple-400 hover:bg-purple-500/20"
-                              data-testid={`add-credits-${coach.id}`}
-                            >
-                              + Crédits
-                            </button>
+                            <div className="flex gap-2 justify-center">
+                              <button
+                                onClick={() => {
+                                  const credits = prompt('Combien de crédits ajouter ?', '10');
+                                  if (credits && parseInt(credits) > 0) {
+                                    handleAddCredits(coach.email, parseInt(credits));
+                                  }
+                                }}
+                                className="px-2 py-1 rounded text-xs font-medium text-purple-400 hover:bg-purple-500/20"
+                                data-testid={`add-credits-${coach.id}`}
+                              >
+                                + Crédits
+                              </button>
+                              <button
+                                onClick={() => handleToggleCoach(coach.id, coach.is_active)}
+                                className={`px-2 py-1 rounded text-xs font-medium ${coach.is_active ? 'text-yellow-400 hover:bg-yellow-500/20' : 'text-green-400 hover:bg-green-500/20'}`}
+                                data-testid={`toggle-coach-${coach.id}`}
+                              >
+                                {coach.is_active ? '⏸ Pause' : '▶ Activer'}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteCoach(coach.id, coach.name)}
+                                className="px-2 py-1 rounded text-xs font-medium text-red-400 hover:bg-red-500/20"
+                                data-testid={`delete-coach-${coach.id}`}
+                              >
+                                🗑
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
