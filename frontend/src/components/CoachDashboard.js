@@ -3938,6 +3938,24 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
         />
       )}
 
+      {/* v9.5.7: BOUTON DÉCONNEXION FIXED - Toujours visible en haut à droite */}
+      <button 
+        onClick={handleSecureLogout} 
+        className="flex items-center gap-1 px-3 py-2 rounded-lg text-white text-xs font-medium shadow-lg"
+        style={{ 
+          position: 'fixed',
+          top: '12px',
+          right: '12px',
+          zIndex: 9999,
+          background: 'rgba(239, 68, 68, 0.9)', 
+          border: '1px solid rgba(239, 68, 68, 0.8)',
+          backdropFilter: 'blur(8px)'
+        }}
+        data-testid="coach-logout-fixed"
+      >
+        🚪 Déconnexion
+      </button>
+
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
           <div>
