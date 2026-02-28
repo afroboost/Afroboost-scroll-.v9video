@@ -763,89 +763,17 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
 
           {/* Section Cours - ID pour le scroll */}
           <div id="vitrine-courses-section">
-            {/* Profil Coach - Design miroir Afroboost */}
-            <div 
-              className="rounded-2xl p-8 mb-8 text-center relative overflow-hidden"
-              style={{ 
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(217, 28, 210, 0.1) 100%)',
-                border: '1px solid rgba(217, 28, 210, 0.3)',
-                boxShadow: '0 0 40px rgba(217, 28, 210, 0.15)'
-              }}
-            >
-              {/* Glow effect */}
-            <div 
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-3xl"
-              style={{ background: 'rgba(217, 28, 210, 0.1)' }}
-            />
+            {/* v9.4.5: Bloc Profil supprimé - Les infos coach sont déjà dans le header vidéo */}
             
-            {/* Avatar */}
-            <div className="relative z-10">
-              {coach.logo_url ? (
-                <img 
-                  src={coach.logo_url} 
-                  alt={displayName}
-                  className="w-28 h-28 rounded-full mx-auto mb-4 object-cover"
-                  style={{ 
-                    border: '4px solid #D91CD2',
-                    boxShadow: '0 0 30px rgba(217, 28, 210, 0.4)'
-                  }}
-                />
-              ) : coach.photo_url ? (
-                <img 
-                  src={coach.photo_url} 
-                  alt={displayName}
-                  className="w-28 h-28 rounded-full mx-auto mb-4 object-cover"
-                  style={{ 
-                    border: '4px solid #D91CD2',
-                    boxShadow: '0 0 30px rgba(217, 28, 210, 0.4)'
-                  }}
-                />
-              ) : (
-                <div 
-                  className="w-28 h-28 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold text-white"
-                  style={{ 
-                    background: 'linear-gradient(135deg, #8b5cf6 0%, #d91cd2 100%)',
-                    border: '4px solid #D91CD2',
-                    boxShadow: '0 0 30px rgba(217, 28, 210, 0.4)'
-                  }}
-                >
-                  {initial}
-                </div>
-              )}
-              
-              <h1 
-                className="text-3xl font-bold text-white mb-2"
-                style={{ textShadow: '0 0 20px rgba(217, 28, 210, 0.3)' }}
+            {/* Section Offres avec Slider horizontal */}
+            <div className="mb-8">
+              <h2 
+                className="font-semibold text-white mb-4 flex items-center gap-3"
+                style={{ fontSize: '20px' }}
               >
-                {displayName}
-              </h1>
-              
-              {coach.bio && (
-                <p className="text-white/70 max-w-md mx-auto">{coach.bio}</p>
-              )}
-              
-              {/* Badge Partenaire Afroboost */}
-              <div 
-                className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm"
-                style={{ 
-                  background: 'linear-gradient(135deg, rgba(217, 28, 210, 0.3), rgba(139, 92, 246, 0.3))',
-                  border: '1px solid rgba(217, 28, 210, 0.4)'
-                }}
-              >
-                <span className="text-white font-medium">Partenaire Afroboost</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Section Offres avec Slider horizontal */}
-          <div className="mb-8">
-            <h2 
-              className="font-semibold text-white mb-4 flex items-center gap-3"
-              style={{ fontSize: '20px' }}
-            >
-              <span className="text-2xl">🎯</span>
-              {offers === DEFAULT_STARTER_OFFERS ? 'Offres de démarrage Afroboost' : 'Offres disponibles'}
-            </h2>
+                <span className="text-2xl">🎯</span>
+                {offers === DEFAULT_STARTER_OFFERS ? 'Offres de démarrage Afroboost' : 'Offres disponibles'}
+              </h2>
             
             {offers === DEFAULT_STARTER_OFFERS && (
               <p className="text-white/50 text-sm mb-4 italic">
