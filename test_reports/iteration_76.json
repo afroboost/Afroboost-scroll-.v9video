@@ -1,0 +1,73 @@
+{
+  "summary": "Mission v9.1.4 - Accès Direct & Nettoyage Réservations: ALL TESTS PASSED. Reservation routes migrated to reservation_routes.py (162 lines). Coach update-profile endpoint supports platform_name. Non-regression: 7 reservations, Mars courses intact.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v914_mission.py",
+    "/app/test_reports/pytest/pytest_v914_mission.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ RESERVATION_ROUTES.PY: 162 lines - All reservation endpoints migrated successfully",
+    "✅ SERVER.PY: Reduced from ~6719 to 6435 lines (-284 lines) after migration",
+    "✅ COACH_ROUTES.PY: 362 lines - update-profile endpoint added at line 201",
+    "✅ PLATFORM_NAME FIELD: Editable in Mon Stripe section (line 6529-6557 CoachDashboard.js)",
+    "✅ NON-REGRESSION: Super Admin sees 7+ reservations - PASSED",
+    "✅ COURSES MARS INTACT: Session Cardio (04.03, 11.03, 18.03, 25.03) + Sunday Vibes (01.03, 08.03, 15.03, 22.03)",
+    "✅ API /api/reservations via reservation_routes.py - WORKING",
+    "✅ API /api/check-reservation-eligibility via reservation_routes.py - WORKING",
+    "✅ API PUT /api/coach/update-profile - WORKING (supports platform_name)",
+    "✅ API /api/coach/profile - Returns is_super_admin, credits, platform_name"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v914_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (visual tests passed)"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.1.4 completed successfully. Reservation routes migrated to reservation_routes.py (162 lines). server.py reduced to 6435 lines. Coach profile update supports platform_name field for white-label customization. CoachDashboard.js has platform_name input field with save button in Mon Stripe section.",
+  "verified_features_v914": {
+    "RESERVATION_ROUTES_MIGRATION": "PASSED - All endpoints working via reservation_routes.py",
+    "CHECK_ELIGIBILITY_ENDPOINT": "PASSED - /api/check-reservation-eligibility functional",
+    "COACH_UPDATE_PROFILE": "PASSED - PUT /api/coach/update-profile supports platform_name",
+    "COACH_PROFILE": "PASSED - Returns platform_name, credits, is_super_admin",
+    "NON_REGRESSION_7_RESERVATIONS": "PASSED - Super Admin sees 7+ reservations",
+    "COURSES_MARS_SESSION_CARDIO": "PASSED - Wednesdays 04.03, 11.03, 18.03, 25.03",
+    "COURSES_MARS_SUNDAY_VIBES": "PASSED - Sundays 01.03, 08.03, 15.03, 22.03",
+    "PLATFORM_NAME_UI": "PASSED - Editable field in Mon Stripe section"
+  },
+  "api_verification_results": {
+    "health_check": "healthy",
+    "reservations_total": "7+",
+    "coach_profile_credits": -1,
+    "coach_profile_is_super_admin": true,
+    "auth_role": "super_admin",
+    "courses_count": 2,
+    "courses_names": ["Afroboost Silent – Session Cardio", "Afroboost Silent – Sunday Vibes"]
+  },
+  "file_line_counts": {
+    "server_py": 6435,
+    "reservation_routes_py": 162,
+    "coach_routes_py": 362,
+    "CoachDashboard_js": 6625
+  },
+  "migration_details_v914": {
+    "routes_migrated": ["GET /api/reservations", "POST /api/reservations", "PUT /api/reservations/{id}/tracking", "POST /api/reservations/{code}/validate", "DELETE /api/reservations/{id}", "POST /api/check-reservation-eligibility"],
+    "new_endpoints": ["PUT /api/coach/update-profile"],
+    "server_py_reduction": "~284 lines saved"
+  }
+}
