@@ -267,10 +267,33 @@ def is_super_admin(email: str) -> bool:
 def get_coach_filter(email: str) -> dict:
     """Retourne le filtre MongoDB pour l'isolation des données coach"""
     if is_super_admin(email):
-        # Super Admin voit TOUT - pas de filtre (Pass Total)
         return {}
-    # Coach normal - uniquement ses propres données
     return {"coach_id": email.lower().strip()}
+
+# v9.0.2: Helper pour déduire les crédits
+async def deduct_credit(coach_email: str, action: str = "action") -> dict:
+    """Déduit 1 crédit du compte coach. Retourne {success, credits_remaining, error}"""
+    if is_super_admin(coach_email):
+        return {"success": True, "credits_remaining": -1, "bypassed": True}
+    coach = await db.coaches.find_one({"email": coach_email.lower()})
+    if not coach:
+        return {"success": False, "error": "Coach non trouvé", "credits_remaining": 0}
+    current_credits = coach.get("credits", 0)
+    if current_credits <= 0:
+        return {"success": False, "error": "Crédits insuffisants", "credits_remaining": 0}
+    await db.coaches.update_one({"email": coach_email.lower()}, {"$inc": {"credits": -1}, "$set": {"updated_at": datetime.now(timezone.utc).isoformat()}})
+    logger.info(f"[CREDITS] {coach_email} -1 crédit ({action}) -> {current_credits - 1} restants")
+    return {"success": True, "credits_remaining": current_credits - 1}
+
+async def check_credits(coach_email: str) -> dict:
+    """Vérifie le solde de crédits sans déduire"""
+    if is_super_admin(coach_email):
+        return {"has_credits": True, "credits": -1, "unlimited": True}
+    coach = await db.coaches.find_one({"email": coach_email.lower()})
+    if not coach:
+        return {"has_credits": False, "credits": 0, "error": "Coach non trouvé"}
+    credits = coach.get("credits", 0)
+    return {"has_credits": credits > 0, "credits": credits}
 
 # ASGI app
 app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)
