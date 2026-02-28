@@ -2079,7 +2079,7 @@ async def create_coach_checkout(request: Request):
             mode="payment",
             # v9.2.5: success_url avec auth=success pour propulsion garantie
             success_url=f"{COACH_DASHBOARD_URL}?success=true&session_id={{CHECKOUT_SESSION_ID}}&auth=success",
-            cancel_url=f"https://afroboost-campagn-v8.vercel.app/#devenir-coach",
+            cancel_url="https://afroboost.com/#devenir-coach",
             customer_email=email,
             metadata={
                 "type": "coach_registration",
