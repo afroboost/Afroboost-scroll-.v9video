@@ -117,8 +117,8 @@ const getMediaInfo = (videoUrl) => {
   };
 };
 
-// === COMPOSANT VIDEO CARD v9.5.2 avec LAZY LOADING ===
-const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onNavigate, isPaused, onTogglePause, isVisible }) => {
+// === COMPOSANT VIDEO CARD v9.5.7 avec mode maintenance ===
+const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onNavigate, isPaused, onTogglePause, isVisible, maintenanceMode = false, isSuperAdmin = false }) => {
   const videoRef = useRef(null);
   const [hasError, setHasError] = useState(false);
   const lastClickTime = useRef(0);
@@ -132,6 +132,9 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
   const initial = (partner.name || partner.platform_name || 'P').charAt(0).toUpperCase();
   const displayName = partner.platform_name || partner.name || 'Partenaire';
   const bio = partner.bio || partner.description || '';
+  
+  // v9.5.7: QUICK CONTROL - Bloquer actions si maintenance ON (sauf Super Admin)
+  const isBlocked = maintenanceMode && !isSuperAdmin;
 
   // v9.5.2: Nettoyage des event listeners
   useEffect(() => {
@@ -142,10 +145,16 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
     };
   }, []);
 
-  // v9.5.2: Gestion améliorée clic simple vs double-clic
+  // v9.5.7: Gestion améliorée clic simple vs double-clic (avec blocage maintenance)
   const handleVideoClick = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // v9.5.7: QUICK CONTROL - Bloquer double-clic si maintenance
+    if (isBlocked) {
+      console.log('[MAINTENANCE] Interaction bloquée');
+      return;
+    }
     
     clickCount.current += 1;
     
