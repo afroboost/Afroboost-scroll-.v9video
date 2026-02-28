@@ -6135,8 +6135,6 @@ async def send_bulk_campaign_email(request: Request, background_tasks: Backgroun
     Garantit que l'interface ne soit jamais bloquée (asynchrone).
     v9.4.2: Chaque email est envoyé de manière indépendante.
     """
-    from fastapi import BackgroundTasks
-    
     body = await request.json()
     recipients = body.get("recipients", [])  # [{email, name}, ...]
     subject = body.get("subject", "Message d'Afroboost")
