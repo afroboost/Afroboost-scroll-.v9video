@@ -1,5 +1,54 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.3.8 - DESIGN MOBILE ET ISOLATION DES PROMPTS ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.3.8 COMPLÈTE - "UI ET INTELLIGENCE IA CORRIGÉES"
+
+| Objectif | Statut |
+|----------|--------|
+| Fix Design Mobile (Bouton Tester) | ✅ |
+| Isolation des Prompts IA | ✅ |
+| Favicon/Logo par défaut | ✅ |
+| Auto-save Prompts IA | ✅ |
+
+### Fix Mobile v9.3.8
+
+**Problème résolu :**
+- Le bouton "Tester" sortait du cadre sur Samsung S24 Ultra
+
+**Solution implémentée :**
+- `flex-wrap` sur les conteneurs parent
+- `flex-shrink-0` sur les boutons
+- `min-w-0` sur les inputs
+
+**Fichiers modifiés :**
+- `CampaignManager.js` lignes 582-610 (Test Email)
+- `CampaignManager.js` lignes 677-703 (Test WhatsApp)
+- `CampaignManager.js` lignes 893-910 (Test IA)
+
+### Favicon par défaut v9.3.8
+
+**URL par défaut :** `https://i.ibb.co/4Z7q3Tvw/file-000000005c1471f4bc77c9174753b16b.png`
+
+**Chaîne de fallback :**
+1. `concept.faviconUrl` (si configuré)
+2. `concept.logoUrl` (si pas de favicon)
+3. `DEFAULT_FAVICON_URL` (Afroboost par défaut)
+
+### Isolation des Prompts IA v9.3.8
+
+| Type | Usage | Priorité |
+|------|-------|----------|
+| systemPrompt | Chat général (Personnalité) | Base |
+| campaignPrompt | Envoi de masse | PRIORITAIRE |
+| custom_prompt | Lien spécifique | ÉCRASE TOUT |
+
+### Tests v9.3.8 - Iteration 98
+- Backend: **94%** (16/17 tests) ✅
+- Frontend: **100%** ✅
+
+---
+
 ## v9.3.7 - MÉMOIRE TOTALE, CALENDRIER CHAT & NAV MOBILE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.3.7 COMPLÈTE - "MÉMOIRE ET CALENDRIER CHAT OPÉRATIONNELS"
