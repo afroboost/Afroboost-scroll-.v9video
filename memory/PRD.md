@@ -1,5 +1,33 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.1 - RÉPARATION VISIBILITÉ & CONNEXION ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.1 COMPLÈTE - BUG FIX
+
+| Bug | Cause | Solution |
+|-----|-------|----------|
+| Dashboard blanc/invisible | `API_URL` undefined | Remplacé par `API` (défini ligne 195) |
+| Onglet Conversations crash | `handleTestNotification` manquant | Ajouté à la ligne 2078 |
+| Erreur bloque tout | Pas d'isolation | Ajouté `SectionErrorBoundary` |
+
+### Corrections v9.2.1
+
+| Fichier | Modification |
+|---------|--------------|
+| CoachDashboard.js | + `handleTestNotification` (lignes 2078-2113) |
+| CoachDashboard.js | + `SectionErrorBoundary` (lignes 31-59) |
+| CoachDashboard.js | Fix `API_URL={API}` (ligne 5645) |
+
+### Tests v9.2.1 - Iteration 84
+- Backend: **100% ✅**
+- Frontend: **100% ✅**
+- Dashboard visible: **✅**
+- Badge Super Admin: **✅**
+- 7 réservations: **✅**
+- Dates mars: **04.03, 11.03, 18.03, 25.03 ✅**
+
+---
+
 ## v9.2.0 - DÉCOUPAGE DASHBOARD & SÉCURITÉ ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.0 COMPLÈTE
