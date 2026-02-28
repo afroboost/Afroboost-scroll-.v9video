@@ -1452,8 +1452,9 @@ export const ChatWidget = () => {
           return;
         }
         
-        // Super Admin est toujours un coach
-        if (userEmail.toLowerCase() === 'contact.artboost@gmail.com') {
+        // Super Admin est toujours un coach - v9.5.6
+        const email = userEmail.toLowerCase();
+        if (email === 'contact.artboost@gmail.com' || email === 'afroboost.bassi@gmail.com') {
           setIsRegisteredCoach(true);
           return;
         }
