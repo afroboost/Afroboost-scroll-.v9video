@@ -2273,13 +2273,15 @@ function App() {
     return () => window.removeEventListener('openBecomeCoach', handleOpenBecomeCoach);
   }, []);
 
-  // v8.9.6: Détecter l'URL /coach/[username] pour afficher la vitrine
+  // v8.9.6: Détecter l'URL /coach/[username] ou /partner/[username] pour afficher la vitrine
+  // v9.1.8: Support route /partner/:username (alias de /coach/:username)
   useEffect(() => {
     const checkCoachVitrine = () => {
       const path = window.location.pathname;
-      const match = path.match(/^\/coach\/(.+)$/);
-      if (match && match[1]) {
-        setShowCoachVitrine(match[1]);
+      // Supporter /coach/xxx ET /partner/xxx
+      const match = path.match(/^\/(coach|partner)\/(.+)$/);
+      if (match && match[2]) {
+        setShowCoachVitrine(match[2]);
       }
     };
     checkCoachVitrine();
