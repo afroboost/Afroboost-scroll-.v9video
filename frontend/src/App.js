@@ -3379,18 +3379,26 @@ function App() {
       setTimeout(() => setValidationMessage(""), 5000);
     }
     
-    // v9.5.4: ROUTAGE INTELLIGENT selon le statut du partenaire (SIMPLIFIÉ)
+    // v9.5.6: ROUTAGE INTELLIGENT selon le statut du partenaire (CORRIGÉ)
     try {
-      // Vérifier le rôle de l'utilisateur (Super Admin ou Coach)
+      // CAS C: Super Admin LOCAL CHECK FIRST - Accès illimité au Dashboard
+      if (isSuperAdminEmail(userData?.email)) {
+        console.log('[APP] 🔑 Super Admin détecté (local) - Redirection Dashboard');
+        setUserRole('super_admin');
+        window.location.hash = '#coach-dashboard';
+        return;
+      }
+      
+      // Vérifier le rôle de l'utilisateur via API (fallback)
       const roleRes = await axios.get(`${API}/auth/role`, {
         headers: { 'X-User-Email': userData?.email || '' }
       });
       setUserRole(roleRes.data?.role || 'user');
       console.log('[APP] Rôle utilisateur:', roleRes.data?.role);
       
-      // CAS C: Super Admin - Accès illimité au Dashboard
+      // CAS C bis: Super Admin via API - Accès illimité au Dashboard
       if (roleRes.data?.is_super_admin) {
-        console.log('[APP] 🔑 Super Admin détecté - Redirection Dashboard');
+        console.log('[APP] 🔑 Super Admin détecté (API) - Redirection Dashboard');
         window.location.hash = '#coach-dashboard';
         return;
       }
