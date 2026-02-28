@@ -3160,7 +3160,7 @@ function App() {
     console.log('[APP] 🚪 Déconnexion coach effectuée');
   };
 
-  // Fonction de connexion Google OAuth
+  // Fonction de connexion Google OAuth - v9.1.5: PROPULSION AUTO vers dashboard
   const handleGoogleLogin = async (userData) => {
     // Persister la session coach
     localStorage.setItem('afroboost_coach_mode', 'true');
@@ -3170,6 +3170,11 @@ function App() {
     setCoachMode(true);
     setShowCoachLogin(false);
     console.log('[APP] ✅ Connexion coach réussie:', userData?.email);
+    
+    // v9.1.5: PROPULSION AUTOMATIQUE vers le dashboard après login
+    // Force la navigation vers #coach-dashboard pour éviter de rester sur l'accueil
+    window.location.hash = '#coach-dashboard';
+    console.log('[APP] 🚀 v9.1.5 PROPULSION: Redirection automatique vers dashboard');
     
     // Vérifier le rôle de l'utilisateur (Super Admin ou Coach)
     try {
