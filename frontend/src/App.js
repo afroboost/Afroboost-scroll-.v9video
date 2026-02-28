@@ -3711,9 +3711,13 @@ function App() {
         </div>
 
         {/* Hero Media - YouTube, Vimeo, Image, Video - Only show if URL is valid */}
-        {concept.heroImageUrl && concept.heroImageUrl.trim() !== '' && (
-          <MediaDisplay url={concept.heroImageUrl} className="hero-media-container mb-8" />
-        )}
+        {/* v9.4.7: Carousel des vidéos partenaires */}
+        <PartnersCarousel 
+          onPartnerClick={(partner) => {
+            const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
+            window.location.hash = `#coach/${username}`;
+          }} 
+        />
 
         {/* Barre de Recherche + Navigation par onglets (Tout, Cours, Shop) + Icône Coach alignée v8.9.4 */}
         <NavigationBar 
