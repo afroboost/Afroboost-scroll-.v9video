@@ -3961,7 +3961,7 @@ export const ChatWidget = () => {
                       disabled={isLoading}
                       className="py-3 rounded-lg font-semibold text-sm transition-all"
                       style={{
-                        background: '#25D366',
+                        background: '#D91CD2', /* v9.4.2: Violet Afroboost */
                         color: '#fff',
                         border: 'none',
                         cursor: isLoading ? 'wait' : 'pointer',
