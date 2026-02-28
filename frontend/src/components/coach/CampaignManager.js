@@ -673,20 +673,20 @@ const CampaignManager = ({
               💾 Sauvegarder
             </button>
             
-            {/* Test WhatsApp */}
-            <div className="flex items-center gap-2 flex-1">
+            {/* Test WhatsApp - v9.3.8: Fix mobile avec flex-wrap */}
+            <div className="flex flex-wrap items-center gap-2 flex-1">
               <input 
                 type="tel"
                 value={testWhatsAppNumber}
                 onChange={e => setTestWhatsAppNumber(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg neon-input text-sm"
+                className="flex-1 min-w-0 px-3 py-2 rounded-lg neon-input text-sm"
                 placeholder="+41791234567"
               />
               <button 
                 type="button"
                 onClick={(e) => handleTestWhatsApp(e)}
                 disabled={testWhatsAppStatus === 'sending' || !whatsAppConfig.accountSid}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
                   testWhatsAppStatus === 'success' ? 'bg-green-600' :
                   testWhatsAppStatus === 'error' ? 'bg-red-600' :
                   testWhatsAppStatus === 'sending' ? 'bg-yellow-600' :
