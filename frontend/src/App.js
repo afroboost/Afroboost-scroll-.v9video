@@ -3709,16 +3709,20 @@ function App() {
         />
       )}
 
-      {/* v9.4.9: Pas de titre au-dessus du flux - Interface épurée */}
-      <div className="max-w-4xl mx-auto">
-        {/* v9.4.9: Scroll vertical style Reels - Full width, pas de header */}
+      {/* v9.5.1: Flux Reels pleine largeur - Design épuré style Apple */}
+      <div className="w-full">
+        {/* v9.5.1: Scroll vertical style Reels avec logo Afroboost */}
         <PartnersCarousel 
           onPartnerClick={(partner) => {
             const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
             window.location.href = `/coach/${username}`;
-          }} 
+          }}
+          onSearch={() => setShowCoachSearch(true)}
         />
-
+      </div>
+      
+      {/* Contenu principal avec marges */}
+      <div className="max-w-4xl mx-auto px-4">
         {/* Barre de Recherche + Navigation par onglets (Tout, Cours, Shop) + Icône Coach alignée v8.9.4 */}
         <NavigationBar 
           activeFilter={activeFilter}
