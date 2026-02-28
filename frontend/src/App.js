@@ -3407,6 +3407,83 @@ function App() {
     />
   );
   
+  // === v9.2.8: PAGE DE MAINTENANCE - Blocage total sauf Super Admin ===
+  const isSuperAdmin = coachUser?.email?.toLowerCase() === 'contact.artboost@gmail.com';
+  if (platformSettings.maintenance_mode && !isSuperAdmin && !coachMode) {
+    return (
+      <div 
+        className="fixed inset-0 flex flex-col items-center justify-center p-6"
+        style={{
+          background: 'linear-gradient(180deg, #0a0510 0%, #1a0520 50%, #0a0510 100%)',
+          color: 'white'
+        }}
+      >
+        {/* Logo animé */}
+        <div 
+          className="mb-8"
+          style={{
+            animation: 'pulse 2s ease-in-out infinite',
+            filter: 'drop-shadow(0 0 20px rgba(217, 28, 210, 0.5))'
+          }}
+        >
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#D91CD2" strokeWidth="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        
+        {/* Titre */}
+        <h1 
+          className="text-3xl md:text-4xl font-bold mb-4 text-center"
+          style={{
+            background: 'linear-gradient(135deg, #D91CD2, #8B5CF6)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}
+        >
+          Maintenance en cours
+        </h1>
+        
+        {/* Message */}
+        <p className="text-white/70 text-center max-w-md mb-8">
+          Nous améliorons votre expérience Afroboost.
+          <br />
+          Revenez dans quelques instants !
+        </p>
+        
+        {/* Barre de progression animée */}
+        <div 
+          className="w-64 h-1 rounded-full overflow-hidden"
+          style={{ background: 'rgba(255,255,255,0.1)' }}
+        >
+          <div 
+            className="h-full rounded-full"
+            style={{
+              background: 'linear-gradient(90deg, #D91CD2, #8B5CF6)',
+              width: '30%',
+              animation: 'loading 1.5s ease-in-out infinite'
+            }}
+          />
+        </div>
+        
+        {/* Contact */}
+        <p className="mt-8 text-sm text-white/40">
+          Questions ? <a href="mailto:contact.artboost@gmail.com" className="underline hover:text-white/60">contact.artboost@gmail.com</a>
+        </p>
+        
+        {/* Animation CSS */}
+        <style>{`
+          @keyframes loading {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(200%); }
+            100% { transform: translateX(-100%); }
+          }
+        `}</style>
+      </div>
+    );
+  }
+  
   if (coachMode) return <CoachDashboard t={t} lang={lang} onBack={handleBackFromCoach} onLogout={handleLogout} coachUser={coachUser} />;
 
   // Filtrer les offres et cours selon visibilité, filtre actif et recherche
