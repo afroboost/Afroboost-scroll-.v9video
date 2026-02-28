@@ -6517,6 +6517,48 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
               </div>
             </div>
             
+            {/* === v9.1.4: PERSONNALISATION MARQUE BLANCHE === */}
+            <div className="glass rounded-xl p-6" style={{ border: '1px solid rgba(217, 28, 210, 0.3)' }}>
+              <h2 className="text-xl font-bold text-white mb-4">🎨 Personnalisation</h2>
+              <p className="text-white/70 mb-4">
+                Personnalisez votre espace avec votre propre marque.
+              </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-white/70 text-sm mb-2">Nom de ma plateforme</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={coachPlatformName || ''}
+                      onChange={(e) => setCoachPlatformName(e.target.value)}
+                      placeholder="Ex: Mon Studio Fitness"
+                      className="flex-1 px-4 py-2 rounded-lg bg-white/5 text-white border border-white/20 focus:border-purple-500 focus:outline-none"
+                      data-testid="platform-name-input"
+                    />
+                    <button
+                      onClick={async () => {
+                        try {
+                          await axios.put(`${BACKEND_URL}/api/coach/update-profile`, {
+                            platform_name: coachPlatformName
+                          }, { headers: { 'X-User-Email': coachUser?.email } });
+                          alert('✓ Nom de plateforme enregistré !');
+                        } catch (err) {
+                          alert('Erreur lors de la sauvegarde');
+                        }
+                      }}
+                      className="px-4 py-2 rounded-lg text-white font-medium"
+                      style={{ background: 'linear-gradient(135deg, #d91cd2, #8b5cf6)' }}
+                      data-testid="save-platform-name-btn"
+                    >
+                      Enregistrer
+                    </button>
+                  </div>
+                  <p className="text-white/50 text-xs mt-1">Ce nom s'affichera en haut de votre dashboard</p>
+                </div>
+              </div>
+            </div>
+            
             {/* === v8.9.9: MA VITRINE PUBLIQUE === */}
             <div className="glass rounded-xl p-6" style={{ border: '1px solid rgba(217, 28, 210, 0.3)' }}>
               <h2 className="text-xl font-bold text-white mb-4">🏪 Ma Vitrine Publique</h2>
