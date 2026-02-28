@@ -3367,27 +3367,52 @@ function App() {
       setTimeout(() => setValidationMessage(""), 5000);
     }
     
-    // v9.2.4: PROPULSION FORCÉE vers le dashboard après login
-    // Utilise #partner-dashboard comme alias de #coach-dashboard
-    window.location.hash = shouldRedirectToDash ? '#partner-dashboard' : '#coach-dashboard';
-    console.log('[APP] 🚀 v9.2.4 PROPULSION FORCÉE:', shouldRedirectToDash ? 'Post-paiement' : 'Login standard');
-    
-    // Vérifier le rôle de l'utilisateur (Super Admin ou Coach)
+    // v9.5.2: ROUTAGE INTELLIGENT selon le statut du partenaire
     try {
+      // Vérifier le rôle de l'utilisateur (Super Admin ou Coach)
       const roleRes = await axios.get(`${API}/auth/role`, {
         headers: { 'X-User-Email': userData?.email || '' }
       });
       setUserRole(roleRes.data?.role || 'user');
       console.log('[APP] Rôle utilisateur:', roleRes.data?.role);
       
-      // Si Super Admin, proposer d'ouvrir le panneau admin
+      // CAS C: Super Admin - Accès illimité
       if (roleRes.data?.is_super_admin) {
-        console.log('[APP] Super Admin détecté');
+        console.log('[APP] 🔑 Super Admin détecté - Accès illimité');
+        window.location.hash = '#coach-dashboard';
+        return;
       }
+      
+      // Vérifier le statut partenaire et les crédits
+      const partnerRes = await axios.get(`${API}/check-partner/${encodeURIComponent(userData?.email || '')}`);
+      console.log('[APP] 📊 Statut partenaire:', partnerRes.data);
+      
+      // CAS A: Partenaire Actif (a un pack payé avec crédits)
+      if (partnerRes.data?.is_partner && partnerRes.data?.has_credits) {
+        console.log('[APP] 🚀 Partenaire actif - Redirection Dashboard');
+        window.location.hash = '#coach-dashboard';
+        return;
+      }
+      
+      // CAS B: Non-partenaire ou sans crédits
+      if (!partnerRes.data?.is_partner || !partnerRes.data?.has_credits) {
+        console.log('[APP] ⚠️ Accès Dashboard refusé - Pas de pack actif');
+        setValidationMessage('⚠️ Accès Dashboard réservé aux partenaires actifs. Veuillez choisir un pack.');
+        setTimeout(() => setValidationMessage(""), 6000);
+        
+        // Rester sur la page "Devenir Partenaire"
+        setShowBecomeCoach(true);
+        return;
+      }
+      
     } catch (err) {
-      console.log('[APP] Rôle par défaut');
-      setUserRole('user');
+      console.log('[APP] Erreur vérification statut:', err);
+      // En cas d'erreur, redirection classique
     }
+    
+    // Fallback: PROPULSION FORCÉE vers le dashboard après login
+    window.location.hash = shouldRedirectToDash ? '#partner-dashboard' : '#coach-dashboard';
+    console.log('[APP] 🚀 v9.2.4 PROPULSION FORCÉE:', shouldRedirectToDash ? 'Post-paiement' : 'Login standard');
   };
   
   // Fonction pour quitter le mode coach sans déconnexion
