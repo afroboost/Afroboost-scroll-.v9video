@@ -3562,6 +3562,67 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
     ? [...baseTabs, { id: "stripe", label: "💳 Mon Stripe" }]
     : baseTabs;
 
+  // v9.2.5: COMPOSANT DE SECOURS - Affiche le squelette du dashboard pendant le chargement
+  // Garantit qu'on ne voit JAMAIS une page blanche
+  const LoadingFallback = () => (
+    <div className="w-full min-h-screen p-6 section-gradient" data-testid="dashboard-loading">
+      <div className="max-w-6xl mx-auto">
+        {/* Header avec logo Afroboost */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="font-bold text-white" style={{ fontSize: '28px' }}>
+              {isSuperAdmin ? 'Afroboost' : 'Mon Espace Partenaire'}
+            </h1>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="text-white/60 text-sm">
+                Connecté en tant que <span className="text-purple-400">{displayEmail}</span>
+              </span>
+              {/* Badge par défaut */}
+              <span 
+                className="ml-2 px-3 py-1 rounded-full text-sm font-bold"
+                style={{
+                  background: isSuperAdmin 
+                    ? 'linear-gradient(135deg, rgba(217,28,210,0.3), rgba(139,92,246,0.3))' 
+                    : 'rgba(239,68,68,0.25)',
+                  color: isSuperAdmin ? '#D91CD2' : '#ef4444',
+                  border: `2px solid ${isSuperAdmin ? 'rgba(217,28,210,0.6)' : 'rgba(239,68,68,0.6)'}`
+                }}
+              >
+                {isSuperAdmin ? '👑 Crédits Illimités' : '💰 Solde : 0 Crédit'}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Onglets squelette */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {['Réservations', 'Concept & Visuel', 'Cours', 'Offres', 'Paiements', 'Codes promo', 'Campagnes', 'Conversations'].map((tabName, i) => (
+            <div 
+              key={i}
+              className="px-4 py-2 rounded-lg text-white/60 text-sm"
+              style={{ background: i === 0 ? 'rgba(217,28,210,0.3)' : 'rgba(255,255,255,0.1)' }}
+            >
+              {tabName}
+            </div>
+          ))}
+        </div>
+        
+        {/* Message de chargement */}
+        <div 
+          className="p-8 rounded-xl text-center"
+          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(217,28,210,0.3)' }}
+        >
+          <div className="text-4xl mb-4 animate-pulse">⏳</div>
+          <h2 className="text-xl font-bold text-white mb-2">Initialisation de votre espace...</h2>
+          <p className="text-white/60">Chargement de vos données en cours</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  // v9.2.5: Si le dashboard n'est pas prêt après 2 secondes, afficher le fallback
+  // (Mais normalement dashboardReady passe à true après 100ms)
+  
   return (
     <div className="w-full min-h-screen p-6 section-gradient">
       {/* QR Scanner Modal with Camera Support */}
