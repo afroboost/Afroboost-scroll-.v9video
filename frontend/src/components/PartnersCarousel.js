@@ -572,21 +572,22 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
       style={{ background: '#000000' }}
       data-testid="partners-reels-section"
     >
-      {/* v9.5.6: HEADER compact avec Logo Afroboost et Recherche */}
+      {/* v9.5.7: HEADER ultra-compact - 5px max entre logo et vidéo */}
       <div 
         className="absolute top-0 left-0 right-0 z-20"
         style={{ 
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
-          paddingTop: '4px'  // v9.5.6: Encore réduit à 4px
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+          paddingTop: '2px',
+          paddingBottom: '2px'
         }}
       >
-        {/* Ligne principale: Logo + Recherche - Marge minimale */}
-        <div className="flex items-center justify-between px-3 py-0.5">
-          <div className="w-8"></div>
+        {/* Ligne principale: Logo + Recherche - ZÉRO marge */}
+        <div className="flex items-center justify-between px-2 py-0">
+          <div className="w-7"></div>
           
           {/* Logo centré (ou barre de recherche si activée) */}
           {showSearch ? (
-            <div className="flex-1 mx-2">
+            <div className="flex-1 mx-1">
               <div className="relative">
                 <input
                   ref={searchInputRef}
@@ -594,7 +595,7 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Rechercher..."
-                  className="w-full px-3 py-1.5 rounded-full text-sm text-white placeholder-white/50"
+                  className="w-full px-2 py-1 rounded-full text-xs text-white placeholder-white/50"
                   style={{
                     background: 'rgba(255,255,255,0.15)',
                     border: '1px solid rgba(255,255,255,0.2)',
@@ -606,7 +607,7 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/50 hover:text-white text-xs"
                   >
                     ✕
                   </button>
@@ -614,11 +615,11 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-1.5" data-testid="afroboost-logo">
+            <div className="flex items-center gap-1" data-testid="afroboost-logo">
               <AfroboostLogo />
               <span 
-                className="text-white font-bold text-sm"
-                style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
+                className="text-white font-bold text-xs"
+                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
               >
                 Afroboost
               </span>
