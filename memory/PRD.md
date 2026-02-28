@@ -2,41 +2,44 @@
 
 ## v9.1.8 - DASHBOARD MIROIR ET PROPULSION VERROUILLÉS ✅ (28 Février 2026)
 
-### STATUT: MISSION v9.1.8 COMPLÈTE
+### STATUT: MISSION v9.1.8 COMPLÈTE - MIROIR ABSOLU
 
 | Critère | Validation |
 |---------|------------|
-| Propulsion partenaire | ✅ **success=true → modal avec message "Paiement réussi"** |
-| Dashboard miroir | ✅ **CoachDashboard.js pour TOUS les partenaires** |
-| Harmonisation CSS | ✅ **Vitrines avec design premium Afroboost** |
+| Propulsion post-paiement | ✅ **"🎉 Paiement validé ! Bienvenue Partenaire"** |
+| Dashboard jumeau | ✅ **CoachDashboard.js unique pour TOUS** |
+| Route /partner/:username | ✅ **Alias de /coach/:username** |
+| API /api/partner/vitrine | ✅ **Même données que /api/coach/vitrine** |
 | Non-régression | **7 réservations ✅** |
 | Sessions Mars | **04.03, 11.03, 18.03, 25.03 ✅** |
-| Tests | **10/10 ✅** |
+| Tests | **11/11 + 7 pytest + 4 Playwright ✅** |
 
 ### Propulsion Partenaire v9.1.8
 
-| Détection URL | Action |
-|---------------|--------|
-| `?success=true&session_id=xxx` | Modal connexion avec message de bienvenue |
-| Partenaire déjà connecté | Propulsion directe vers dashboard |
-| Partenaire non connecté | Modal "🎉 Paiement réussi ! Connectez-vous..." |
+| URL | Action |
+|-----|--------|
+| `?success=true&session_id=xxx` | Modal connexion avec "🎉 Paiement validé ! Bienvenue Partenaire" |
+| Partenaire déjà connecté | Dashboard affiché + message temporaire |
+| Partenaire non connecté | Modal "Connexion Partenaire" ouvert |
+
+### Routes Vitrine v9.1.8
+
+| Route Frontend | API Backend | Résultat |
+|----------------|-------------|----------|
+| `/partner/:username` | `/api/partner/vitrine/:username` | Vitrine partenaire |
+| `/coach/:username` | `/api/coach/vitrine/:username` | Vitrine partenaire (legacy) |
 
 ### Dashboard Miroir v9.1.8
 
-| Rôle | Accès |
-|------|-------|
-| Super Admin (`contact.artboost@gmail.com`) | TOUS les onglets + "👑 Crédits Illimités" |
-| Partenaire Normal | MÊMES onglets + gestion de sa plateforme |
+| Rôle | Fichier | Accès |
+|------|---------|-------|
+| Super Admin | `CoachDashboard.js` | TOUS les onglets + "👑 Crédits Illimités" |
+| Partenaire Normal | `CoachDashboard.js` | MÊMES onglets, données isolées |
 
-### Rebranding "Partenaire" v9.1.8
-- Traduction FR: "Connexion Partenaire"
-- Traduction EN: "Partner Login"
-- Traduction DE: "Partner-Anmeldung"
-
-### Tests v9.1.8 - Iteration 80
-- Backend: **100% ✅**
-- Frontend: **100% ✅**
-- Playwright: **3/3 tests passés**
+### Tests v9.1.8 - Iteration 81
+- Backend: **7/7 pytest ✅**
+- Frontend: **4/4 Playwright ✅**
+- Features: **11/11 ✅**
 
 ---
 
