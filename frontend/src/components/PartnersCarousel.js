@@ -534,15 +534,15 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
         </button>
       </div>
       
-      {/* Container scroll vertical */}
+      {/* Container scroll vertical - Avec header absolu pour utiliser tout l'espace */}
       <div 
         ref={sliderRef}
         onScroll={handleScroll}
         className="snap-y snap-mandatory overflow-y-auto"
         style={{ 
-          height: 'calc(100vh - 120px)',
-          minHeight: '450px',
-          maxHeight: '700px',
+          height: 'calc(100vh - 80px)',
+          minHeight: '500px',
+          maxHeight: '800px',
           scrollBehavior: 'smooth',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
