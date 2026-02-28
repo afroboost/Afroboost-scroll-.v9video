@@ -19,6 +19,16 @@ _db = None
 # Email coach autorisé
 AUTHORIZED_COACH_EMAIL = "contact.artboost@gmail.com"
 
+# v9.5.6: Liste des Super Admins autorisés
+SUPER_ADMIN_EMAILS = [
+    "contact.artboost@gmail.com",
+    "afroboost.bassi@gmail.com"
+]
+
+def is_super_admin_email(email: str) -> bool:
+    """Vérifie si l'email est celui d'un Super Admin"""
+    return email and email.lower().strip() in [e.lower() for e in SUPER_ADMIN_EMAILS]
+
 def init_auth_db(database):
     """Initialise la référence DB"""
     global _db
