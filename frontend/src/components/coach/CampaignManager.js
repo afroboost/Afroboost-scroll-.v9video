@@ -5,9 +5,11 @@
  * Composant presentationnel: reçoit tous les états et handlers via props.
  * 
  * ⚠️ SECTION CRITIQUE: Ne pas modifier la logique du badge ⏳ Auto
+ * v9.4.1: Ajout de l'assistant IA pour suggestions de messages
  */
 
 import React, { memo, useState } from 'react';
+import axios from 'axios';
 import { isWhatsAppConfigured } from '../../services/whatsappService';
 import { parseMediaUrl } from '../../services/MediaParser';
 
