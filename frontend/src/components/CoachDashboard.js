@@ -355,13 +355,23 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
         setCoachUsername(isSuperAdmin ? 'bassi' : username);
         // v9.1.3: Récupérer platform_name pour marque blanche
         setCoachPlatformName(res.data?.platform_name || null);
-      }).catch(() => {
-        setCoachCredits(isSuperAdmin ? -1 : 0);
-        setCoachUsername(isSuperAdmin ? 'bassi' : null);
-        setCoachPlatformName(isSuperAdmin ? 'Afroboost' : null);
+      }).catch((err) => {
+        // v9.2.2: Amélioration gestion erreur - dashboard s'affiche même si profil inexistant
+        console.warn('[COACH] Profil non trouvé ou erreur, utilisation des valeurs par défaut:', err?.response?.status);
+        // Pour Super Admin: crédits illimités
+        if (isSuperAdmin) {
+          setCoachCredits(-1);
+          setCoachUsername('bassi');
+          setCoachPlatformName('Afroboost');
+        } else {
+          // Pour les partenaires: valeurs par défaut (pas de blocage)
+          setCoachCredits(0);
+          setCoachUsername(coachUser.name?.toLowerCase().replace(/\s+/g, '-') || coachUser.email.split('@')[0]);
+          setCoachPlatformName(null);
+        }
       });
     }
-  }, [coachUser?.email, isSuperAdmin]);
+  }, [coachUser?.email, coachUser?.name, isSuperAdmin]);
 
   // Vérifier le statut Stripe Connect au chargement (pour les coachs seulement)
   useEffect(() => {
