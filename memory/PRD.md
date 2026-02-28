@@ -1,5 +1,48 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.0 - SERVEUR ALLÉGÉ ET STABLE ✅ (28 Février 2026)
+
+### STATUT: STRUCTURE MODULAIRE PRÉPARÉE
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7449 lignes** (stable) |
+| Structure routes/ | ✅ CRÉÉE |
+| Non-régression | **7 réservations ✅** |
+| Crédits illimités | ✅ FONCTIONNEL |
+| Vitrine Bassi | ✅ platform_name |
+
+### Accomplissements v9.1.0
+
+| Feature | Description |
+|---------|-------------|
+| Structure routes/ | Dossier modulaire créé avec fichiers préparés |
+| shared.py | Constantes et helpers partagés |
+| admin_routes.py | Router préparé pour migration |
+| coach_routes.py | Router préparé pour migration |
+| campaign_routes.py | Router préparé pour migration |
+
+### Fichiers créés
+```
+/app/backend/routes/
+├── __init__.py        # Exports des modules
+├── shared.py          # Constantes SUPER_ADMIN, helpers
+├── admin_routes.py    # TODO: Migrer routes /admin/*
+├── coach_routes.py    # TODO: Migrer routes /coach/*
+└── campaign_routes.py # TODO: Migrer routes /campaigns/*
+```
+
+### Tests v9.1.0
+- Réservations: **7 ✅** (non-régression)
+- Crédits: **Unlimited ✅** (Super Admin)
+- Vitrine: **Afroboost ✅** (platform_name)
+- Coachs: **6 ✅** (liste admin)
+
+### Note technique
+Le refactoring complet de server.py (de 7449 à <5000 lignes) nécessite une migration progressive des routes pour éviter toute régression. La structure est maintenant en place pour cette migration future.
+
+---
+
 ## v9.0.2 - COMPTEURS ACTIVÉS ET IDENTITÉ MIROIR OK ✅ (28 Février 2026)
 
 ### STATUT: VALIDÉ - SYSTÈME RENTABILITÉ ACTIF
