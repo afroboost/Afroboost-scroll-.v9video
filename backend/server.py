@@ -2066,7 +2066,8 @@ async def create_coach_checkout(request: Request):
             frontend_url = os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')
         
         # v9.2.5: URL de redirection post-paiement vers partner-dashboard
-        COACH_DASHBOARD_URL = "https://afroboost-campagn-v8.vercel.app/#partner-dashboard"
+        # v9.2.6: URL de production afroboost.com avec hash partner-dashboard
+        COACH_DASHBOARD_URL = "https://afroboost.com/#partner-dashboard"
         
         # Créer la session Stripe Checkout
         checkout_session = stripe.checkout.Session.create(
