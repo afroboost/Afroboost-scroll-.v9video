@@ -659,11 +659,11 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
         )}
       </div>
       
-      {/* v9.5.3: Container scroll vertical - Pleine hauteur */}
+      {/* v9.5.4: Container scroll vertical - Pleine hauteur */}
       <div 
         ref={sliderRef}
         onScroll={handleScroll}
-        className="snap-y snap-mandatory overflow-y-auto h-full"
+        className="snap-y snap-mandatory overflow-y-auto w-full h-full"
         style={{ 
           scrollBehavior: 'smooth',
           scrollbarWidth: 'none',
