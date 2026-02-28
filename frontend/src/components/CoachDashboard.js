@@ -1452,6 +1452,43 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const [aiTestMessage, setAiTestMessage] = useState('');
   const [aiTestResponse, setAiTestResponse] = useState(null);
   const [aiTestLoading, setAiTestLoading] = useState(false);
+  
+  // === v9.4.3 FIX: Auto-save AIConfig APRÈS déclaration (corrige "Cannot access before initialization") ===
+  const aiConfigSaveTimeoutRef = useRef(null);
+  const [aiConfigSaveStatus, setAiConfigSaveStatus] = useState(null); // 'saving' | 'saved' | 'error'
+  const isAiConfigLoaded = useRef(false); // Éviter save au premier chargement
+  
+  useEffect(() => {
+    // Ne pas sauvegarder au premier chargement
+    if (!isAiConfigLoaded.current) {
+      isAiConfigLoaded.current = true;
+      return;
+    }
+    
+    // Debounce: attendre 1 seconde d'inactivité avant de sauvegarder
+    if (aiConfigSaveTimeoutRef.current) {
+      clearTimeout(aiConfigSaveTimeoutRef.current);
+    }
+    
+    aiConfigSaveTimeoutRef.current = setTimeout(async () => {
+      try {
+        setAiConfigSaveStatus('saving');
+        await axios.put(`${API}/ai-config`, aiConfig);
+        setAiConfigSaveStatus('saved');
+        console.log('[COACH] v9.4.3 AIConfig auto-sauvegardé');
+        setTimeout(() => setAiConfigSaveStatus(null), 2000);
+      } catch (err) {
+        console.error('[COACH] Erreur auto-save aiConfig:', err);
+        setAiConfigSaveStatus('error');
+      }
+    }, 1000);
+    
+    return () => {
+      if (aiConfigSaveTimeoutRef.current) {
+        clearTimeout(aiConfigSaveTimeoutRef.current);
+      }
+    };
+  }, [aiConfig]);
 
   // === CONVERSATIONS STATE (CRM AVANCÉ) ===
   const [chatSessions, setChatSessions] = useState([]);
