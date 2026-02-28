@@ -1265,6 +1265,121 @@ async def upload_user_photo(file: UploadFile = File(...), participant_id: str = 
     except Exception as e:
         logger.error(f"[UPLOAD] ❌ Erreur traitement image: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erreur traitement image: {str(e)}")
+
+# === v9.3.1: UPLOAD ISOLÉ PAR COACH ===
+@api_router.post("/coach/upload-asset")
+async def upload_coach_asset(
+    request: Request,
+    file: UploadFile = File(...), 
+    asset_type: str = Form("image")  # "image", "video", "logo"
+):
+    """
+    Upload d'assets pour les coaches - ISOLÉ par coach_id
+    Les fichiers sont stockés dans /uploads/coaches/{coach_id}/
+    """
+    from PIL import Image
+    import io
+    import uuid
+    import os
+    
+    coach_email = request.headers.get('X-User-Email', '').lower().strip()
+    if not coach_email:
+        raise HTTPException(status_code=401, detail="Email coach requis")
+    
+    # Sanitize email pour nom de dossier (remplacer @ et . par _)
+    coach_folder = coach_email.replace('@', '_at_').replace('.', '_')
+    
+    # Validation du type MIME
+    allowed_types = {
+        "image": ["image/jpeg", "image/png", "image/webp", "image/gif"],
+        "video": ["video/mp4", "video/webm", "video/quicktime"],
+        "logo": ["image/jpeg", "image/png", "image/webp", "image/svg+xml"]
+    }
+    
+    if asset_type not in allowed_types:
+        raise HTTPException(status_code=400, detail=f"Type d'asset invalide: {asset_type}")
+    
+    if file.content_type not in allowed_types[asset_type]:
+        raise HTTPException(status_code=400, detail=f"Type MIME non autorisé pour {asset_type}: {file.content_type}")
+    
+    contents = await file.read()
+    
+    # Limite de taille selon le type
+    max_sizes = {"image": 5*1024*1024, "video": 50*1024*1024, "logo": 2*1024*1024}
+    if len(contents) > max_sizes.get(asset_type, 5*1024*1024):
+        raise HTTPException(status_code=400, detail=f"Fichier trop volumineux (max {max_sizes[asset_type]//1024//1024}MB)")
+    
+    try:
+        # v9.3.1: Dossier isolé par coach
+        upload_dir = f"/app/backend/uploads/coaches/{coach_folder}"
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        # Extension basée sur le type MIME
+        ext_map = {
+            "image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp", "image/gif": ".gif",
+            "video/mp4": ".mp4", "video/webm": ".webm", "video/quicktime": ".mov",
+            "image/svg+xml": ".svg"
+        }
+        ext = ext_map.get(file.content_type, ".bin")
+        
+        filename = f"{asset_type}_{uuid.uuid4().hex[:12]}{ext}"
+        filepath = os.path.join(upload_dir, filename)
+        
+        # Pour les images, optimiser
+        if asset_type in ["image", "logo"] and file.content_type.startswith("image/") and file.content_type != "image/svg+xml":
+            img = Image.open(io.BytesIO(contents))
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+            
+            # Redimensionner selon le type
+            max_dim = 1920 if asset_type == "image" else 400
+            img.thumbnail((max_dim, max_dim), Image.LANCZOS)
+            
+            img.save(filepath, "JPEG" if ext == ".jpg" else "PNG", quality=85)
+        else:
+            # Vidéos et SVG: sauvegarder tel quel
+            with open(filepath, 'wb') as f:
+                f.write(contents)
+        
+        # URL publique
+        asset_url = f"/api/uploads/coaches/{coach_folder}/{filename}"
+        
+        logger.info(f"[COACH-UPLOAD] ✅ Asset uploadé pour {coach_email}: {filename} ({asset_type})")
+        
+        return {
+            "success": True,
+            "url": asset_url,
+            "filename": filename,
+            "asset_type": asset_type,
+            "coach_id": coach_email
+        }
+        
+    except Exception as e:
+        logger.error(f"[COACH-UPLOAD] ❌ Erreur: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erreur upload: {str(e)}")
+
+# === v9.3.1: VÉRIFICATION PARTENAIRE (CÔTÉ SERVEUR) ===
+@api_router.get("/check-partner/{email}")
+async def check_if_partner(email: str):
+    """
+    Vérifie si un utilisateur est un partenaire inscrit (a un profil coach)
+    Utilisé par le frontend pour afficher le bon bouton dans le chat
+    """
+    email = email.lower().strip()
+    
+    # Vérifier si l'email a un profil coach
+    coach = await db.coaches.find_one({"email": email}, {"_id": 0, "email": 1, "name": 1, "credits": 1})
+    
+    if coach:
+        return {
+            "is_partner": True,
+            "email": coach.get("email"),
+            "name": coach.get("name"),
+            "has_credits": (coach.get("credits", 0) or 0) > 0
+        }
+    
+    return {"is_partner": False, "email": email}
+
 @api_router.get("/users/{participant_id}/profile")
 async def get_user_profile(participant_id: str):
     """
