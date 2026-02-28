@@ -5312,18 +5312,37 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 className="p-4 cursor-pointer text-white font-medium flex justify-between items-center"
                 style={{ background: 'rgba(255,255,255,0.03)' }}
               >
-                <span>⚙️ Configuration des liens de paiement (optionnel)</span>
+                <div className="flex items-center gap-3">
+                  <span>⚙️ Configuration des liens de paiement (optionnel)</span>
+                  {/* v9.3.7: Indicateur de sauvegarde automatique */}
+                  {paymentSaveStatus && (
+                    <span 
+                      className="px-2 py-0.5 rounded-full text-xs"
+                      style={{
+                        background: paymentSaveStatus === 'saved' ? 'rgba(34, 197, 94, 0.2)' : 
+                                   paymentSaveStatus === 'error' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(147, 51, 234, 0.2)',
+                        color: paymentSaveStatus === 'saved' ? '#22c55e' : 
+                               paymentSaveStatus === 'error' ? '#ef4444' : '#a855f7'
+                      }}
+                      data-testid="payment-save-status"
+                    >
+                      {paymentSaveStatus === 'saving' && '⏳'}
+                      {paymentSaveStatus === 'saved' && '✓'}
+                      {paymentSaveStatus === 'error' && '⚠️'}
+                    </span>
+                  )}
+                </div>
                 <span className="text-white/40">▼</span>
               </summary>
               <div className="p-6 space-y-4">
                 <div><label className="block mb-2 text-white text-sm">{t('stripeLink')}</label>
-                  <input type="url" value={paymentLinks.stripe} onChange={e => setPaymentLinks({ ...paymentLinks, stripe: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="https://buy.stripe.com/..." /></div>
+                  <input type="url" value={paymentLinks.stripe} onChange={e => setPaymentLinks({ ...paymentLinks, stripe: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="https://buy.stripe.com/..." data-testid="payment-stripe-input" /></div>
                 <div><label className="block mb-2 text-white text-sm">{t('paypalLink')}</label>
-                  <input type="url" value={paymentLinks.paypal} onChange={e => setPaymentLinks({ ...paymentLinks, paypal: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="https://paypal.me/..." /></div>
+                  <input type="url" value={paymentLinks.paypal} onChange={e => setPaymentLinks({ ...paymentLinks, paypal: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="https://paypal.me/..." data-testid="payment-paypal-input" /></div>
                 <div><label className="block mb-2 text-white text-sm">{t('twintLink')}</label>
-                  <input type="url" value={paymentLinks.twint} onChange={e => setPaymentLinks({ ...paymentLinks, twint: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="https://..." /></div>
+                  <input type="url" value={paymentLinks.twint} onChange={e => setPaymentLinks({ ...paymentLinks, twint: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="https://..." data-testid="payment-twint-input" /></div>
                 <div><label className="block mb-2 text-white text-sm">{t('coachWhatsapp')}</label>
-                  <input type="tel" value={paymentLinks.coachWhatsapp} onChange={e => setPaymentLinks({ ...paymentLinks, coachWhatsapp: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="+41791234567" /></div>
+                  <input type="tel" value={paymentLinks.coachWhatsapp} onChange={e => setPaymentLinks({ ...paymentLinks, coachWhatsapp: e.target.value })} className="w-full px-4 py-3 rounded-lg neon-input" placeholder="+41791234567" data-testid="payment-whatsapp-input" /></div>
                 
                 {/* Section Notifications automatiques */}
                 <div className="mt-6 pt-6 border-t border-purple-500/30">
@@ -5357,7 +5376,12 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                   </div>
                 </div>
 
-                <button onClick={savePayments} className="btn-primary px-6 py-3 rounded-lg mt-4">{t('save')}</button>
+                {/* v9.3.7: Indication auto-save */}
+                <div className="mt-4 p-3 rounded-lg" style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                  <p className="text-green-400 text-xs flex items-center gap-2">
+                    <span>✓</span> Sauvegarde automatique - Vos liens sont enregistrés à chaque modification
+                  </p>
+                </div>
               </div>
             </details>
           </div>
