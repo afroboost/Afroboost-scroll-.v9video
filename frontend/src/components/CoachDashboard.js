@@ -4287,10 +4287,10 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 <h3 className="text-purple-400 font-semibold mb-4">🎨 Personnalisation des couleurs</h3>
                 <p className="text-white/60 text-xs mb-4">Changez les couleurs principales du site. Les modifications s'appliquent en temps réel.</p>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Couleur principale */}
                   <div>
-                    <label className="block mb-2 text-white text-sm">✨ Couleur principale (Glow)</label>
+                    <label className="block mb-2 text-white text-sm">✨ Couleur principale (Boutons/Titres)</label>
                     <div className="flex items-center gap-3">
                       <input 
                         type="color" 
@@ -4298,10 +4298,12 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                         onChange={(e) => {
                           const newColor = e.target.value;
                           setConcept({ ...concept, primaryColor: newColor });
-                          // Appliquer immédiatement
                           document.documentElement.style.setProperty('--primary-color', newColor);
-                          document.documentElement.style.setProperty('--glow-color', `${newColor}66`);
-                          document.documentElement.style.setProperty('--glow-color-strong', `${newColor}99`);
+                          // Auto-glow si pas de glowColor défini
+                          if (!concept.glowColor) {
+                            document.documentElement.style.setProperty('--glow-color', `${newColor}66`);
+                            document.documentElement.style.setProperty('--glow-color-strong', `${newColor}99`);
+                          }
                         }}
                         className="w-12 h-12 rounded-lg cursor-pointer border-2 border-white/20"
                         style={{ background: 'transparent' }}
@@ -4316,7 +4318,9 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                             if (/^#[0-9A-Fa-f]{6}$/.test(newColor)) {
                               setConcept({ ...concept, primaryColor: newColor });
                               document.documentElement.style.setProperty('--primary-color', newColor);
-                              document.documentElement.style.setProperty('--glow-color', `${newColor}66`);
+                              if (!concept.glowColor) {
+                                document.documentElement.style.setProperty('--glow-color', `${newColor}66`);
+                              }
                             }
                           }}
                           className="px-3 py-2 rounded-lg neon-input text-sm uppercase w-28"
@@ -4329,7 +4333,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                   
                   {/* Couleur secondaire */}
                   <div>
-                    <label className="block mb-2 text-white text-sm">💜 Couleur secondaire</label>
+                    <label className="block mb-2 text-white text-sm">💜 Couleur secondaire (Accents)</label>
                     <div className="flex items-center gap-3">
                       <input 
                         type="color" 
@@ -4358,6 +4362,80 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                           placeholder="#8b5cf6"
                         />
                         <p className="text-xs mt-1 text-white/40">Violet par défaut</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* v9.4.4: Couleur de fond */}
+                  <div>
+                    <label className="block mb-2 text-white text-sm">🌑 Couleur de fond (Background)</label>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="color" 
+                        value={concept.backgroundColor || '#000000'} 
+                        onChange={(e) => {
+                          const newColor = e.target.value;
+                          setConcept({ ...concept, backgroundColor: newColor });
+                          document.documentElement.style.setProperty('--background-color', newColor);
+                          document.body.style.backgroundColor = newColor;
+                        }}
+                        className="w-12 h-12 rounded-lg cursor-pointer border-2 border-white/20"
+                        style={{ background: 'transparent' }}
+                        data-testid="color-picker-background"
+                      />
+                      <div>
+                        <input 
+                          type="text" 
+                          value={concept.backgroundColor || '#000000'} 
+                          onChange={(e) => {
+                            const newColor = e.target.value;
+                            if (/^#[0-9A-Fa-f]{6}$/.test(newColor)) {
+                              setConcept({ ...concept, backgroundColor: newColor });
+                              document.documentElement.style.setProperty('--background-color', newColor);
+                              document.body.style.backgroundColor = newColor;
+                            }
+                          }}
+                          className="px-3 py-2 rounded-lg neon-input text-sm uppercase w-28"
+                          placeholder="#000000"
+                        />
+                        <p className="text-xs mt-1 text-white/40">Noir par défaut</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* v9.4.4: Couleur du Glow */}
+                  <div>
+                    <label className="block mb-2 text-white text-sm">✨ Couleur du Glow (Lueurs)</label>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="color" 
+                        value={concept.glowColor || concept.primaryColor || '#D91CD2'} 
+                        onChange={(e) => {
+                          const newColor = e.target.value;
+                          setConcept({ ...concept, glowColor: newColor });
+                          document.documentElement.style.setProperty('--glow-color', `${newColor}66`);
+                          document.documentElement.style.setProperty('--glow-color-strong', `${newColor}99`);
+                        }}
+                        className="w-12 h-12 rounded-lg cursor-pointer border-2 border-white/20"
+                        style={{ background: 'transparent' }}
+                        data-testid="color-picker-glow"
+                      />
+                      <div>
+                        <input 
+                          type="text" 
+                          value={concept.glowColor || concept.primaryColor || '#D91CD2'} 
+                          onChange={(e) => {
+                            const newColor = e.target.value;
+                            if (/^#[0-9A-Fa-f]{6}$/.test(newColor)) {
+                              setConcept({ ...concept, glowColor: newColor });
+                              document.documentElement.style.setProperty('--glow-color', `${newColor}66`);
+                              document.documentElement.style.setProperty('--glow-color-strong', `${newColor}99`);
+                            }
+                          }}
+                          className="px-3 py-2 rounded-lg neon-input text-sm uppercase w-28"
+                          placeholder="#D91CD2"
+                        />
+                        <p className="text-xs mt-1 text-white/40">Auto si vide</p>
                       </div>
                     </div>
                   </div>
