@@ -182,23 +182,23 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
       }}
       data-testid={`partner-card-${partner.id || partner.email}`}
     >
-      {/* v9.5.6: Container vidéo optimisé - Prend MAXIMUM de place sur mobile */}
+      {/* v9.5.7: ALIGNEMENT PIXEL ZÉRO VIDE - 5px max entre header et vidéo */}
       <div 
         className="relative w-full h-full flex items-start justify-center"
-        style={{ paddingTop: '35px', paddingLeft: '4px', paddingRight: '4px' }}  // v9.5.6: alignement en haut
+        style={{ paddingTop: '32px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '0' }}
       >
         <div 
           className="relative w-full"
           style={{
-            aspectRatio: '9/16',  // v9.5.6: Format 9:16 pour max de place en mode portrait
-            maxHeight: '95%',  // v9.5.6: Augmenté à 95%
+            aspectRatio: '9/16',
+            maxHeight: '98%',  // v9.5.7: Maximisé à 98%
             maxWidth: '100%'
           }}
         >
           {/* === VIDÉO/IMAGE - Format 9:16 avec LAZY LOADING === */}
           <div 
             className="absolute inset-0 overflow-hidden cursor-pointer"
-            style={{ borderRadius: '16px' }}
+            style={{ borderRadius: '12px' }}  // v9.5.7: Rayon réduit
             onClick={handleVideoClick}
           >
             {shouldLoadVideo ? (
