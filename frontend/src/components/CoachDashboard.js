@@ -711,44 +711,6 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
     };
   }, [paymentLinks]);
   
-  // === v9.3.8: MÉMOIRE TOTALE - Auto-save AIConfig avec debounce ===
-  const aiConfigSaveTimeoutRef = useRef(null);
-  const [aiConfigSaveStatus, setAiConfigSaveStatus] = useState(null); // 'saving' | 'saved' | 'error'
-  const isAiConfigLoaded = useRef(false); // Éviter save au premier chargement
-  
-  useEffect(() => {
-    // Ne pas sauvegarder au premier chargement
-    if (!isAiConfigLoaded.current) {
-      isAiConfigLoaded.current = true;
-      return;
-    }
-    
-    // Debounce: attendre 1 seconde d'inactivité avant de sauvegarder
-    if (aiConfigSaveTimeoutRef.current) {
-      clearTimeout(aiConfigSaveTimeoutRef.current);
-    }
-    
-    aiConfigSaveTimeoutRef.current = setTimeout(async () => {
-      try {
-        setAiConfigSaveStatus('saving');
-        await axios.put(`${API}/ai-config`, aiConfig);
-        setAiConfigSaveStatus('saved');
-        console.log('[COACH] v9.3.8 AIConfig auto-sauvegardé (prompts inclus)');
-        // Cacher le statut après 2 secondes
-        setTimeout(() => setAiConfigSaveStatus(null), 2000);
-      } catch (err) {
-        console.error('[COACH] Erreur auto-save aiConfig:', err);
-        setAiConfigSaveStatus('error');
-      }
-    }, 1000);
-    
-    return () => {
-      if (aiConfigSaveTimeoutRef.current) {
-        clearTimeout(aiConfigSaveTimeoutRef.current);
-      }
-    };
-  }, [aiConfig]);
-  
   // === FONCTION PARTAGE COACH ===
   // v8.9.9: Partager le lien de la vitrine coach
   const handleCoachShareLink = async () => {
