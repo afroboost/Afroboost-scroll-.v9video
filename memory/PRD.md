@@ -1,5 +1,40 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.0.0 - TUNNEL ET VITRINE DÉPLOYÉS ✅ (28 Février 2026)
+
+### STATUT: VALIDÉ - PRODUCTION READY
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7385 lignes** (marge 65) |
+| Route /coach/:username | ✅ ACCÈS DIRECT |
+| Bouton dynamique Chat | ✅ FONCTIONNEL |
+| Stripe success_url | ✅ VERCEL |
+| Non-régression | **7 réservations ✅** |
+| Tests | **10/10 ✅** |
+
+### Fonctionnalités v9.0.0
+
+| Feature | Description |
+|---------|-------------|
+| Vitrine publique | `/coach/bassi` accessible directement sans redirection |
+| Bouton dynamique | Visiteur: "Devenir Coach" → Coach: "🏠 Accès Mon Dashboard" |
+| Redirection Stripe | Post-achat → `afroboost-campagn-v8.vercel.app/#coach-dashboard` |
+| Navigation vitrine | Bouton "Retour" → Page d'accueil |
+
+### Tests v9.0.0 - Iteration 70
+- Backend: **10/10 ✅**
+- Frontend: **100% ✅**
+- Non-régression: **100% INTACT**
+
+### Tunnel Fitness vérifié
+- Session Cardio: 04.03, 11.03, 18.03, 25.03
+- Sunday Vibes: 01.03, 08.03, 15.03, 22.03
+- Réservations Bassi: **7 ✅**
+- Offres: 3 (30/150/109 CHF)
+
+---
+
 ## v8.9.9 - BOUTON DYNAMIQUE ET VITRINE OPÉRATIONNELS ✅ (27 Février 2026)
 
 ### STATUT: VALIDÉ - TUNNEL COACH COMPLET
