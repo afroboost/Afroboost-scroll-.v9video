@@ -1794,7 +1794,7 @@ async def create_campaign(campaign: CampaignCreate):
         selectedContacts=campaign.selectedContacts,
         channels=campaign.channels,
         targetGroupId=campaign.targetGroupId,
-        targetIds=campaign.targetIds or [],  # Tableau des IDs du panier
+        targetIds=campaign.targetIds or [],
         targetConversationId=campaign.targetConversationId,
         targetConversationName=campaign.targetConversationName,
         scheduledAt=campaign.scheduledAt,
@@ -1803,7 +1803,9 @@ async def create_campaign(campaign: CampaignCreate):
         ctaText=campaign.ctaText,
         ctaLink=campaign.ctaLink
     ).model_dump()
-    }
+    await db.campaigns.insert_one(campaign_data)
+    campaign_data.pop("_id", None)
+    return campaign_data
 
 @api_router.post("/campaigns/{campaign_id}/launch")
 async def launch_campaign(campaign_id: str):
