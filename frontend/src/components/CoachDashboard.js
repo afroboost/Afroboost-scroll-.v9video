@@ -311,14 +311,18 @@ const COACH_TAB_KEY = 'afroboost_coach_tab';
 const COACH_SESSION_KEY = 'afroboost_coach_session';
 
 const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
-  // v9.2.4: Protection contre les erreurs - Valeurs par défaut GARANTIES
+  // v9.2.5: Protection ABSOLUE contre les erreurs - Valeurs par défaut GARANTIES
   const safeCoachUser = coachUser || {};
+  
+  // v9.2.5: État de chargement initial
+  const [dashboardReady, setDashboardReady] = useState(false);
+  const [loadError, setLoadError] = useState(null);
   
   // Email Super Admin
   const SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com";
   const isSuperAdmin = (safeCoachUser?.email || '').toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
   
-  // v9.2.4: Valeurs par défaut TOUJOURS présentes pour éviter page blanche
+  // v9.2.5: Valeurs par défaut TOUJOURS présentes pour éviter page blanche
   const displayEmail = safeCoachUser?.email || 'Partenaire';
   const displayName = safeCoachUser?.name || 'Partenaire';
   
@@ -326,6 +330,15 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const getCoachHeaders = () => ({
     headers: { 'X-User-Email': safeCoachUser?.email || '' }
   });
+  
+  // v9.2.5: Marquer le dashboard comme prêt après le premier rendu
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDashboardReady(true);
+      console.log('[DASHBOARD] v9.2.5 Dashboard prêt');
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
   
   // === PANNEAU SUPER ADMIN ===
   const [showAdminPanel, setShowAdminPanel] = useState(false);
