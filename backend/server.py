@@ -1372,87 +1372,14 @@ Notification automatique Afroboost"""
         logger.error(f"Error in notify-coach: {e}")
         return {"success": False, "message": str(e)}
 
-# --- Discount Codes ---
-@api_router.get("/discount-codes", response_model=List[DiscountCode])
-async def get_discount_codes():
-    codes = await db.discount_codes.find({}, {"_id": 0}).to_list(1000)
-    return codes
-
-@api_router.post("/discount-codes", response_model=DiscountCode)
-async def create_discount_code(code: DiscountCodeCreate):
-    code_obj = DiscountCode(**code.model_dump())
-    await db.discount_codes.insert_one(code_obj.model_dump())
-    return code_obj
-
-@api_router.put("/discount-codes/{code_id}")
-async def update_discount_code(code_id: str, updates: dict):
-    await db.discount_codes.update_one({"id": code_id}, {"$set": updates})
-    updated = await db.discount_codes.find_one({"id": code_id}, {"_id": 0})
-    return updated
-
-@api_router.delete("/discount-codes/{code_id}")
-async def delete_discount_code(code_id: str):
-    await db.discount_codes.delete_one({"id": code_id})
-    return {"success": True}
-
-@api_router.post("/discount-codes/validate")
-async def validate_discount_code(data: dict):
-    code_str = data.get("code", "").strip().upper()  # Normalize: trim + uppercase
-    user_email = data.get("email", "").strip()
-    course_id = data.get("courseId", "").strip() if data.get("courseId") else ""
-    
-    # Case-insensitive search using regex
-    code = await db.discount_codes.find_one({
-        "code": {"$regex": f"^{code_str}$", "$options": "i"},  # Case insensitive match
-        "active": True
-    }, {"_id": 0})
-    
-    if not code:
-        return {"valid": False, "message": "Code inconnu ou invalide"}
-    
-    # Check expiration date
-    if code.get("expiresAt"):
-        try:
-            expiry = code["expiresAt"]
-            if isinstance(expiry, str):
-                # Handle various date formats
-                expiry = expiry.replace('Z', '+00:00')
-                if 'T' not in expiry:
-                    expiry = expiry + "T23:59:59+00:00"
-                expiry_date = datetime.fromisoformat(expiry)
-            else:
-                expiry_date = expiry
-            if expiry_date < datetime.now(timezone.utc):
-                return {"valid": False, "message": "Code promo expiré"}
-        except Exception as e:
-            logger.debug(f"Date parsing: {e}")
-    
-    # Check max uses
-    if code.get("maxUses") and code.get("used", 0) >= code["maxUses"]:
-        return {"valid": False, "message": "Code promo épuisé (nombre max d'utilisations atteint)"}
-    
-    # Check if course is allowed - SKIP if no courseId provided (identification flow)
-    # IMPORTANT: empty list = all courses allowed
-    allowed_courses = code.get("courses", [])
-    if course_id and allowed_courses and len(allowed_courses) > 0:
-        if course_id not in allowed_courses:
-            return {"valid": False, "message": "Code non applicable à ce cours"}
-    
-    # Check assigned email (only if assignedEmail is set AND email is provided)
-    assigned = code.get("assignedEmail") or ""
-    if assigned and isinstance(assigned, str):
-        assigned = assigned.strip()
-        if assigned and user_email:
-            if assigned.lower() != user_email.lower():
-                return {"valid": False, "message": "Code réservé à un autre compte"}
-    
-    # v8.7: Sync CRM si email fourni
-    if user_email: await db.chat_participants.update_one({"email": user_email}, {"$set": {"email": user_email, "name": data.get("name", user_email.split("@")[0]), "source": "chat_login", "updated_at": datetime.now(timezone.utc).isoformat()}, "$setOnInsert": {"id": str(uuid.uuid4()), "created_at": datetime.now(timezone.utc).isoformat()}}, upsert=True)
-    return {"valid": True, "code": code}
-
-@api_router.post("/discount-codes/{code_id}/use")
-async def use_discount_code(code_id: str):
-    return {"success": True, "note": "Decompte gere par create_reservation"}
+# === v9.2.0: Routes discount-codes déplacées vers routes/promo_routes.py ===
+# Les routes suivantes ont été extraites pour modularisation :
+# - GET /discount-codes
+# - POST /discount-codes
+# - PUT /discount-codes/{code_id}
+# - DELETE /discount-codes/{code_id}
+# - POST /discount-codes/validate
+# - POST /discount-codes/{code_id}/use
 
 # === SANITIZE DATA (Nettoyage des données fantômes) ===
 
