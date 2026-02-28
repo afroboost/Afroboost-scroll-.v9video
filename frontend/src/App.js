@@ -3750,7 +3750,7 @@ function App() {
         />
       )}
 
-      {/* v9.5.6: Flux Reels - Mobile first, pleine largeur, hauteur viewport */}
+      {/* v9.5.7: Flux Reels - Mobile first, pleine largeur, hauteur viewport */}
       <div 
         className="relative w-full" 
         style={{ 
@@ -3764,6 +3764,8 @@ function App() {
             window.location.href = `/coach/${username}`;
           }}
           onSearch={() => setShowCoachSearch(true)}
+          maintenanceMode={platformSettings.maintenance_mode}
+          isSuperAdmin={isSuperAdminEmail(coachUser?.email)}
         />
       </div>
       
