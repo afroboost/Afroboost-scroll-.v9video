@@ -3734,17 +3734,14 @@ function App() {
         />
       )}
 
-      {/* v9.5.2: Flux Reels pleine hauteur - Optimisé pour mobile */}
-      <div className="w-full" style={{ height: 'calc(100vh - 60px)' }}>
-        {/* v9.5.2: Scroll vertical style Reels avec logo Afroboost */}
-        <PartnersCarousel 
-          onPartnerClick={(partner) => {
-            const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
-            window.location.href = `/coach/${username}`;
-          }}
-          onSearch={() => setShowCoachSearch(true)}
-        />
-      </div>
+      {/* v9.5.2: Flux Reels pleine hauteur - Mobile first */}
+      <PartnersCarousel 
+        onPartnerClick={(partner) => {
+          const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
+          window.location.href = `/coach/${username}`;
+        }}
+        onSearch={() => setShowCoachSearch(true)}
+      />
       
       {/* Contenu principal avec marges */}
       <div className="max-w-4xl mx-auto px-4">
