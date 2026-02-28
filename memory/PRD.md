@@ -1,5 +1,112 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.7 - ALIGNEMENT PIXEL ET SÉCURITÉ MAINTENANCE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.5.7 COMPLÈTE - "ALIGNEMENT PIXEL ET MAINTENANCE SÉCURISÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| Alignement Zéro Vide (5px max header-vidéo) | ✅ |
+| Quick Control (blocage maintenance) | ✅ |
+| Bouton Déconnexion Fixed (z-index 9999) | ✅ |
+| Scroll vers horaires/footer | ✅ |
+| Chat violet préservé | ✅ |
+
+### 1. ALIGNEMENT PIXEL "ZÉRO VIDE"
+
+**Avant:** ~250-350px d'espace entre header et vidéo
+**Après:** ~5px d'espace (header se superpose légèrement à la vidéo)
+
+```jsx
+// PartnersCarousel.js L575-585
+<div style={{ 
+  paddingTop: '2px',  // Header ultra-compact
+  paddingBottom: '2px'
+}}>
+
+// L195-202
+<div style={{ 
+  paddingTop: '32px',  // Vidéo proche du header
+  paddingLeft: '2px', 
+  paddingRight: '2px'
+}}>
+
+// L207-210
+<div style={{
+  aspectRatio: '9/16',  // Format portrait plein écran
+  maxHeight: '98%',
+  maxWidth: '100%'
+}}>
+```
+
+### 2. QUICK CONTROL - MODE MAINTENANCE
+
+**Logique:** `isBlocked = maintenanceMode && !isSuperAdmin`
+
+| Action | Comportement si `isBlocked=true` |
+|--------|----------------------------------|
+| Double-clic vidéo | ❌ Bloqué |
+| Bouton "Réserver" | ❌ Masqué |
+| Navigation vitrine | ❌ Bloquée |
+
+```jsx
+// PartnersCarousel.js L147-156
+const handleVideoClick = useCallback((e) => {
+  e.preventDefault();
+  if (isBlocked) {
+    console.log('[MAINTENANCE] Interaction bloquée');
+    return;  // Ne rien faire
+  }
+  // ...
+});
+
+// L327-341 - Bouton masqué
+{!isBlocked && (
+  <button onClick={handleReserve}>Réserver</button>
+)}
+```
+
+### 3. BOUTON DÉCONNEXION FIXED
+
+```jsx
+// CoachDashboard.js L3941-3957
+<button 
+  onClick={handleSecureLogout}
+  style={{ 
+    position: 'fixed',
+    top: '12px',
+    right: '12px',
+    zIndex: 9999,
+    background: 'rgba(239, 68, 68, 0.9)',
+    backdropFilter: 'blur(8px)'
+  }}
+  data-testid="coach-logout-fixed"
+>
+  🚪 Déconnexion
+</button>
+```
+
+### 4. SCROLL FONCTIONNEL
+
+| Élément | Accessible |
+|---------|-----------|
+| "Choisissez votre session" | ✅ |
+| Sessions avec dates | ✅ |
+| Footer © Afroboost 2026 | ✅ |
+
+### Tests v9.5.7 - Iteration 114
+
+| Test | Statut |
+|------|--------|
+| Backend: 10/10 tests | ✅ 100% |
+| Frontend: All features | ✅ 100% |
+| Alignement pixel | ✅ Gap ~5px |
+| Quick Control | ✅ Code verified |
+| Logout fixed | ✅ z-index 9999 |
+| Scroll | ✅ sessions + footer |
+
+---
+
 ## v9.5.6 - RÉPARATION STRUCTURELLE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.5.6 COMPLÈTE - "STRUCTURE ET ACCÈS RÉPARÉS"
