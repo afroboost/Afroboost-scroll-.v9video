@@ -126,16 +126,17 @@ class TestCheckPartnerAPI:
     
     def test_registered_coach_is_partner(self, api_session):
         """Un coach inscrit doit retourner is_partner=true"""
-        # Tester avec l'email de Bassi qui est super_admin et aussi coach
-        response = api_session.get(f"{BASE_URL}/api/check-partner/{SUPER_ADMIN_EMAIL}")
+        # Tester avec l'email de bassicustomshoes qui est un coach inscrit (Henri BASSI)
+        coach_email = "bassicustomshoes@gmail.com"
+        response = api_session.get(f"{BASE_URL}/api/check-partner/{coach_email}")
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
         assert data.get("is_partner") == True, \
-            f"Super Admin devrait être partenaire, trouvé: {data}"
+            f"Coach inscrit devrait être partenaire, trouvé: {data}"
         
-        print(f"✅ /check-partner/{SUPER_ADMIN_EMAIL} retourne is_partner=true")
+        print(f"✅ /check-partner/{coach_email} retourne is_partner=true")
         print(f"   Détails: {data}")
     
     def test_unknown_email_is_not_partner(self, api_session):
