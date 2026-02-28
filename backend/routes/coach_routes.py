@@ -1,4 +1,4 @@
-# coach_routes.py - Routes coach et admin v9.1.1
+# coach_routes.py - Routes coach et admin v9.5.6
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from typing import Optional, List
@@ -10,15 +10,20 @@ import stripe
 
 logger = logging.getLogger(__name__)
 
-# Constantes importées
-SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"
+# v9.5.6: Liste des Super Admins autorisés
+SUPER_ADMIN_EMAILS = [
+    "contact.artboost@gmail.com",
+    "afroboost.bassi@gmail.com"
+]
+SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"  # Legacy
 DEFAULT_COACH_ID = "bassi_default"
 ROLE_SUPER_ADMIN = "super_admin"
 ROLE_COACH = "coach"
 ROLE_USER = "user"
 
 def is_super_admin(email: str) -> bool:
-    return email and email.lower().strip() == SUPER_ADMIN_EMAIL.lower()
+    """Vérifie si l'email est celui d'un Super Admin"""
+    return email and email.lower().strip() in [e.lower() for e in SUPER_ADMIN_EMAILS]
 
 # Router
 coach_router = APIRouter(tags=["coach"])
