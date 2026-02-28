@@ -4772,7 +4772,12 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 )}
               </div>
 
-              <button onClick={saveConcept} className="btn-primary px-6 py-3 rounded-lg mt-6" data-testid="save-concept">{t('save')}</button>
+              {/* v9.3.7: Bouton remplacé par auto-save - Indication visuelle */}
+              <div className="mt-6 p-3 rounded-lg" style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+                <p className="text-green-400 text-sm flex items-center gap-2">
+                  <span>✓</span> Sauvegarde automatique activée - Vos modifications sont enregistrées instantanément
+                </p>
+              </div>
             </div>
           </div>
         )}
