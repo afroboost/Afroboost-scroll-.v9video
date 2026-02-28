@@ -138,7 +138,7 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
 
           {/* Avantages */}
           <div className="glass rounded-2xl p-6 mb-8" style={{ border: '1px solid rgba(217, 28, 210, 0.3)' }}>
-            <h2 className="text-xl font-semibold text-white mb-4">Pourquoi devenir Coach Afroboost ?</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Pourquoi devenir Partenaire Afroboost ?</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="flex items-start gap-3">
                 <CheckIcon />

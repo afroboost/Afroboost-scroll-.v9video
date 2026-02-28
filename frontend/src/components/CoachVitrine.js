@@ -431,7 +431,7 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                 <p className="text-white/70 max-w-md mx-auto">{coach.bio}</p>
               )}
               
-              {/* Badge Coach Partenaire */}
+              {/* Badge Partenaire Afroboost */}
               <div 
                 className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm"
                 style={{ 
@@ -439,7 +439,7 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                   border: '1px solid rgba(217, 28, 210, 0.4)'
                 }}
               >
-                <span className="text-white font-medium">Coach Partenaire Afroboost</span>
+                <span className="text-white font-medium">Partenaire Afroboost</span>
               </div>
             </div>
           </div>
