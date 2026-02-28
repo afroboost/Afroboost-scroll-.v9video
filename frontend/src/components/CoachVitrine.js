@@ -990,8 +990,8 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                     </div>
                   )}
                   
-                  {/* v9.3.0: Boutons de paiement */}
-                  {(paymentConfig.stripe || paymentConfig.twint || paymentConfig.paypal) && calculateFinalPrice() > 0 && (
+                  {/* v9.3.1: Boutons de paiement - Affichés dès qu'un créneau est sélectionné et liens configurés */}
+                  {(paymentConfig.stripe || paymentConfig.twint || paymentConfig.paypal) && (
                     <div className="space-y-2">
                       <p className="text-xs text-white/50 text-center">Méthodes de paiement disponibles :</p>
                       <div className="flex flex-wrap gap-2 justify-center">
@@ -1049,6 +1049,13 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                           </a>
                         )}
                       </div>
+                    </div>
+                  )}
+                  
+                  {/* Message si pas de liens de paiement configurés */}
+                  {!paymentConfig.stripe && !paymentConfig.twint && !paymentConfig.paypal && (
+                    <div className="text-center text-white/40 text-xs py-2">
+                      💡 Réservez d'abord, le paiement sera confirmé par le coach
                     </div>
                   )}
                   
