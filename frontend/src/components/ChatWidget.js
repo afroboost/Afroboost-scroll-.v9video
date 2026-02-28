@@ -3803,7 +3803,7 @@ export const ChatWidget = () => {
                       S'identifier comme abonné
                     </button>
                     
-                    {/* Bouton Devenir Coach v8.9.9 - Dynamique selon statut */}
+                    {/* Bouton Devenir Coach v9.1.5 - Dynamique selon statut */}
                     <button
                       type="button"
                       onClick={() => {
@@ -3830,7 +3830,7 @@ export const ChatWidget = () => {
                       }}
                       data-testid={isRegisteredCoach || isCoachMode ? "coach-dashboard-btn" : "become-coach-chat-btn"}
                     >
-                      {(isRegisteredCoach || isCoachMode) ? '🏠 Accès Mon Dashboard' : 'Devenir Coach Partenaire'}
+                      {(isRegisteredCoach || isCoachMode) ? '🏠 Mon Espace Coach' : 'Devenir Coach Partenaire'}
                     </button>
                     
                     <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.4)', marginTop: '8px' }}>
