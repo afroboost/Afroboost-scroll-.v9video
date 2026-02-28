@@ -1112,23 +1112,6 @@ async def create_category(category: dict):
     await db.categories.insert_one(category)
     return category
 
-# --- Shipping / Tracking ---
-@api_router.put("/reservations/{reservation_id}/tracking")
-async def update_tracking(reservation_id: str, tracking_data: dict):
-    """Update shipping tracking for an order"""
-    update_fields = {}
-    if "trackingNumber" in tracking_data:
-        update_fields["trackingNumber"] = tracking_data["trackingNumber"]
-    if "shippingStatus" in tracking_data:
-        update_fields["shippingStatus"] = tracking_data["shippingStatus"]
-    
-    await db.reservations.update_one(
-        {"id": reservation_id},
-        {"$set": update_fields}
-    )
-    updated = await db.reservations.find_one({"id": reservation_id}, {"_id": 0})
-    return {"success": True, "reservation": updated}
-
 # --- Users ---
 @api_router.get("/users", response_model=List[User])
 async def get_users():
