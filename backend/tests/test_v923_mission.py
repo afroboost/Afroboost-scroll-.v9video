@@ -75,13 +75,15 @@ class TestCoachProfile:
     
     def test_new_partner_profile_404(self):
         """Test new partner (virgin account) - should return 404"""
+        import time
+        unique_email = f"virgin.account.{int(time.time())}@test.com"
         response = requests.get(
             f"{BASE_URL}/api/coach/profile",
-            headers={"X-User-Email": "nouveau.partenaire@test.com"}
+            headers={"X-User-Email": unique_email}
         )
         # New partner should get 404 - profile doesn't exist in DB
         assert response.status_code == 404
-        print("✅ New partner profile returns 404 as expected")
+        print(f"✅ New partner profile ({unique_email}) returns 404 as expected")
     
     def test_profile_error_handling(self):
         """Test profile endpoint handles missing email gracefully"""
