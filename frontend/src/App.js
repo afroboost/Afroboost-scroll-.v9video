@@ -2143,9 +2143,9 @@ function App() {
     // Aussi parser les params dans le hash (ex: #coach-dashboard?session_id=xxx)
     const hashParams = new URLSearchParams(hash.split('?')[1] || '');
     
-    // === v9.1.3: PROPULSION AUTOMATIQUE #coach-dashboard (zéro clic après Stripe) ===
-    if (hash.includes('coach-dashboard') || window.location.href.includes('coach-dashboard')) {
-      console.log('[APP] 🚀 v9.1.3 - Propulsion automatique #coach-dashboard');
+    // === v9.2.4: PROPULSION AUTOMATIQUE #coach-dashboard ou #partner-dashboard ===
+    if (hash.includes('coach-dashboard') || hash.includes('partner-dashboard') || window.location.href.includes('coach-dashboard') || window.location.href.includes('partner-dashboard')) {
+      console.log('[APP] 🚀 v9.2.4 - Propulsion automatique dashboard');
       
       // Récupérer session_id Stripe si présent
       const sessionId = searchParams.get('session_id') || hashParams.get('session_id');
