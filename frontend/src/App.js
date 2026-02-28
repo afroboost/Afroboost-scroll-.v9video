@@ -1834,15 +1834,13 @@ const SuccessOverlay = ({ t, data, onClose, onClearTicket }) => {
         }
       }
       
-      // Fallback for PC: download image + open WhatsApp Web
+      // Fallback for PC: download image ONLY (v9.4.3: no auto WhatsApp)
       const link = document.createElement('a');
       link.download = `ticket-afroboost-${data.reservationCode}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
       
-      setTimeout(() => {
-        window.open(`https://wa.me/?text=${encodeURIComponent('Voici ma réservation Afroboost : https://afroboost.com')}`, '_blank');
-      }, 300);
+      // v9.4.3: Le bouton WhatsApp est disponible mais NON automatique
     }, 'image/png');
   };
   
