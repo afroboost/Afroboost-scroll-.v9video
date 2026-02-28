@@ -266,12 +266,13 @@ const PartnersCarousel = ({ onPartnerClick }) => {
   
   // Clic sur un partenaire
   const handlePartnerClick = (partner) => {
-    // Rediriger vers la vitrine du partenaire
+    // Rediriger vers la vitrine du partenaire via pathname (pas hash)
     const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
     if (onPartnerClick) {
       onPartnerClick(partner);
     } else {
-      window.location.hash = `#coach/${username}`;
+      // v9.4.7: Utiliser pathname pour que le router detecte correctement
+      window.location.href = `/coach/${username}`;
     }
   };
   
