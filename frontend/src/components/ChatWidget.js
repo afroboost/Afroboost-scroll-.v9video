@@ -1483,7 +1483,16 @@ export const ChatWidget = () => {
 
   // === HANDLER CONFIRMATION RÉSERVATION (extrait pour BookingPanel) ===
   const handleConfirmReservation = useCallback(async () => {
-    if (!selectedCourse || !afroboostProfile) return;
+    // v9.3.7: Vérifier si l'utilisateur a un code promo valide
+    if (!afroboostProfile?.code) {
+      setReservationError('Veuillez entrer un code promo valide dans le formulaire "Abonné" pour réserver.');
+      return;
+    }
+    
+    if (!selectedCourse) {
+      setReservationError('Veuillez sélectionner un cours.');
+      return;
+    }
     
     // Reset error state
     setReservationError('');
