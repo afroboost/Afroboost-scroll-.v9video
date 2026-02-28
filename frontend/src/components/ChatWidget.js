@@ -3343,12 +3343,12 @@ export const ChatWidget = () => {
           }}
           data-testid="chat-widget-window"
         >
-          {/* Header */}
+          {/* Header v9.4.2: Gradient violet Afroboost */}
           <div 
             style={{
               background: isCommunityMode 
                 ? 'linear-gradient(135deg, #8b5cf6, #6366f1)' 
-                : 'linear-gradient(135deg, #25D366, #128C7E)',
+                : 'linear-gradient(135deg, #D91CD2, #9333ea)', /* v9.4.2: Violet Afroboost */
               padding: '12px 16px',
               display: 'flex',
               alignItems: 'center',
@@ -3368,7 +3368,7 @@ export const ChatWidget = () => {
                   justifyContent: 'center'
                 }}
               >
-                {isCommunityMode ? <GroupIcon /> : <WhatsAppIcon />}
+                {isCommunityMode ? <GroupIcon /> : <ChatBubbleIcon />} {/* v9.4.2 */}
               </div>
               <div>
                 <div className="text-white font-semibold text-sm">
