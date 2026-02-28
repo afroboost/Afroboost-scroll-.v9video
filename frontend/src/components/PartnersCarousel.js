@@ -410,8 +410,8 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
   );
 };
 
-// === COMPOSANT PRINCIPAL v9.5.3 ===
-const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
+// === COMPOSANT PRINCIPAL v9.5.7 - Support mode maintenance ===
+const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, isSuperAdmin = false }) => {
   const [partners, setPartners] = useState([]);
   const [filteredPartners, setFilteredPartners] = useState([]);
   const [loading, setLoading] = useState(true);
