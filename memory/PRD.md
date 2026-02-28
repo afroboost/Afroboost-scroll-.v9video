@@ -1,5 +1,40 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.7 - SUPER ADMIN OMNISCIENT ET LOGIQUE PRÉSERVÉE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.1.7 COMPLÈTE
+
+| Critère | Validation |
+|---------|------------|
+| Bypass Super Admin | ✅ **Réservations, Campagnes, Contacts, Codes promo** |
+| Packs Coach | ✅ **3 packs visibles, /all sécurisé** |
+| Crédits Illimités | ✅ **credits=-1, badge "👑 Crédits Illimités"** |
+| Non-régression | **7 réservations ✅** |
+| Sessions Mars | **04.03, 11.03, 18.03, 25.03 ✅** |
+| Tests | **12/12 ✅** |
+
+### Vérification Super Admin Omniscient
+
+| Endpoint | Super Admin | Coach Normal |
+|----------|-------------|--------------|
+| /api/reservations | TOUTES (7) | Ses données |
+| /api/chat/participants | TOUS (8) | Ses contacts |
+| /api/campaigns | TOUTES | Ses campagnes |
+| /api/discount-codes | GLOBAL | GLOBAL |
+| /api/admin/coach-packs/all | ✅ Accès | ❌ 403 |
+
+### Bypass implémentés
+- `reservation_routes.py:66` - `is_super_admin()` → query vide `{}`
+- `campaign_routes.py:50-51` - `is_super_admin()` → pas de filtre
+- `server.py:3634` - `is_super_admin()` → tous les contacts
+- `coach_routes.py:62-68` - `/all` réservé au Super Admin
+
+### Tests v9.1.7 - Iteration 79
+- Backend: **12/12 ✅**
+- Frontend: **100% ✅**
+
+---
+
 ## v9.1.6 - SYSTÈME PARTENAIRE ET CONTRÔLE TOTAL ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.1.6 COMPLÈTE
