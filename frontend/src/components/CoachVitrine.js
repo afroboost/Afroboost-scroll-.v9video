@@ -345,6 +345,29 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
             </button>
             
             <div className="flex items-center gap-3">
+              {/* v9.2.7: Photo et nom du coach en haut à droite */}
+              <div className="flex items-center gap-2 mr-2">
+                {coach.logo_url ? (
+                  <img 
+                    src={coach.logo_url} 
+                    alt={displayName}
+                    className="w-8 h-8 rounded-full object-cover"
+                    style={{ border: '2px solid rgba(217, 28, 210, 0.5)' }}
+                  />
+                ) : (
+                  <div 
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                    style={{ 
+                      background: 'linear-gradient(135deg, #8b5cf6 0%, #d91cd2 100%)',
+                      color: 'white'
+                    }}
+                  >
+                    {initial}
+                  </div>
+                )}
+                <span className="text-white/80 text-sm font-medium hidden sm:block">{displayName}</span>
+              </div>
+              
               <button
                 onClick={() => setShowQR(true)}
                 className="p-2 rounded-lg transition-all hover:scale-110"
