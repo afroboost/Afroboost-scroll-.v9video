@@ -572,14 +572,17 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
       style={{ background: '#000000' }}
       data-testid="partners-reels-section"
     >
-      {/* v9.5.4: HEADER avec Logo Afroboost et Recherche - Suppression éléments en trop */}
+      {/* v9.5.6: HEADER compact avec Logo Afroboost et Recherche */}
       <div 
         className="absolute top-0 left-0 right-0 z-20"
-        style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)' }}
+        style={{ 
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
+          paddingTop: '8px'  // v9.5.6: Réduit à 8px
+        }}
       >
-        {/* Ligne principale: Logo + Recherche */}
-        <div className="flex items-center justify-between px-4 py-2">
-          <div className="w-10"></div>
+        {/* Ligne principale: Logo + Recherche - Marge réduite */}
+        <div className="flex items-center justify-between px-3 py-1">
+          <div className="w-8"></div>
           
           {/* Logo centré (ou barre de recherche si activée) */}
           {showSearch ? (
@@ -590,8 +593,8 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher un partenaire..."
-                  className="w-full px-4 py-2 rounded-full text-sm text-white placeholder-white/50"
+                  placeholder="Rechercher..."
+                  className="w-full px-3 py-1.5 rounded-full text-sm text-white placeholder-white/50"
                   style={{
                     background: 'rgba(255,255,255,0.15)',
                     border: '1px solid rgba(255,255,255,0.2)',
@@ -611,10 +614,10 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2" data-testid="afroboost-logo">
+            <div className="flex items-center gap-1.5" data-testid="afroboost-logo">
               <AfroboostLogo />
               <span 
-                className="text-white font-bold text-base"
+                className="text-white font-bold text-sm"
                 style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
               >
                 Afroboost
