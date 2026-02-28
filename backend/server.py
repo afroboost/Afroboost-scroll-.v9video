@@ -6318,16 +6318,16 @@ async def notify_coach_new_message(participant_name: str, message_preview: str, 
 # =============================================
 @api_router.post("/campaigns/send-email")
 async def send_campaign_email(request: Request):
-    """
-    Envoie un email de campagne via Resend.
-    Remplace EmailJS pour un contrôle total côté serveur.
+    """Envoie un email de campagne via Resend - v9.0.2: Déduit 1 crédit"""
+    coach_email = request.headers.get("X-User-Email", "").lower().strip()
+    # v9.0.2: Vérifier et déduire les crédits
+    if coach_email and not is_super_admin(coach_email):
+        credit_check = await check_credits(coach_email)
+        if not credit_check.get("has_credits"):
+            raise HTTPException(status_code=402, detail="Crédits insuffisants. Achetez un pack pour continuer.")
+        await deduct_credit(coach_email, "envoi campagne email")
     
-    Body attendu:
-    {
-        "to_email": "destinataire@example.com",
-        "to_name": "Nom Destinataire",
-        "subject": "Sujet de l'email",
-        "message": "Contenu HTML ou texte",
+    body = await request.json()
         "media_url": "URL du visuel ou lien interne /v/slug (optionnel)"
     }
     """
