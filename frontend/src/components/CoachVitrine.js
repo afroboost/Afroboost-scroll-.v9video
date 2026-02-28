@@ -259,6 +259,56 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
   const [appliedDiscount, setAppliedDiscount] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
   
+  // v9.4.6: État pour le bouton d'installation PWA
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+  
+  // v9.4.6: Capturer l'événement beforeinstallprompt
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+      console.log('[PWA] Install prompt captured');
+    };
+    
+    // Vérifier si déjà installé
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+    }
+    
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true);
+      setIsInstallable(false);
+      console.log('[PWA] App installed');
+    });
+    
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+  
+  // v9.4.6: Fonction pour installer l'app PWA
+  const handleInstallPWA = async () => {
+    if (!deferredPrompt) {
+      // Fallback si pas de prompt disponible
+      alert(`Pour installer ${displayName} sur votre écran :\n\n📱 Mobile: Utilisez "Ajouter à l'écran d'accueil" dans le menu de votre navigateur.\n\n💻 PC: Cliquez sur l'icône d'installation dans la barre d'adresse de Chrome.`);
+      return;
+    }
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('[PWA] Install outcome:', outcome);
+    
+    if (outcome === 'accepted') {
+      setIsInstalled(true);
+      setIsInstallable(false);
+    }
+    setDeferredPrompt(null);
+  };
+
   // v9.2.8: Handler clic sur date de cours
   const handleBookClick = (course, date) => {
     setSelectedBooking({ course, date });
