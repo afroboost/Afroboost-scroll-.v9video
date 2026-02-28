@@ -320,7 +320,7 @@ const PartnersCarousel = ({ onPartnerClick }) => {
   
   if (loading) {
     return (
-      <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 200px)', background: '#000000' }}>
+      <div className="flex items-center justify-center" style={{ height: '70vh', minHeight: '350px', background: '#000000' }}>
         <div className="text-center">
           <div className="animate-spin w-10 h-10 border-3 rounded-full mx-auto mb-3" style={{ borderColor: 'var(--primary-color, #D91CD2)', borderTopColor: 'transparent' }}></div>
           <p className="text-white/50 text-sm">Chargement...</p>
@@ -335,7 +335,7 @@ const PartnersCarousel = ({ onPartnerClick }) => {
   
   return (
     <div 
-      className="relative"
+      className="relative -mx-4"
       style={{ background: '#000000' }}
       data-testid="partners-reels-section"
     >
@@ -345,9 +345,9 @@ const PartnersCarousel = ({ onPartnerClick }) => {
         onScroll={handleScroll}
         className="snap-y snap-mandatory overflow-y-auto"
         style={{ 
-          height: 'calc(100vh - 200px)',
-          minHeight: '400px',
-          maxHeight: '600px',
+          height: '70vh',
+          minHeight: '350px',
+          maxHeight: '550px',
           scrollBehavior: 'smooth',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
@@ -370,7 +370,7 @@ const PartnersCarousel = ({ onPartnerClick }) => {
       
       {/* Indicateurs verticaux - Droite */}
       {partners.length > 1 && (
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
           {partners.map((_, idx) => (
             <button
               key={idx}
@@ -385,7 +385,7 @@ const PartnersCarousel = ({ onPartnerClick }) => {
               }}
               className="transition-all duration-300 rounded-full"
               style={{
-                width: idx === activeIndex ? '4px' : '4px',
+                width: '4px',
                 height: idx === activeIndex ? '24px' : '8px',
                 background: idx === activeIndex ? 'var(--primary-color, #D91CD2)' : 'rgba(255,255,255,0.3)'
               }}
@@ -396,10 +396,10 @@ const PartnersCarousel = ({ onPartnerClick }) => {
         </div>
       )}
       
-      {/* Compteur discret */}
+      {/* Compteur discret en bas */}
       <div 
-        className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs text-white/60"
-        style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+        className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs text-white/70"
+        style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
       >
         {activeIndex + 1} / {partners.length}
       </div>
