@@ -4221,7 +4221,28 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
         {/* Concept Tab */}
         {tab === "concept" && (
           <div className="card-gradient rounded-xl p-6">
-            <h2 className="font-semibold text-white mb-6" style={{ fontSize: '20px' }}>{t('conceptVisual')}</h2>
+            {/* v9.3.7: Indicateur de sauvegarde automatique */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-semibold text-white" style={{ fontSize: '20px' }}>{t('conceptVisual')}</h2>
+              {conceptSaveStatus && (
+                <span 
+                  className="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-2"
+                  style={{
+                    background: conceptSaveStatus === 'saved' ? 'rgba(34, 197, 94, 0.2)' : 
+                               conceptSaveStatus === 'error' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(147, 51, 234, 0.2)',
+                    color: conceptSaveStatus === 'saved' ? '#22c55e' : 
+                           conceptSaveStatus === 'error' ? '#ef4444' : '#a855f7',
+                    border: `1px solid ${conceptSaveStatus === 'saved' ? 'rgba(34, 197, 94, 0.3)' : 
+                            conceptSaveStatus === 'error' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(147, 51, 234, 0.3)'}`
+                  }}
+                  data-testid="concept-save-status"
+                >
+                  {conceptSaveStatus === 'saving' && <><span className="animate-spin">⏳</span> Sauvegarde...</>}
+                  {conceptSaveStatus === 'saved' && <>✓ Sauvegardé</>}
+                  {conceptSaveStatus === 'error' && <>⚠️ Erreur</>}
+                </span>
+              )}
+            </div>
             <div className="space-y-4">
               
               {/* ========================= PERSONNALISATION DES COULEURS ========================= */}
