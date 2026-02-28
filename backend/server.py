@@ -6046,6 +6046,9 @@ fastapi_app.include_router(reservation_router, prefix="/api")
 fastapi_app.include_router(auth_router, prefix="/api")
 fastapi_app.include_router(legacy_auth_router, prefix="/api")
 
+# v9.2.0: Include promo routes (modularisation)
+fastapi_app.include_router(promo_router, prefix="/api")
+
 fastapi_app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
