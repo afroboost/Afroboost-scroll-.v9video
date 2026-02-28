@@ -6,39 +6,65 @@ The user wants to transform the existing Afroboost application into a multi-part
 2.  **Hierarchy & Access Control:**
     *   **Super Admin:** Bassi has exclusive, unfiltered access to all platform data and an unlimited credit balance.
     *   **Partner:** Can sign up, purchase credit packs, and access an isolated dashboard to manage their own clients, courses, and campaigns.
-    *   **Data Isolation:** All data must be strictly segregated per partner using a . Bassi, as Super Admin, bypasses this filter.
+    *   **Data Isolation:** All data must be strictly segregated per partner using a . Bassi, as Super Admin, bypasses this filter. This is a critical, non-negotiable requirement.
 3.  **SaaS Monetization & White-Labeling:**
     *   Partners must be able to purchase credit packs via Stripe.
     *   Partner actions must consume credits.
+    *   The partner's public-facing page () must be a visual mirror of the main  site.
 4.  **UI/UX & Features:**
     *   Implement a seamless post-purchase redirection to the partner dashboard ().
-    *   Ensure the dashboard is always visible and never a blank white page, especially for new partners.
-    *   Display credit balance clearly in the UI.
+    *   Ensure the dashboard and partner pages are always functional and never show blank screens.
+    *   Implement Super Admin controls for platform-wide settings (e.g., maintenance mode).
+    *   User-entered configurations in the dashboard must be persistent across sessions.
 
 **User's preferred language**: français
 
 **what currently exists?**
-The application is a functional multi-partner SaaS platform where the Coach terminology has been rebranded to Partenaire.
+The application is a multi-partner SaaS platform with a clear distinction between the Super Admin (Bassi) and Partners. Critical data isolation has been implemented at the API level, ensuring partners can only see their own data (contacts, promo codes, payment links, site configuration) by filtering with a . File uploads are also physically isolated into partner-specific directories.
 
-The backend has been further modularized with authentication () and promo code () logic extracted from the main  file. The frontend monolith  has been partially refactored by extracting the CRM section into its own component ().
+The frontend features a cinematographic partner showcase page that mirrors the main site's design, complete with a video header and a functional booking form that uses the partner's configured Stripe links. The Super Admin has a Quick Control menu to toggle platform maintenance mode and new partner sign-ups.
 
-A series of critical bugs related to new partner onboarding have been fixed. New partners now have a minimal profile created automatically upon first login, and the dashboard UI is resilient, showing a loading state or default values instead of a blank page. The post-Stripe payment redirection flow is now robust, using both backend URL configuration and frontend  to ensure users are correctly propelled into their dashboard after payment and login.
+However, the application is in the middle of implementing Mission v9.3.6, which addresses critical issues with UI state persistence and mobile navigation.
 
 **Last working item**:
-    - Last item agent was working: The agent was executing **Mission v9.2.5**, a critical fix to guarantee the partner dashboard is never a blank white page and to definitively solve the post-payment redirection issue.
-        1.  **Forced UI Visibility:** A  component was added to  to ensure the sidebar and a loading message are always displayed while data is being fetched, preventing a blank screen for new partners.
-        2.  **Definitive Stripe Redirect:** The Stripe  in the backend () was hardcoded to . The frontend () was updated to detect this specific hash and parameter to force the dashboard view.
-    - Status: USER VERIFICATION PENDING
-    - Agent Testing Done: Y
-    - Which testing method agent to use? None (The previous agent has completed and tested the work. Awaiting user feedback.)
+    - Last item agent was working: The agent began working on **Mission v9.3.6**, which focuses on making dashboard configurations persistent, fixing mobile navigation, and addressing a calendar bug. The agent successfully implemented the CSS fix for the mobile navigation but has not yet addressed the main requirement of data persistence for partner configurations.
+    - Status: IN PROGRESS
+    - Agent Testing Done: N
+    - Which testing method agent to use? both
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  - Issue 1:  Implement Stripe Connect for partner coaches. (P1)
+  - Issue 1:  (P0) Mémoire Totale des Configurations (from Mission v9.3.6)
+  - Issue 2:  (P1) Fix Calendrier et Réservation (from Mission v9.3.6)
+  - Issue 3:  (P1) Implement Stripe Connect for partner coaches.
   
   Issues Detail:
   - Issue 1: 
-     - **Description**: This is the last major pending feature. Partners need the ability to connect their own Stripe accounts to receive payments for their services directly. The UI tab exists, but the full onboarding and payment processing flow is not implemented.
+     - **Description**: All configuration fields in the partner and Super Admin dashboards (e.g., Video Link, Image URL, Stripe/Twint Payment Links) are not being saved. When the user refreshes the page, their inputs are lost. The user explicitly requested that data be saved on change and pre-filled on page load.
+     - **Attempted fixes**: The agent identified that data is loaded correctly via  in  but did not implement the corresponding save logic for when input fields are changed.
+     - **Next debug checklist**:
+        1. In , review the , , and other configuration update functions.
+        2. Ensure that on every change, an API call is made to a backend endpoint to save the updated data. The backend already has endpoints like  and  that can be used.
+        3. The user specified using , which is a Firebase client-side SDK method. The current architecture uses a FastAPI backend that interacts with MongoDB. The agent must implement the saving logic within the existing backend API structure.
+     - **Why fix this issue and what will be achieved with the fix?**: This is a critical usability issue. Without it, partners cannot configure their profiles or payment methods, rendering the platform unusable for them.
+     - **Status**:  IN PROGRESS
+     - **Is recurring issue?** N
+     - **Should Test frontend/backend/both after fix?** Both
+     - **Blocked on other issue**: None
+  - Issue 2: 
+     - **Description**: The user reported that clicking the calendar icon on the partner showcase page is inactive.
+     - **Attempted fixes**: The agent investigated and concluded the functionality works via clickable dates within the course cards, potentially missing the user's point about a specific calendar icon in the main hero section.
+     - **Next debug checklist**:
+        1. In , identify the calendar icon in the main hero/header section.
+        2. Verify if it has an  handler.
+        3. Implement an  handler that scrolls the user down to the course selection section ().
+     - **Why fix this issue and what will be achieved with the fix?**: Improves user navigation and experience on the partner's public page.
+     - **Status**:  NOT STARTED
+     - **Is recurring issue?** N
+     - **Should Test frontend/backend/both after fix?** Frontend
+     - **Blocked on other issue**: None
+  - Issue 3: 
+     - **Description**: This is a major pending feature from the original product requirements. Partners need the ability to connect their own Stripe accounts to receive payments for their services directly. The UI tab exists, but the full onboarding and payment processing flow is not implemented.
      - **Next debug checklist**:
        - Connect the frontend Connecter mon Stripe button in  to a new backend onboarding API.
        - Create the backend API to initiate a Stripe Connect onboarding session.
@@ -52,17 +78,17 @@ A series of critical bugs related to new partner onboarding have been fixed. New
 
 **In progress Task List**:
   - Task 1:  Continue modularizing . (P1)
-  - Task 2:  Continue modularizing . (P0)
+  - Task 2:  Continue modularizing . (P1)
 
  Task Detail:
   - Task 1: 
-     - **Where to resume**:  is now at ~6191 lines. The next logical step is to extract the Stripe-related routes () into  (which was started but not completed) to get the file size under the 6000-line target.
-     - **What will be achieved with this?**: Further improving code organization, maintainability, and stability.
+     - **Where to resume**:  is still over 6000 lines. The next logical step is to extract the Stripe-related routes () into  to improve maintainability.
+     - **What will be achieved with this?**: Improving code organization, maintainability, and stability.
      - **Status**:  IN PROGRESS
      - **Should Test frontend/backend/both after fix?** Backend
      - **Blocked on something**: None
   - Task 2: 
-     - **Where to resume**:  is now at ~5749 lines after extracting . The next step is to extract other major sections like Campagnes, Réservations, or Offres into their own components within  to get the file size under the 4000-line target.
+     - **Where to resume**:  is still over 5700 lines. The agent fixed mobile navigation but no major components have been extracted recently. The next step is to extract other major sections like Campagnes, Réservations, or Offres into their own components within .
      - **What will be achieved with this?**: Reducing the complexity of the main dashboard component, making it easier and safer to modify.
      - **Status**:  IN PROGRESS
      - **Should Test frontend/backend/both after fix?** Frontend
@@ -70,27 +96,23 @@ A series of critical bugs related to new partner onboarding have been fixed. New
 
 **Upcoming and Future Tasks**
     Upcoming Tasks:
-    - **(P0)** Finalize the partner dashboard UI to clearly display the current credit balance. (This was implemented, but could be reviewed for prominence).
-    - **(P1)** Implement frontend logic to display a clear message or link to buy credits when a feature is disabled due to a zero balance. (The ⚠️ Crédits insuffisants message exists for campaigns; this could be standardized).
+    - **(P2)** Finalize the partner dashboard UI to clearly display the current credit balance.
+    - **(P2)** Implement frontend logic to display a clear message or link to buy credits when a feature is disabled due to a zero balance.
     
     Future Tasks:
     - No new future tasks were added. The focus remains on refactoring and Stripe Connect.
 
 **Completed work in this session**
-- **Mission v9.1.9 (Propulsion & Visibilité Crédits):**
-  - Modularized auth routes into , reducing  line count.
-  - Implemented the credit balance badge in the dashboard header with dynamic coloring (violet neon, red for low balance).
-- **Mission v9.2.0 (Découpage Dashboard):**
-  - Modularized promo code routes into .
-  - Extracted the Conversations/CRM tab from  into a new  component, reducing the monolith's size by ~900 lines.
-- **Mission v9.2.1 (Réparation Visibilité):**
-  - **Critical Bug Fix:** Fixed a major regression where the dashboard was blank after the v9.2.0 refactor. The issue was due to missing props (, ) passed to .
-  - Introduced a  to prevent a single crashing component from taking down the entire dashboard.
-- **Mission v9.2.2 (Visibilité Partenaire):**
-  - **Critical Bug Fix:** Fixed an issue where only the Super Admin could log in. Modified  to automatically create a minimal  profile for any new user logging in, ensuring they can access their dashboard.
-- **Mission v9.2.3, v9.2.4, v9.2.5 (Force Affichage & Propulsion Définitive):**
-  - Implemented a series of robust fixes to ensure the partner dashboard is never a blank page, using loading states, fallback components (), and default data.
-  - Perfected the post-payment redirect by setting the Stripe  in the backend and using  on the frontend to remember the user's intent to be propelled to the dashboard.
+- **Mission v9.3.6 (Partial):** Fixed horizontal scrolling for the dashboard navigation menu on mobile devices.
+- **Mission v9.3.5 (Read-Only):** Successfully located the Super Admin's Stripe payment link and audited the code to understand why it wasn't displaying on the main page.
+- **Mission v9.3.3:** Redesigned the partner showcase page header to be a cinematographic mirror of the main site's hero section.
+- **Mission v9.3.2:** Confirmed and verified the data étanchéité (isolation) for contacts and reservations, ensuring partners see a blank slate.
+- **Mission v9.3.1:** Implemented physical storage isolation for partner uploads () and created a  API to make the chat button smarter.
+- **Mission v9.3.0:** **CRITICAL**: Implemented data isolation for , , and  collections by adding and enforcing a .
+- **Mission v9.2.9:** Enhanced the partner showcase with a video header and integrated a promo code field into the booking form. Cleaned up the dashboard UI.
+- **Mission v9.2.8:** Implemented the Super Admin's platform-wide controls (maintenance mode, partner access toggle) and made partner schedules clickable on their public page.
+- **Mission v9.2.7:** Created the backend and frontend for Super Admin Quick Controls and fixed the purchase flow for 0 CHF packs.
+- **Mission v9.2.6:** Fixed the post-Stripe redirection and added a dynamic Accéder à mon Dashboard button in the chat widget for registered partners.
 
 **Earlier issues found/mentioned but not fixed**
    - **Issue 1**: Stripe Connect for partner payouts remains unimplemented. This was part of the original product requirements but has not been tackled.
@@ -102,86 +124,87 @@ A series of critical bugs related to new partner onboarding have been fixed. New
 
 
 **Key Technical Concepts**
-- **Backend:** FastAPI with a progressively modularizing structure.
-- **Frontend:** React.js.
-- **Database:** MongoDB.
-- **Resilient UI Rendering:** The frontend now uses loading states (), fallback components (), and error boundaries () to prevent blank white screens, especially during initial data fetching for new users.
-- **Automatic User Provisioning:** A new user authenticating via Google has a minimal  document automatically created in MongoDB, enabling immediate access to the partner dashboard.
-- **Redirect Intent:** The post-payment flow uses a combination of a specific backend-set  () and  () to robustly remember to send the user to their dashboard after login.
+- **Data Isolation by **: This is the cornerstone of the multi-partner architecture. It's now implemented across all key data models (, , , , ). The Super Admin () is a special case that bypasses this filter.
+- **Physical Storage Isolation**: Partner file uploads are now stored in unique directories () to prevent assets from being overwritten.
+- **Platform-Wide Settings**: A new  collection in MongoDB, managed via  endpoints, allows the Super Admin to control global states like  and .
+- **Dynamic Frontend**: The frontend reacts to these global settings, displaying a maintenance page or hiding the Devenir Partenaire button accordingly.
+- **UI Mirroring**: The  component has been significantly refactored to visually and functionally mirror the main  landing page, providing a white-labeled experience for partners.
 
 **key DB schema**
-- **coaches**:  (The  field is now optional for new users, who are created with just an ).
-- **coach_packs**: 
-- **chat_participants (contacts)**: 
-- **reservations**: 
-- **campaigns**: 
+- **coaches**: 
+- **concept**:  (Now isolated per partner)
+- **payment_links**:  (Now isolated per partner)
+- **discount_codes**:  (Now isolated per partner)
+- **platform_settings**:  (New collection for Super Admin controls)
 
 **changes in tech stack**
 - No changes to the core technologies.
 
 **All files of reference**
 - **Created:**
-  - : Contains all user authentication logic.
-  - : Contains discount code management routes.
-  - : A large component extracted from .
-  - : A fallback component to show while the dashboard is loading.
-  - : A generic error boundary to wrap dashboard sections.
+  - 
+  - 
 - **Updated:**
-  - : Major routes (auth, promo) removed and delegated to routers.
-  - :  for checkout sessions was updated.
-  - : Heavily modified to implement the robust post-payment/post-login redirection logic.
-  - : Refactored to use  and implement resilient rendering with loading states and fallbacks.
+  - : Heavily modified to add data isolation logic to numerous endpoints, and to add new platform-wide settings routes.
+  - : Modified to enforce  filtering.
+  - : CSS updated for mobile nav scroll. Needs significant work for data persistence.
+  - : Completely overhauled to provide a cinematographic mirror of the main site, including a full-width video header and an integrated booking/payment modal.
+  - : Logic added to fetch and react to global platform settings (e.g., show maintenance page).
+  - : Logic updated to use an API call () to determine if a user is a partner, making the Accéder au Dashboard button state persistent.
 
 **Areas that need refactoring**:
-- ****: **HIGH PRIORITY**. Still over 6000 lines. Stripe webhook and other logic should be extracted.
-- ****: **CRITICAL**. Still over 5700 lines. Other sections need to be extracted into their own components to improve maintainability.
+- ****: **CRITICAL**. Still over 6000 lines. A major source of technical debt.
+- ****: **CRITICAL**. At over 5700 lines, it's extremely difficult to maintain. Extracting tabs into separate components is essential.
 
 **key api endpoints**
-- : Modified to automatically create a new partner profile if one doesn't exist for the authenticated email.
-- : The  parameter was updated to  to facilitate the new redirection flow.
+- : (Super Admin only) Updates global settings like maintenance mode.
+- : Retrieves global settings.
+- : Checks if an email belongs to a registered partner.
+- : Secure endpoint for partners to upload their assets to an isolated folder.
+- : Publicly fetches the site concept/configuration for a specific partner's showcase page.
+- : Publicly fetches payment links for a partner's showcase.
 
 **Critical Info for New Agent**
-- **Partner Onboarding is Paramount:** The last several missions were dedicated to fixing regressions that made the app unusable for new partners. The flow is: New user pays via Stripe -> gets redirected -> logs in via Google -> a minimal profile is auto-created -> they are propelled to a functional, non-blank dashboard. This flow must not be broken.
-- **Refactoring is Ongoing but Risky:** Extracting code from  and  is a primary goal, but the last attempt () caused critical regressions. All refactoring must be followed by extensive testing, including logging in as both the Super Admin and a new partner account.
-- **Super Admin is Omniscient**:  is a special user who MUST see all data and have no credit restrictions. This logic is paramount.
-- **NON-REGRESSION IS PARAMOUNT:** The original fitness business for Bassi (7 legacy reservations, March Cardio classes) are key benchmarks that must always work.
+- **Complete Mission v9.3.6:** Your immediate priority is to finish the last user request. The most critical part is implementing data persistence in the dashboard. Partners cannot configure their accounts without this.
+- **Data Isolation is Paramount:** The agent has done extensive work to isolate partner data. Do not break this. Every new feature or data model that stores partner-specific information MUST include and enforce a .
+- **Non-Regression for Super Admin:** The account  is the Super Admin. All tests must verify that this account's legacy data (7 reservations, 8 contacts) and full data visibility remain intact.
+- **Refactoring is a Background Task:** While the monoliths are a problem, the user's immediate priority is fixing the persistence issue from Mission v9.3.6. Address that first before continuing with refactoring.
 
 **documents and test reports created in this job**
--  (Continuously updated)
-- 
-- 
-- 
-- 
-- 
+- Continuously updated .
+- Test reports from  to .
 
 **Last 10 User Messages and any pending HUMAN messages**
-The user has been providing iterative Missions to fix bugs and refine the platform.
-- **v9.2.1:** Fix a critical regression where the dashboard became invisible after a refactor.
-- **v9.2.2:** Fix a critical bug where only the Super Admin could log in; other partners saw a blank page.
-- **v9.2.3:** Refine the UI to show a loading state instead of a blank page for new partners and improve the Stripe redirect logic.
-- **v9.2.4:** Further solidify the redirect logic using  (mémoire morte) and ensure the UI uses default values to prevent crashing.
-- **v9.2.5:** A final, definitive fix for the blank page and Stripe redirect issues by adding a dedicated  component and hardcoding the redirect URL in the backend.
+- **v9.3.6 (IN PROGRESS):** User requested data persistence for all dashboard settings, a fix for mobile navigation scroll (Done), a fix for an inactive calendar icon, and making the admin logout button visible (already done).
+- **v9.3.5 (Completed):** A read-only commando mission to find Bassi's Stripe link.
+- **v9.3.3 (Completed):** Redesigned the partner showcase with a cinematographic full-width video header.
+- **v9.3.2 (Completed):** Verified and confirmed total data isolation for contacts and reservations.
+- **v9.3.1 (Completed):** Implemented isolated file storage for partners and a server-side check for the smart chat button.
+- **v9.3.0 (Completed):** A critical mission that implemented data isolation for , , and .
+- **v9.2.9 (Completed):** Added a video header to the partner page and a promo code field to the booking form.
+- **v9.2.8 (Completed):** Implemented Super Admin toggles (maintenance/access) and made partner schedules clickable.
+- **v9.2.7 (Completed):** Created the Super Admin Quick Control menu and fixed the 0 CHF purchase flow.
+- **v9.2.6 (Completed):** Fixed Stripe redirection and added the Accéder à mon Dashboard button to the chat.
 
 **Project Health Check:**
-- **Brittle but Improving:** The project's health is significantly better. Critical partner onboarding bugs have been resolved. The frontend is now more resilient to regressions thanks to the implementation of loading states and error boundaries. However, the two main monoliths (, ) still pose a significant maintenance risk.
+- **Brittle:** The application's health is improving, especially with the critical data isolation fixes. However, the lack of data persistence in the dashboard (the current task) is a major blocker. The two monolithic files (, ) remain a significant risk for future development and regressions.
 
 **3rd Party Integrations**
-- **Stripe:** Payment processing for partner credit packs.
+- **Stripe:** Payment processing for credit packs and partner payment links.
 - **Resend:** Transactional emails.
 - **api.qrserver.com:** QR code generation.
 - **Google Auth:** For user login.
 
 **Testing status**
-  - **Testing agent used after significant changes:** YES. The testing agent was used successfully after every mission from v9.1.9 to v9.2.5, proving essential for catching regressions.
+  - **Testing agent used after significant changes:** YES, consistently and effectively after each mission.
   - **Troubleshoot agent used after agent stuck in loop:** NO
   - **Test files created:** None
-  - **Known regressions:** None currently, but the previous session was dedicated to fixing major regressions caused by refactoring.
+  - **Known regressions:** The lack of data persistence in the dashboard is the most significant current issue.
 
 **Credentials to test flow:**
 - **Super Admin Email:** 
-- **Partner Test Account:** Use any new Google account (e.g., ). The system will auto-create a profile.
+- **Partner Test Account:** Use any new Google account. The system will auto-create a profile upon first login after a purchase. Use the 0 CHF test pack to onboard a new partner for free.
 - **Access Method:** Login with Google. For Super Admin, triple-click the © Afroboost 2026 footer text to open the login modal.
 
 **What agent forgot to execute**
-- **Stripe Connect Implementation:** This core feature from the original product requirements remains untouched.
-- The agent successfully reduced the line counts of  and  but did not fully meet the user's ambitious sub-6000 and sub-4000 line goals. The refactoring is still in progress.</analysis>
+The agent has not completed the primary task of **Mission v9.3.6**, which is to implement persistence for all configuration fields in the partner dashboard. While the agent correctly identified that data loading works, the saving mechanism for user input is missing. The agent also needs to re-verify the inactive calendar icon bug as requested by the user.</analysis>
