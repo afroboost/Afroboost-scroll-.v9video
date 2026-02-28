@@ -1797,10 +1797,8 @@ const SuccessOverlay = ({ t, data, onClose, onClearTicket }) => {
       link.href = canvas.toDataURL('image/png');
       link.click();
       
-      // Open WhatsApp Web with message including afroboost.com URL
-      setTimeout(() => {
-        window.open(`https://wa.me/?text=${encodeURIComponent(getShareMessage())}`, '_blank');
-      }, 300);
+      // v9.4.3: Ne plus ouvrir WhatsApp automatiquement après téléchargement
+      // Le client reste sur Afroboost.com
     }, 'image/png');
   };
   
