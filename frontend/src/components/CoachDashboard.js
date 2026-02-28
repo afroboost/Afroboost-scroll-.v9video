@@ -635,6 +635,82 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
     }
   }, [tab]);
   
+  // === v9.3.7: MÉMOIRE TOTALE - Auto-save Concept avec debounce ===
+  const conceptSaveTimeoutRef = useRef(null);
+  const [conceptSaveStatus, setConceptSaveStatus] = useState(null); // 'saving' | 'saved' | 'error'
+  const isConceptLoaded = useRef(false); // Éviter save au premier chargement
+  
+  useEffect(() => {
+    // Ne pas sauvegarder au premier chargement
+    if (!isConceptLoaded.current) {
+      isConceptLoaded.current = true;
+      return;
+    }
+    
+    // Debounce: attendre 1 seconde d'inactivité avant de sauvegarder
+    if (conceptSaveTimeoutRef.current) {
+      clearTimeout(conceptSaveTimeoutRef.current);
+    }
+    
+    conceptSaveTimeoutRef.current = setTimeout(async () => {
+      try {
+        setConceptSaveStatus('saving');
+        await axios.put(`${API}/concept`, concept, getCoachHeaders());
+        setConceptSaveStatus('saved');
+        console.log('[COACH] v9.3.7 Concept auto-sauvegardé');
+        // Cacher le statut après 2 secondes
+        setTimeout(() => setConceptSaveStatus(null), 2000);
+      } catch (err) {
+        console.error('[COACH] Erreur auto-save concept:', err);
+        setConceptSaveStatus('error');
+      }
+    }, 1000);
+    
+    return () => {
+      if (conceptSaveTimeoutRef.current) {
+        clearTimeout(conceptSaveTimeoutRef.current);
+      }
+    };
+  }, [concept]);
+  
+  // === v9.3.7: MÉMOIRE TOTALE - Auto-save PaymentLinks avec debounce ===
+  const paymentSaveTimeoutRef = useRef(null);
+  const [paymentSaveStatus, setPaymentSaveStatus] = useState(null); // 'saving' | 'saved' | 'error'
+  const isPaymentLoaded = useRef(false); // Éviter save au premier chargement
+  
+  useEffect(() => {
+    // Ne pas sauvegarder au premier chargement
+    if (!isPaymentLoaded.current) {
+      isPaymentLoaded.current = true;
+      return;
+    }
+    
+    // Debounce: attendre 1 seconde d'inactivité avant de sauvegarder
+    if (paymentSaveTimeoutRef.current) {
+      clearTimeout(paymentSaveTimeoutRef.current);
+    }
+    
+    paymentSaveTimeoutRef.current = setTimeout(async () => {
+      try {
+        setPaymentSaveStatus('saving');
+        await axios.put(`${API}/payment-links`, paymentLinks, getCoachHeaders());
+        setPaymentSaveStatus('saved');
+        console.log('[COACH] v9.3.7 Payment Links auto-sauvegardés');
+        // Cacher le statut après 2 secondes
+        setTimeout(() => setPaymentSaveStatus(null), 2000);
+      } catch (err) {
+        console.error('[COACH] Erreur auto-save payment links:', err);
+        setPaymentSaveStatus('error');
+      }
+    }, 1000);
+    
+    return () => {
+      if (paymentSaveTimeoutRef.current) {
+        clearTimeout(paymentSaveTimeoutRef.current);
+      }
+    };
+  }, [paymentLinks]);
+  
   // === FONCTION PARTAGE COACH ===
   // v8.9.9: Partager le lien de la vitrine coach
   const handleCoachShareLink = async () => {
