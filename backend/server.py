@@ -2471,6 +2471,25 @@ async def stripe_webhook(request: Request):
                 )
                 logger.info(f"[WEBHOOK] Coach créé: {coach_email} avec {credits} crédits")
                 
+                # v9.0.2: Notifier Bassi de l'achat de pack
+                if RESEND_AVAILABLE:
+                    try:
+                        pack_name = metadata.get("pack_name", "Pack Coach")
+                        bassi_html = f"""<div style="font-family:Arial;max-width:600px;margin:0 auto;background:#1a1a2e;padding:24px;">
+                        <h2 style="color:#d91cd2;margin:0 0 16px;">🔔 Nouveau Coach inscrit !</h2>
+                        <div style="background:rgba(217,28,210,0.1);border:1px solid rgba(217,28,210,0.3);padding:16px;border-radius:8px;margin-bottom:16px;">
+                        <p style="margin:0;color:#fff;"><strong>Email:</strong> {coach_email}</p>
+                        <p style="margin:8px 0 0;color:#fff;"><strong>Nom:</strong> {coach_name}</p>
+                        <p style="margin:8px 0 0;color:#fff;"><strong>Pack:</strong> {pack_name}</p>
+                        <p style="margin:8px 0 0;color:#22c55e;"><strong>Crédits:</strong> {credits}</p>
+                        </div>
+                        <p style="color:#888;font-size:12px;">Accédez au Panel Admin pour gérer ce coach.</p>
+                        </div>"""
+                        await asyncio.to_thread(resend.Emails.send, {"from": "Afroboost System <notifications@afroboosteur.com>", "to": [SUPER_ADMIN_EMAIL], "subject": f"🔔 Nouveau Coach: {coach_name}", "html": bassi_html})
+                        logger.info(f"[WEBHOOK] Notification Bassi envoyée pour {coach_email}")
+                    except Exception as notify_err:
+                        logger.warning(f"[WEBHOOK] Notification Bassi error: {notify_err}")
+                
                 # Envoyer email de bienvenue au coach
                 if RESEND_AVAILABLE and coach_email:
                     try:
