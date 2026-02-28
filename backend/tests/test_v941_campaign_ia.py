@@ -123,7 +123,7 @@ class TestNotificationBadgeNonRegression:
     
     def test_chat_sessions_endpoint(self):
         """Verify chat sessions endpoint works"""
-        response = requests.get(f"{BASE_URL}/api/chat-sessions")
+        response = requests.get(f"{BASE_URL}/api/chat/sessions")
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         print("✅ Chat sessions endpoint working")
     
@@ -137,18 +137,19 @@ class TestNotificationBadgeNonRegression:
 
 
 class TestEmailNotifications:
-    """Tests for email notifications via Resend"""
+    """Tests for email notifications via Resend (campaign email sending)"""
     
-    def test_resend_test_email_endpoint(self):
-        """Verify email test endpoint exists"""
+    def test_campaign_send_email_endpoint(self):
+        """Verify campaign email send endpoint exists"""
         response = requests.post(
-            f"{BASE_URL}/api/test-email",
-            json={"to_email": "test@example.com", "subject": "Test", "content": "Test content"},
+            f"{BASE_URL}/api/campaigns/send-email",
+            json={"campaign_id": "test", "to_emails": ["test@example.com"]},
             headers={"Content-Type": "application/json"}
         )
         # Should not be 404 (endpoint exists)
-        assert response.status_code != 404, "Email test endpoint should exist"
-        print(f"✅ Email test endpoint exists (status: {response.status_code})")
+        # Expected: 400 or 500 due to invalid campaign_id, but not 404
+        assert response.status_code != 404, f"Email send endpoint should exist, got {response.status_code}"
+        print(f"✅ Campaign email send endpoint exists (status: {response.status_code})")
 
 
 class TestCampaignsAPI:
