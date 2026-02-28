@@ -7240,6 +7240,9 @@ async def scheduler_emit_group_message(request: Request):
 # Include router
 fastapi_app.include_router(api_router)
 
+# v9.1.1: Include coach routes
+fastapi_app.include_router(coach_router, prefix="/api")
+
 fastapi_app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
