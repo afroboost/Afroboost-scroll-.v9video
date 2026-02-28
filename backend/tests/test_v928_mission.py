@@ -85,10 +85,18 @@ class TestBassiReservationsAntiRegression:
         response = requests.get(f"{BASE_URL}/api/reservations", headers=headers)
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
-        data = response.json()
-        assert isinstance(data, list), "Reservations should be a list"
-        assert len(data) >= 7, f"Expected at least 7 reservations, got {len(data)}"
-        print(f"✅ Bassi has {len(data)} reservations (>= 7)")
+        resp_json = response.json()
+        # Handle both list and paginated response formats
+        if isinstance(resp_json, list):
+            data = resp_json
+            total = len(data)
+        else:
+            data = resp_json.get("data", [])
+            total = resp_json.get("pagination", {}).get("total", len(data))
+        
+        assert isinstance(data, list), "Reservations data should be a list"
+        assert total >= 7, f"Expected at least 7 reservations, got {total}"
+        print(f"✅ Bassi has {total} reservations (>= 7)")
         
         # Check that at least one reservation has userName containing 'Bassi'
         bassi_reservations = [r for r in data if 'bassi' in r.get('userName', '').lower()]
