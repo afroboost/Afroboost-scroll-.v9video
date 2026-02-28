@@ -4560,11 +4560,24 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                   className="w-full px-4 py-3 rounded-lg neon-input" rows={4} data-testid="concept-description" 
                   placeholder="Décrivez votre concept..." />
               </div>
-              <div>
-                <label className="block mb-2 text-white text-sm">{t('mediaUrl')}</label>
+              
+              {/* ========================= v9.5.0: LIEN VIDÉO SIMPLIFIÉ ========================= */}
+              <div className="border border-pink-500/30 rounded-lg p-4 bg-pink-900/10">
+                <h3 className="text-pink-400 font-semibold mb-2 flex items-center gap-2">
+                  🎬 Lien de votre vidéo (YouTube ou MP4 direct)
+                </h3>
+                <p className="text-white/60 text-xs mb-3">
+                  Cette vidéo s'affichera dans le flux vertical pour tous les membres. Copiez simplement le lien YouTube ou l'URL de votre fichier vidéo.
+                </p>
                 <div className="relative">
-                  <input type="url" value={concept.heroImageUrl} onChange={(e) => setConcept({ ...concept, heroImageUrl: e.target.value })}
-                    className="w-full px-4 py-3 rounded-lg neon-input pr-24" placeholder="https://youtube.com/watch?v=... ou image URL" data-testid="concept-media-url" />
+                  <input 
+                    type="url" 
+                    value={concept.heroImageUrl} 
+                    onChange={(e) => setConcept({ ...concept, heroImageUrl: e.target.value })}
+                    className="w-full px-4 py-3 rounded-lg neon-input pr-24" 
+                    placeholder="https://youtube.com/watch?v=... ou https://mon-site.com/video.mp4" 
+                    data-testid="concept-video-url" 
+                  />
                   {/* Badge de validation d'URL */}
                   {concept.heroImageUrl && concept.heroImageUrl.trim() !== '' && (
                     <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-2 py-1 rounded" style={{
@@ -4572,7 +4585,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                         const url = concept.heroImageUrl.toLowerCase();
                         const isValid = url.includes('youtube.com') || url.includes('youtu.be') || 
                                         url.includes('vimeo.com') || 
-                                        url.endsWith('.mp4') || url.endsWith('.webm') ||
+                                        url.match(/\.(mp4|webm|mov|avi|m4v)(\?|$)/i) ||
                                         url.endsWith('.jpg') || url.endsWith('.jpeg') || 
                                         url.endsWith('.png') || url.endsWith('.webp') || url.endsWith('.gif') ||
                                         url.includes('unsplash.com') || url.includes('pexels.com');
@@ -4582,7 +4595,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                         const url = concept.heroImageUrl.toLowerCase();
                         const isValid = url.includes('youtube.com') || url.includes('youtu.be') || 
                                         url.includes('vimeo.com') || 
-                                        url.endsWith('.mp4') || url.endsWith('.webm') ||
+                                        url.match(/\.(mp4|webm|mov|avi|m4v)(\?|$)/i) ||
                                         url.endsWith('.jpg') || url.endsWith('.jpeg') || 
                                         url.endsWith('.png') || url.endsWith('.webp') || url.endsWith('.gif') ||
                                         url.includes('unsplash.com') || url.includes('pexels.com');
@@ -4591,22 +4604,23 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                     }}>
                       {(() => {
                         const url = concept.heroImageUrl.toLowerCase();
-                        const isValid = url.includes('youtube.com') || url.includes('youtu.be') || 
-                                        url.includes('vimeo.com') || 
-                                        url.endsWith('.mp4') || url.endsWith('.webm') ||
-                                        url.endsWith('.jpg') || url.endsWith('.jpeg') || 
-                                        url.endsWith('.png') || url.endsWith('.webp') || url.endsWith('.gif') ||
-                                        url.includes('unsplash.com') || url.includes('pexels.com');
-                        return isValid ? '✓ Valide' : '✗ Format inconnu';
+                        if (url.includes('youtube.com') || url.includes('youtu.be')) return '✓ YouTube';
+                        if (url.includes('vimeo.com')) return '✓ Vimeo';
+                        if (url.match(/\.(mp4|webm|mov|avi|m4v)(\?|$)/i)) return '✓ Vidéo';
+                        if (url.match(/\.(jpg|jpeg|png|webp|gif)(\?|$)/i)) return '✓ Image';
+                        return '✗ Format inconnu';
                       })()}
                     </span>
                   )}
                 </div>
-                <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>Formats acceptés: YouTube, Vimeo, .mp4, .jpg, .png, .webp</p>
+                <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  💡 <strong>Astuce:</strong> YouTube Shorts fonctionne aussi ! Copiez simplement le lien.
+                </p>
               </div>
+              
               {concept.heroImageUrl && (
                 <div className="mt-4">
-                  <p className="text-white text-sm mb-2" style={{ opacity: 0.7 }}>Aperçu média (16:9):</p>
+                  <p className="text-white text-sm mb-2" style={{ opacity: 0.7 }}>Aperçu média (format 16:9):</p>
                   <MediaDisplay url={concept.heroImageUrl} className="rounded-lg overflow-hidden" />
                 </div>
               )}
