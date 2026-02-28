@@ -1,6 +1,6 @@
 /**
- * BecomeCoachPage - Page "Devenir Coach" v8.9
- * Permet aux nouveaux coachs de s'inscrire et de payer leur pack
+ * BecomeCoachPage - Page "Devenir Partenaire" v9.1.6
+ * Permet aux nouveaux partenaires (coachs/vendeurs) de s'inscrire et de payer leur pack
  */
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -125,7 +125,7 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
               <span style={{ color: '#D91CD2' }}><CrownIcon /></span>
-              Devenir Coach Partenaire
+              Devenir Partenaire Afroboost
             </h1>
             <button 
               onClick={onClose}

@@ -3803,15 +3803,15 @@ export const ChatWidget = () => {
                       S'identifier comme abonné
                     </button>
                     
-                    {/* Bouton Devenir Coach v9.1.5 - Dynamique selon statut */}
+                    {/* Bouton Devenir Partenaire v9.1.6 - Dynamique selon statut */}
                     <button
                       type="button"
                       onClick={() => {
                         if (isRegisteredCoach || isCoachMode) {
-                          // Coach inscrit: Rediriger vers le dashboard
+                          // Partenaire inscrit: Rediriger vers le dashboard
                           window.location.hash = '#coach-dashboard';
                         } else {
-                          // Visiteur: Ouvrir la page Devenir Coach
+                          // Visiteur: Ouvrir la page Devenir Partenaire
                           window.dispatchEvent(new CustomEvent('openBecomeCoach'));
                         }
                       }}
@@ -3828,9 +3828,9 @@ export const ChatWidget = () => {
                         border: '1px solid rgba(217, 28, 210, 0.4)',
                         cursor: 'pointer'
                       }}
-                      data-testid={isRegisteredCoach || isCoachMode ? "coach-dashboard-btn" : "become-coach-chat-btn"}
+                      data-testid={isRegisteredCoach || isCoachMode ? "partner-dashboard-btn" : "become-partner-chat-btn"}
                     >
-                      {(isRegisteredCoach || isCoachMode) ? '🏠 Mon Espace Coach' : 'Devenir Coach Partenaire'}
+                      {(isRegisteredCoach || isCoachMode) ? '🏠 Mon Espace Partenaire' : 'Devenir Partenaire'}
                     </button>
                     
                     <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.4)', marginTop: '8px' }}>
