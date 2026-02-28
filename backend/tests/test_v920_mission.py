@@ -62,8 +62,10 @@ class TestSacredReservations:
     """Verify sacred Fitness reservations exist"""
     
     def test_reservations_exist(self):
-        """GET /api/reservations should return fitness reservations"""
-        response = requests.get(f"{BASE_URL}/api/reservations?page=1&limit=50")
+        """GET /api/reservations should return fitness reservations (with coach header)"""
+        # Super admin header needed to see all reservations
+        headers = {"X-User-Email": "contact.artboost@gmail.com"}
+        response = requests.get(f"{BASE_URL}/api/reservations?page=1&limit=50", headers=headers)
         assert response.status_code == 200
         data = response.json()
         reservations = data.get("data", [])
@@ -71,12 +73,11 @@ class TestSacredReservations:
         # Check for Fitness reservations (Henri BASSI / Bassi)
         fitness_reservations = [
             r for r in reservations 
-            if "fitness" in r.get("courseName", "").lower() or 
-               "bassi" in r.get("userName", "").lower()
+            if "bassi" in r.get("userName", "").lower()
         ]
         
-        print(f"✅ Found {len(reservations)} total reservations, {len(fitness_reservations)} Fitness-related")
-        assert len(reservations) > 0, "Should have at least some reservations"
+        print(f"✅ Found {len(reservations)} total reservations, {len(fitness_reservations)} Bassi reservations")
+        assert len(fitness_reservations) >= 7, f"Should have at least 7 sacred Bassi reservations, got {len(fitness_reservations)}"
 
 class TestFileStructure:
     """Verify file structure and line counts"""
