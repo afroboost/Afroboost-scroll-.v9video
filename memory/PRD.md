@@ -1,5 +1,39 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.0.1 - SYSTÈME FRANCHISE DYNAMIQUE ACTIVÉ ✅ (28 Février 2026)
+
+### STATUT: VALIDÉ - ARCHITECTURE WHITE LABEL
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7395 lignes** (marge 55) |
+| Super Admin | ✅ VOIT TOUT |
+| Toggle/Delete Coach | ✅ FONCTIONNEL |
+| platform_name | ✅ DÉPLOYÉ |
+| Non-régression | **7 réservations ✅** |
+| Tests | **14/14 ✅** |
+
+### Fonctionnalités v9.0.1
+
+| Feature | Description |
+|---------|-------------|
+| Coach.platform_name | Nom personnalisé de la plateforme (ex: "Afroboost") |
+| Coach.logo_url | Logo personnalisé pour la vitrine |
+| POST /admin/coaches/{id}/toggle | Active/Désactive un coach (Super Admin) |
+| DELETE /admin/coaches/{id} | Supprime un coach (Super Admin) |
+| Vitrine dynamique | Affiche platform_name au lieu du nom du coach |
+
+### Tests v9.0.1 - Iteration 71
+- Backend: **14/14 ✅**
+- Toggle auth: 403 pour non-Super Admin ✅
+- Delete auth: 403 pour non-Super Admin ✅
+- Non-régression: **100% INTACT**
+
+### Coachs enregistrés
+- Total: **5 coachs actifs**
+
+---
+
 ## v9.0.0 - TUNNEL ET VITRINE DÉPLOYÉS ✅ (28 Février 2026)
 
 ### STATUT: VALIDÉ - PRODUCTION READY
