@@ -153,6 +153,56 @@ const CampaignManager = ({
     </div>
   ) : null;
   
+  // === v9.4.1: États pour l'assistant IA de campagne ===
+  const [aiSuggestions, setAiSuggestions] = useState([]); // 3 suggestions de messages
+  const [aiSuggestionsLoading, setAiSuggestionsLoading] = useState(false);
+  const [showAiSuggestions, setShowAiSuggestions] = useState(false);
+  const [campaignGoal, setCampaignGoal] = useState(''); // Prompt/objectif de la campagne
+  
+  // === v9.4.1: Fonction pour générer des suggestions avec l'IA ===
+  const generateAiSuggestions = async () => {
+    if (!campaignGoal.trim() && !aiConfig?.campaignPrompt?.trim()) {
+      showCampaignToast('⚠️ Définissez un objectif ou un prompt de campagne d\'abord', 'error');
+      return;
+    }
+    
+    setAiSuggestionsLoading(true);
+    setShowAiSuggestions(true);
+    
+    try {
+      const prompt = campaignGoal.trim() || aiConfig?.campaignPrompt || '';
+      const response = await axios.post(`${API}/ai/campaign-suggestions`, {
+        campaign_goal: prompt,
+        campaign_name: newCampaign.name || 'Campagne',
+        recipient_count: selectedRecipients.length || 1
+      });
+      
+      if (response.data.suggestions && response.data.suggestions.length > 0) {
+        setAiSuggestions(response.data.suggestions);
+        showCampaignToast('✨ 3 suggestions générées!', 'success');
+      } else {
+        showCampaignToast('❌ Aucune suggestion générée', 'error');
+      }
+    } catch (err) {
+      console.error('[AI SUGGESTIONS] Error:', err);
+      showCampaignToast(`Erreur IA: ${err.response?.data?.detail || err.message}`, 'error');
+      setAiSuggestions([
+        { type: 'Promo', text: `🔥 Salut {prénom}! Offre spéciale: ${campaignGoal || 'découvre nos cours'}! Réserve maintenant.` },
+        { type: 'Relance', text: `👋 Hey {prénom}! On ne t'a pas vu depuis un moment... ${campaignGoal || 'Reviens nous voir'}!` },
+        { type: 'Info', text: `📢 {prénom}, ${campaignGoal || 'nouvelle info importante'}! À bientôt.` }
+      ]);
+    } finally {
+      setAiSuggestionsLoading(false);
+    }
+  };
+  
+  // === v9.4.1: Fonction pour insérer une suggestion dans le message ===
+  const insertSuggestion = (text) => {
+    setNewCampaign(prev => ({ ...prev, message: text }));
+    setShowAiSuggestions(false);
+    showCampaignToast('✅ Message inséré!', 'success');
+  };
+  
   return (
     <div className="card-gradient rounded-xl p-4 sm:p-6">
       {/* v9.0.2: Blocage si crédits insuffisants */}
