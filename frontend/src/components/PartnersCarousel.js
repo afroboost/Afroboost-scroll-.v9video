@@ -672,25 +672,34 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
         }}
         data-testid="partners-vertical-slider"
       >
-        {partners.map((partner, index) => (
-          <div 
-            key={partner.id || partner.email || index}
-            className="snap-start snap-always"
-            style={{ height: '100%' }}
-          >
-            <PartnerVideoCard
-              partner={partner}
-              isMuted={mutedStates[partner.id || partner.email] !== false}
-              onToggleMute={() => handleToggleMute(partner.id || partner.email)}
-              isLiked={likedStates[partner.id || partner.email] || false}
-              onLike={() => handleToggleLike(partner.id || partner.email)}
-              isPaused={pausedStates[partner.id || partner.email] || false}
-              onTogglePause={() => handleTogglePause(partner.id || partner.email)}
-              onNavigate={handleNavigate}
-              isVisible={Math.abs(index - activeIndex) <= 1}
-            />
+        {filteredPartners.length === 0 && searchQuery ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <p className="text-white/50 text-lg mb-2">Aucun résultat</p>
+              <p className="text-white/30 text-sm">Essayez un autre terme de recherche</p>
+            </div>
           </div>
-        ))}
+        ) : (
+          filteredPartners.map((partner, index) => (
+            <div 
+              key={partner.id || partner.email || index}
+              className="snap-start snap-always"
+              style={{ height: '100%' }}
+            >
+              <PartnerVideoCard
+                partner={partner}
+                isMuted={mutedStates[partner.id || partner.email] !== false}
+                onToggleMute={() => handleToggleMute(partner.id || partner.email)}
+                isLiked={likedStates[partner.id || partner.email] || false}
+                onLike={() => handleToggleLike(partner.id || partner.email)}
+                isPaused={pausedStates[partner.id || partner.email] || false}
+                onTogglePause={() => handleTogglePause(partner.id || partner.email)}
+                onNavigate={handleNavigate}
+                isVisible={Math.abs(index - activeIndex) <= 1}
+              />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
