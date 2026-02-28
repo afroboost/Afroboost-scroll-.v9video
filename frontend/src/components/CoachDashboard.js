@@ -3958,18 +3958,35 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 </span>
                 {/* === AFFICHAGE CRÉDITS v9.2.3 - Solde TOUJOURS visible === */}
                 {!isSuperAdmin && (
-                  <span 
-                    className="ml-2 px-3 py-1 rounded-full text-sm font-bold"
-                    style={{
-                      background: coachCredits <= 0 ? 'rgba(239,68,68,0.25)' : coachCredits < 5 ? 'rgba(239,68,68,0.2)' : 'rgba(217,28,210,0.2)',
-                      color: coachCredits < 5 ? '#ef4444' : '#D91CD2',
-                      border: `2px solid ${coachCredits < 5 ? 'rgba(239,68,68,0.6)' : 'rgba(217,28,210,0.6)'}`,
-                      boxShadow: coachCredits < 5 ? '0 0 10px rgba(239,68,68,0.3)' : '0 0 10px rgba(217,28,210,0.3)'
-                    }}
-                    data-testid="coach-credits-badge"
-                  >
-                    💰 Solde : {coachCredits <= 0 ? '0' : coachCredits} Crédit{coachCredits > 1 ? 's' : ''}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span 
+                      className="px-3 py-1 rounded-full text-sm font-bold"
+                      style={{
+                        background: coachCredits <= 0 ? 'rgba(239,68,68,0.25)' : coachCredits < 5 ? 'rgba(239,68,68,0.2)' : 'rgba(217,28,210,0.2)',
+                        color: coachCredits < 5 ? '#ef4444' : '#D91CD2',
+                        border: `2px solid ${coachCredits < 5 ? 'rgba(239,68,68,0.6)' : 'rgba(217,28,210,0.6)'}`,
+                        boxShadow: coachCredits < 5 ? '0 0 10px rgba(239,68,68,0.3)' : '0 0 10px rgba(217,28,210,0.3)'
+                      }}
+                      data-testid="coach-credits-badge"
+                    >
+                      💰 Mon Solde : {coachCredits <= 0 ? '0' : coachCredits} Crédit{coachCredits > 1 ? 's' : ''}
+                    </span>
+                    {/* v9.5.0: Bouton Acheter des crédits si solde = 0 */}
+                    {coachCredits <= 0 && (
+                      <button
+                        onClick={() => window.location.hash = '#become-coach'}
+                        className="px-3 py-1 rounded-full text-xs font-medium transition-all hover:scale-105"
+                        style={{
+                          background: 'linear-gradient(135deg, #D91CD2, #8b5cf6)',
+                          color: 'white',
+                          boxShadow: '0 0 10px rgba(217,28,210,0.4)'
+                        }}
+                        data-testid="buy-credits-btn"
+                      >
+                        🛒 Acheter des crédits
+                      </button>
+                    )}
+                  </div>
                 )}
                 {isSuperAdmin && (
                   <span 
