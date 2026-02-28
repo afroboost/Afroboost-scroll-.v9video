@@ -830,7 +830,14 @@ export const ChatWidget = () => {
   const [validatingCode, setValidatingCode] = useState(false); // Loading pendant validation du code
   
   // === v8.9.9: VÉRIFICATION COACH INSCRIT ===
-  const [isRegisteredCoach, setIsRegisteredCoach] = useState(false);
+  // v9.3.0: Initialiser depuis localStorage pour persistance après reconnexion
+  const [isRegisteredCoach, setIsRegisteredCoach] = useState(() => {
+    try {
+      const coachModeFlag = localStorage.getItem('afroboost_coach_mode');
+      const coachUser = localStorage.getItem('afroboost_coach_user');
+      return coachModeFlag === 'true' || !!coachUser;
+    } catch { return false; }
+  });
   
   // === PROFIL ABONNÉ VALIDÉ (afroboost_profile) ===
   const [afroboostProfile, setAfroboostProfile] = useState(getStoredProfile);
