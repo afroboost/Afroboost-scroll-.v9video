@@ -23,6 +23,7 @@ import { QRScannerModal } from "./QRScanner";
 // ArticleManager supprimé - v8.9 Nettoyage SAAS
 import ReservationTab from "./coach/ReservationTab"; // Import Reservation Tab
 import CampaignManager from "./coach/CampaignManager"; // Import Campaign Manager
+import CRMSection from "./coach/CRMSection"; // v9.2.0 Import CRM Section
 import { parseMediaUrl, getMediaThumbnail } from "../services/MediaParser"; // Media Parser
 import SuperAdminPanel from "./SuperAdminPanel"; // v8.9 Super Admin Panel
 
