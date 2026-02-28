@@ -303,8 +303,10 @@ async def get_active_partners():
             partner_data = dict(coach)
             
             # Chercher le concept du coach pour avoir la vidéo
-            concept = await db.concepts.find_one(
-                {"$or": [{"coach_id": coach_email}, {"id": f"concept_{coach_email}"}]},
+            # v9.4.7: Collection "concept" (singulier) pas "concepts"
+            concept_id = f"concept_{coach_email.replace('@', '_').replace('.', '_')}"
+            concept = await db.concept.find_one(
+                {"$or": [{"id": concept_id}, {"coach_id": coach_email}]},
                 {"_id": 0, "heroImageUrl": 1, "heroVideoUrl": 1}
             )
             
@@ -316,7 +318,8 @@ async def get_active_partners():
             partners_with_videos.append(partner_data)
         
         # Ajouter Bassi (Super Admin) en premier s'il a une vidéo configurée
-        bassi_concept = await db.concepts.find_one({"id": "concept"}, {"_id": 0, "heroImageUrl": 1, "heroVideoUrl": 1})
+        # v9.4.7: Collection "concept" (singulier) - id "concept" pour le principal
+        bassi_concept = await db.concept.find_one({"id": "concept"}, {"_id": 0, "heroImageUrl": 1, "heroVideoUrl": 1})
         if bassi_concept and (bassi_concept.get("heroImageUrl") or bassi_concept.get("heroVideoUrl")):
             bassi_data = {
                 "id": "bassi",
