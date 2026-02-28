@@ -587,117 +587,181 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
             </div>
           </div>
           
-          {/* v9.3.2: Header Vidéo Dynamique - Miroir exact de Bassi */}
+          {/* v9.3.3: HERO CINÉMATOGRAPHIQUE - Miroir exact de Bassi */}
           <div 
-            className="rounded-2xl mb-6 overflow-hidden relative"
+            className="relative mb-8 -mx-4 sm:-mx-6 lg:-mx-8"
             style={{ 
-              aspectRatio: '16/9',
-              maxHeight: '400px',
-              background: 'linear-gradient(180deg, rgba(10,5,15,1) 0%, rgba(26,10,31,1) 100%)',
-              border: '1px solid rgba(217, 28, 210, 0.2)',
-              boxShadow: '0 0 30px rgba(217, 28, 210, 0.1)'
+              minHeight: '60vh',
+              maxHeight: '80vh',
+              overflow: 'hidden'
             }}
             data-testid="vitrine-hero-container"
           >
-            {/* v9.3.2: Vidéo du concept (YouTube/Vimeo/MP4) OU placeholder animé */}
-            {coachConcept?.heroImageUrl ? (
-              <div className="w-full h-full relative">
-                {/* YouTube */}
-                {coachConcept.heroImageUrl.includes('youtube.com') || coachConcept.heroImageUrl.includes('youtu.be') ? (
-                  <iframe
-                    className="w-full h-full"
-                    src={`https://www.youtube.com/embed/${
-                      coachConcept.heroImageUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1] || ''
-                    }?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&playlist=${
-                      coachConcept.heroImageUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1] || ''
-                    }`}
-                    title="Video"
-                    frameBorder="0"
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                    style={{ border: 'none' }}
-                    data-testid="vitrine-youtube-video"
-                  />
-                ) : coachConcept.heroImageUrl.includes('vimeo.com') ? (
-                  /* Vimeo */
-                  <iframe
-                    className="w-full h-full"
-                    src={`https://player.vimeo.com/video/${
-                      coachConcept.heroImageUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/)?.[1] || ''
-                    }?autoplay=1&muted=1&loop=1&background=1`}
-                    title="Video"
-                    frameBorder="0"
-                    allow="autoplay; fullscreen"
-                    allowFullScreen
-                    style={{ border: 'none' }}
-                    data-testid="vitrine-vimeo-video"
-                  />
-                ) : coachConcept.heroImageUrl.match(/\.(mp4|webm|mov|avi)$/i) ? (
-                  /* MP4/Video file */
-                  <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-full object-cover"
-                    style={{ filter: 'brightness(0.9)' }}
-                    data-testid="vitrine-mp4-video"
-                  >
-                    <source src={coachConcept.heroImageUrl} type="video/mp4" />
-                  </video>
-                ) : (
-                  /* Image */
-                  <img 
-                    src={coachConcept.heroImageUrl}
-                    alt="Coach Banner"
-                    className="w-full h-full object-cover"
-                    style={{ filter: 'brightness(0.9)' }}
-                    data-testid="vitrine-hero-image"
-                  />
-                )}
-              </div>
-            ) : coach.video_url ? (
-              /* Fallback: video_url du coach */
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover"
-                style={{ filter: 'brightness(0.9)' }}
-                data-testid="vitrine-video"
-              >
-                <source src={coach.video_url} type="video/mp4" />
-              </video>
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center relative">
-                {/* Animation de fond */}
+            {/* Vidéo/Image en arrière-plan FULL WIDTH */}
+            <div className="absolute inset-0">
+              {coachConcept?.heroImageUrl ? (
+                <>
+                  {/* YouTube */}
+                  {(coachConcept.heroImageUrl.includes('youtube.com') || coachConcept.heroImageUrl.includes('youtu.be')) ? (
+                    <iframe
+                      className="absolute inset-0 w-full h-full scale-125"
+                      src={`https://www.youtube.com/embed/${
+                        coachConcept.heroImageUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1] || ''
+                      }?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&playlist=${
+                        coachConcept.heroImageUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1] || ''
+                      }`}
+                      title="Video Background"
+                      frameBorder="0"
+                      allow="autoplay; encrypted-media"
+                      style={{ border: 'none', pointerEvents: 'none' }}
+                      data-testid="vitrine-youtube-hero"
+                    />
+                  ) : coachConcept.heroImageUrl.includes('vimeo.com') ? (
+                    /* Vimeo */
+                    <iframe
+                      className="absolute inset-0 w-full h-full scale-125"
+                      src={`https://player.vimeo.com/video/${
+                        coachConcept.heroImageUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/)?.[1] || ''
+                      }?autoplay=1&muted=1&loop=1&background=1`}
+                      title="Video Background"
+                      frameBorder="0"
+                      allow="autoplay; fullscreen"
+                      style={{ border: 'none', pointerEvents: 'none' }}
+                      data-testid="vitrine-vimeo-hero"
+                    />
+                  ) : coachConcept.heroImageUrl.match(/\.(mp4|webm|mov|avi)$/i) ? (
+                    /* MP4/Video */
+                    <video
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                      style={{ filter: 'brightness(0.7)' }}
+                      data-testid="vitrine-mp4-hero"
+                    >
+                      <source src={coachConcept.heroImageUrl} type="video/mp4" />
+                    </video>
+                  ) : (
+                    /* Image */
+                    <img 
+                      src={coachConcept.heroImageUrl}
+                      alt="Coach Banner"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      style={{ filter: 'brightness(0.7)' }}
+                      data-testid="vitrine-image-hero"
+                    />
+                  )}
+                </>
+              ) : coach.video_url ? (
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ filter: 'brightness(0.7)' }}
+                >
+                  <source src={coach.video_url} type="video/mp4" />
+                </video>
+              ) : (
+                /* Placeholder animé premium */
                 <div 
                   className="absolute inset-0"
                   style={{
-                    background: 'radial-gradient(circle at 50% 50%, rgba(217, 28, 210, 0.15) 0%, transparent 60%)'
-                  }}
-                />
-                
-                {/* Logo animé */}
-                <div 
-                  className="relative z-10 mb-4"
-                  style={{
-                    animation: 'pulse 3s ease-in-out infinite',
-                    filter: 'drop-shadow(0 0 20px rgba(217, 28, 210, 0.5))'
+                    background: 'linear-gradient(180deg, rgba(10,5,20,1) 0%, rgba(26,10,41,1) 50%, rgba(10,5,20,1) 100%)'
                   }}
                 >
-                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#D91CD2" strokeWidth="1">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
+                  <div 
+                    className="absolute inset-0"
+                    style={{
+                      background: 'radial-gradient(circle at 50% 30%, rgba(217, 28, 210, 0.2) 0%, transparent 50%)',
+                      animation: 'pulse 4s ease-in-out infinite'
+                    }}
+                  />
                 </div>
-                
-                {/* Nom du coach stylisé */}
-                <h2 
-                  className="text-2xl font-bold relative z-10"
-                  style={{
+              )}
+            </div>
+            
+            {/* Overlay gradient pour lisibilité du texte */}
+            <div 
+              className="absolute inset-0"
+              style={{
+                background: 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(10,5,20,0.95) 100%)'
+              }}
+            />
+            
+            {/* Contenu flottant PAR-DESSUS la vidéo */}
+            <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 py-16">
+              {/* Logo Afroboost petit */}
+              <div 
+                className="mb-4"
+                style={{
+                  filter: 'drop-shadow(0 0 15px rgba(217, 28, 210, 0.5))'
+                }}
+              >
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#D91CD2" strokeWidth="1.2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              
+              {/* Nom du Coach avec glow violet */}
+              <h1 
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center mb-4"
+                style={{
+                  color: 'white',
+                  textShadow: '0 0 30px rgba(217, 28, 210, 0.6), 0 0 60px rgba(139, 92, 246, 0.4)',
+                  letterSpacing: '-0.02em'
+                }}
+                data-testid="vitrine-coach-name"
+              >
+                Coach {displayName}
+              </h1>
+              
+              {/* Badge partenaire */}
+              <div 
+                className="mb-8 px-4 py-1.5 rounded-full text-sm"
+                style={{
+                  background: 'rgba(217, 28, 210, 0.2)',
+                  border: '1px solid rgba(217, 28, 210, 0.4)',
+                  color: '#D91CD2',
+                  backdropFilter: 'blur(10px)'
+                }}
+              >
+                Partenaire Afroboost
+              </div>
+              
+              {/* Bouton Réserver avec glow */}
+              <button
+                onClick={() => {
+                  // Scroll vers les cours
+                  document.getElementById('vitrine-courses-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105"
+                style={{
+                  background: 'linear-gradient(135deg, #D91CD2 0%, #8B5CF6 100%)',
+                  color: 'white',
+                  boxShadow: '0 0 30px rgba(217, 28, 210, 0.5), 0 0 60px rgba(139, 92, 246, 0.3)',
+                  border: '1px solid rgba(255,255,255,0.2)'
+                }}
+                data-testid="vitrine-cta-btn"
+              >
+                Réserver mon cours
+              </button>
+            </div>
+            
+            {/* Animation CSS */}
+            <style>{`
+              @keyframes pulse {
+                0%, 100% { opacity: 0.8; }
+                50% { opacity: 1; }
+              }
+            `}</style>
+          </div>
+
+          {/* Photo et nom du coach en haut à droite (header sticky) */}
                     background: 'linear-gradient(135deg, #D91CD2, #8B5CF6)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent'
