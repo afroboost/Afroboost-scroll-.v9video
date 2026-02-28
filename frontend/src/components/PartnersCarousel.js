@@ -174,8 +174,13 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
     }, 250);
   }, [onNavigate, onTogglePause, partner]);
 
+  // v9.5.7: handleReserve avec blocage maintenance
   const handleReserve = (e) => {
     e.stopPropagation();
+    if (isBlocked) {
+      console.log('[MAINTENANCE] Réservation bloquée');
+      return;
+    }
     onNavigate(partner);
   };
 
