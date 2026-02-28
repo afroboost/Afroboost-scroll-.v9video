@@ -802,6 +802,7 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                       className="w-full px-4 py-3 rounded-lg text-white"
                       style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
                       placeholder="Votre nom"
+                      data-testid="booking-name-input"
                     />
                   </div>
                   
@@ -815,6 +816,7 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                       className="w-full px-4 py-3 rounded-lg text-white"
                       style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
                       placeholder="email@example.com"
+                      data-testid="booking-email-input"
                     />
                   </div>
                   
@@ -828,8 +830,78 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                       className="w-full px-4 py-3 rounded-lg text-white"
                       style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
                       placeholder="+41 79 XXX XX XX"
+                      data-testid="booking-whatsapp-input"
                     />
                   </div>
+                  
+                  {/* v9.2.9: Champ Code Promo */}
+                  <div>
+                    <label className="text-white/60 text-xs mb-1 block">Code Promo (optionnel)</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={bookingForm.promoCode}
+                        onChange={e => {
+                          setBookingForm(prev => ({ ...prev, promoCode: e.target.value.toUpperCase() }));
+                        }}
+                        className="flex-1 px-4 py-3 rounded-lg text-white"
+                        style={{ 
+                          background: appliedDiscount ? 'rgba(34, 197, 94, 0.15)' : 'rgba(255,255,255,0.08)', 
+                          border: appliedDiscount ? '1px solid rgba(34, 197, 94, 0.5)' : '1px solid rgba(255,255,255,0.15)' 
+                        }}
+                        placeholder="CODE123"
+                        data-testid="booking-promo-input"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => validatePromoCode(bookingForm.promoCode)}
+                        className="px-4 py-3 rounded-lg font-medium transition-all hover:scale-105"
+                        style={{ 
+                          background: 'rgba(217, 28, 210, 0.3)', 
+                          border: '1px solid rgba(217, 28, 210, 0.5)',
+                          color: '#D91CD2'
+                        }}
+                        data-testid="validate-promo-btn"
+                      >
+                        Valider
+                      </button>
+                    </div>
+                    {promoMessage.text && (
+                      <p 
+                        className={`mt-2 text-sm font-medium ${promoMessage.type === 'success' ? 'text-green-400' : 'text-red-400'}`}
+                        data-testid="promo-message-vitrine"
+                      >
+                        {promoMessage.text}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* v9.2.9: Résumé prix avec réduction */}
+                  {selectedOffer && (
+                    <div 
+                      className="rounded-lg p-3"
+                      style={{ background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.3)' }}
+                    >
+                      <div className="flex justify-between text-sm text-white/70">
+                        <span>Offre</span>
+                        <span>{selectedOffer.price?.toFixed(2) || '0.00'} CHF</span>
+                      </div>
+                      {appliedDiscount && (
+                        <div className="flex justify-between text-sm text-green-400 mt-1">
+                          <span>Réduction ({appliedDiscount.code})</span>
+                          <span>
+                            -{appliedDiscount.type === '100%' ? '100%' : 
+                              appliedDiscount.type === '%' ? `${appliedDiscount.value}%` : 
+                              `${appliedDiscount.value} CHF`}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-white font-bold mt-2 pt-2 border-t border-white/10">
+                        <span>Total</span>
+                        <span>{calculateFinalPrice().toFixed(2)} CHF</span>
+                      </div>
+                    </div>
+                  )}
                   
                   <button
                     type="submit"
