@@ -39,6 +39,40 @@ const API = `${BACKEND_URL}/api`;
 const ADMIN_EMAIL = 'contact.artboost@gmail.com';
 const APP_VERSION = '2.0.0';
 
+// v9.2.3: DÉTECTION IMMÉDIATE PROPULSION STRIPE (avant tout rendu)
+// Cette logique s'exécute AVANT React pour capturer l'intention de redirection
+const detectStripeSuccess = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const hash = window.location.hash;
+  
+  const isSuccess = urlParams.get('success') === 'true' || 
+                    urlParams.get('status') === 'success' ||
+                    hash.includes('success=true') ||
+                    hash.includes('welcome=true');
+  
+  if (isSuccess) {
+    console.log('[APP] 🚀 v9.2.3 PROPULSION: Intent détecté AVANT rendu');
+    // Mémoriser l'intention dans localStorage
+    localStorage.setItem('afroboost_redirect_intent', 'dashboard');
+    localStorage.setItem('afroboost_redirect_message', '🎉 Paiement validé ! Bienvenue Partenaire');
+    
+    // Nettoyer l'URL immédiatement
+    const url = new URL(window.location.href);
+    url.searchParams.delete('success');
+    url.searchParams.delete('status');
+    url.searchParams.delete('session_id');
+    url.searchParams.delete('welcome');
+    url.hash = '#coach-dashboard';
+    window.history.replaceState({}, '', url.pathname + url.hash);
+    
+    return true;
+  }
+  return false;
+};
+
+// Exécuter la détection immédiatement
+const INITIAL_REDIRECT_INTENT = detectStripeSuccess();
+
 // Translations
 const translations = {
   fr: {
