@@ -1,5 +1,67 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.3 - FIX VIDÉO ET AUTONOMIE PARTENAIRE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.5.3 COMPLÈTE - "FLUX VIDÉO RÉPARÉ ET PARTENAIRES AUTONOMES"
+
+| Objectif | Statut |
+|----------|--------|
+| Nouvelle vidéo YouTube par défaut | ✅ |
+| Fonctionnalité de recherche | ✅ |
+| Champ vidéo Dashboard fonctionnel | ✅ |
+| Anti-régression | ✅ |
+
+### 1. VIDÉO PAR DÉFAUT (FALLBACK)
+
+```javascript
+// PartnersCarousel.js L17
+const DEFAULT_VIDEO_URL = "https://www.youtube.com/watch?v=9ZvW8wnWcxE";
+// Afrobeat Dance Workout 2025 - vidéo populaire et valide
+```
+
+**Usage:** Utilisée comme fallback quand un partenaire n'a pas configuré sa propre vidéo.
+
+### 2. FONCTIONNALITÉ DE RECHERCHE
+
+**UI:**
+| État | Élément | Style |
+|------|---------|-------|
+| Fermé | Logo Afroboost | Centre |
+| Ouvert | Input "Rechercher un partenaire..." | Pleine largeur |
+
+**Comportement:**
+```javascript
+// Filtrage L428-442
+const filtered = partners.filter(p => {
+  const name = (p.platform_name || p.name || '').toLowerCase();
+  const bio = (p.bio || p.description || '').toLowerCase();
+  return name.includes(query) || bio.includes(query);
+});
+
+// Compteur L653-659
+<p>{filteredPartners.length} résultat(s) pour "{searchQuery}"</p>
+```
+
+**Boutons:**
+- ✕ dans l'input → Efface le texte
+- ✕ rose (search-btn) → Ferme la recherche
+
+### 3. CHAMP VIDÉO DASHBOARD
+
+```jsx
+<input 
+  data-testid="concept-video-url"
+  placeholder="https://youtube.com/watch?v=... ou https://mon-site.com/video.mp4"
+/>
+// Badge validation: ✓ YouTube, ✓ Vimeo, ✓ Vidéo, ✓ Image, ✗ Format inconnu
+```
+
+### Tests v9.5.3 - Iteration 111
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Chat violet, Retour au Flux, Routage intelligent** ✅
+
+---
+
 ## v9.5.2 - LOGIQUE D'ACCÈS ET RÉPARATION FLUX ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.5.2 COMPLÈTE - "LOGIQUE D'ACCÈS ET FLUX VIDÉO RÉPARÉS"
