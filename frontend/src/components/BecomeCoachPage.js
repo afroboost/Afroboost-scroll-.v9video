@@ -1,8 +1,9 @@
 /**
- * BecomeCoachPage - Page "Devenir Partenaire" v9.1.6
+ * BecomeCoachPage - Page "Devenir Partenaire" v9.4.7
  * Permet aux nouveaux partenaires (coachs/vendeurs) de s'inscrire et de payer leur pack
+ * v9.4.7: Ajout connexion Google sur cette page avec création de profil "En attente de paiement"
  */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -21,6 +22,18 @@ const CrownIcon = () => (
   </svg>
 );
 
+// Icône Google officielle
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" fillRule="evenodd">
+      <path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+      <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+      <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+    </g>
+  </svg>
+);
+
 const BecomeCoachPage = ({ onClose, onSuccess }) => {
   const [packs, setPacks] = useState([]);
   const [selectedPack, setSelectedPack] = useState(null);
@@ -28,13 +41,126 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   
-  // Formulaire d'inscription
+  // v9.4.7: État utilisateur connecté via Google
+  const [googleUser, setGoogleUser] = useState(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const hasProcessedRef = useRef(false);
+  
+  // Formulaire d'inscription (fallback si pas de Google)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     promoCode: ''
   });
+
+  // v9.4.7: Vérifier si déjà authentifié au chargement
+  useEffect(() => {
+    const checkExistingAuth = async () => {
+      try {
+        const response = await axios.get(`${API}/auth/me`, {
+          withCredentials: true
+        });
+        if (response.data && response.data.email) {
+          console.log('[BECOME-COACH] ✅ Déjà connecté:', response.data.email);
+          setGoogleUser(response.data);
+          // Pré-remplir le formulaire avec les données Google
+          setFormData(prev => ({
+            ...prev,
+            name: response.data.name || '',
+            email: response.data.email || ''
+          }));
+        }
+      } catch (err) {
+        console.log('[BECOME-COACH] 🔒 Non connecté');
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    checkExistingAuth();
+  }, []);
+
+  // v9.4.7: Traiter le session_id dans l'URL (callback OAuth sur cette page)
+  useEffect(() => {
+    const processOAuthCallback = async () => {
+      if (hasProcessedRef.current) return;
+      
+      const hash = window.location.hash;
+      if (!hash.includes('session_id=')) return;
+      
+      hasProcessedRef.current = true;
+      setSubmitting(true);
+      setError(null);
+      
+      const sessionId = hash.split('session_id=')[1]?.split('&')[0];
+      if (!sessionId) {
+        setError("Session invalide");
+        setSubmitting(false);
+        return;
+      }
+      
+      // Nettoyer l'URL
+      window.history.replaceState(null, '', window.location.pathname);
+      
+      try {
+        const response = await axios.post(`${API}/auth/google/session`, 
+          { session_id: sessionId },
+          { withCredentials: true }
+        );
+        
+        if (response.data.success) {
+          const user = response.data.user;
+          console.log('[BECOME-COACH] ✅ Google login:', user.email);
+          setGoogleUser(user);
+          setFormData(prev => ({
+            ...prev,
+            name: user.name || prev.name,
+            email: user.email || prev.email
+          }));
+          
+          // v9.4.7: Créer automatiquement un profil "En attente de paiement"
+          await createPendingProfile(user);
+        } else {
+          setError(response.data.message || "Erreur d'authentification");
+        }
+      } catch (err) {
+        console.error('[BECOME-COACH] ❌ Erreur OAuth:', err);
+        setError(err.response?.data?.message || "Erreur d'authentification");
+      } finally {
+        setSubmitting(false);
+      }
+    };
+    
+    processOAuthCallback();
+  }, []);
+
+  // v9.4.7: Créer un profil "En attente de paiement" pour les nouveaux utilisateurs Google
+  const createPendingProfile = async (user) => {
+    try {
+      // Vérifier si déjà partenaire
+      const checkRes = await axios.get(`${API}/check-partner/${user.email}`);
+      if (checkRes.data.is_partner) {
+        console.log('[BECOME-COACH] Utilisateur déjà partenaire');
+        return;
+      }
+      
+      // Créer un profil en attente (0 crédits = en attente de paiement)
+      await axios.post(`${API}/coach/register`, {
+        email: user.email,
+        name: user.name || user.email.split('@')[0],
+        phone: '',
+        credits: 0, // 0 crédits = en attente de paiement
+        pack_id: null,
+        status: 'pending_payment'
+      });
+      console.log('[BECOME-COACH] ✅ Profil "En attente" créé:', user.email);
+    } catch (err) {
+      // Ignorer si profil existe déjà (erreur 400)
+      if (err.response?.status !== 400) {
+        console.error('[BECOME-COACH] Erreur création profil:', err);
+      }
+    }
+  };
 
   // Charger les packs disponibles
   useEffect(() => {
@@ -55,6 +181,15 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
     fetchPacks();
   }, []);
 
+  // Connexion Google
+  const handleGoogleLogin = () => {
+    setSubmitting(true);
+    setError(null);
+    // Rediriger vers Google OAuth avec retour sur cette page
+    const redirectUrl = window.location.origin + window.location.pathname + '#become-coach';
+    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -63,7 +198,11 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !selectedPack) {
+    // Utiliser les données Google si disponibles
+    const email = googleUser?.email || formData.email;
+    const name = googleUser?.name || formData.name;
+    
+    if (!name || !email || !selectedPack) {
       setError('Veuillez remplir tous les champs obligatoires');
       return;
     }
@@ -77,8 +216,8 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
         const response = await axios.post(`${API}/stripe/create-coach-checkout`, {
           price_id: selectedPack.stripe_price_id,
           pack_id: selectedPack.id,
-          email: formData.email,
-          name: formData.name,
+          email: email,
+          name: name,
           phone: formData.phone,
           promo_code: formData.promoCode
         });
@@ -91,8 +230,8 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
       
       // Pack gratuit ou sans Stripe - inscription directe
       const registerRes = await axios.post(`${API}/coach/register`, {
-        email: formData.email,
-        name: formData.name,
+        email: email,
+        name: name,
         phone: formData.phone,
         pack_id: selectedPack.id,
         credits: selectedPack.credits
@@ -103,7 +242,7 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
         localStorage.setItem('redirect_to_dash', 'true');
         localStorage.setItem('afroboost_redirect_message', '🎉 Bienvenue ! Votre pack est activé.');
         window.location.hash = '#partner-dashboard';
-        window.location.reload(); // Force refresh pour déclencher le modal login
+        window.location.reload();
         onSuccess?.(registerRes.data);
       }
     } catch (err) {
@@ -114,7 +253,7 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
     }
   };
 
-  if (loading) {
+  if (loading || isCheckingAuth) {
     return (
       <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
         <div className="text-white text-lg">Chargement...</div>
@@ -140,6 +279,54 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
               ✕
             </button>
           </div>
+
+          {/* v9.4.7: Bouton Google Login si pas connecté */}
+          {!googleUser && (
+            <div className="glass rounded-2xl p-6 mb-8 text-center" style={{ border: '1px solid rgba(217, 28, 210, 0.5)' }}>
+              <h2 className="text-xl font-semibold text-white mb-4">Commencez par vous connecter</h2>
+              <p className="text-white/60 text-sm mb-6">
+                Connectez-vous avec Google pour simplifier votre inscription
+              </p>
+              <button
+                onClick={handleGoogleLogin}
+                disabled={submitting}
+                className="inline-flex items-center justify-center gap-3 py-3 px-6 rounded-lg font-medium transition-all duration-200"
+                style={{
+                  background: '#ffffff',
+                  color: '#1f1f1f',
+                  cursor: submitting ? 'wait' : 'pointer',
+                  opacity: submitting ? 0.7 : 1
+                }}
+                data-testid="google-login-pack-btn"
+              >
+                {submitting ? (
+                  <div className="animate-spin w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full"></div>
+                ) : (
+                  <GoogleIcon />
+                )}
+                <span>{submitting ? 'Connexion...' : 'Se connecter avec Google'}</span>
+              </button>
+              <p className="text-white/40 text-xs mt-4">
+                ou remplissez le formulaire ci-dessous
+              </p>
+            </div>
+          )}
+
+          {/* v9.4.7: Badge utilisateur connecté */}
+          {googleUser && (
+            <div className="glass rounded-2xl p-4 mb-6 flex items-center gap-4" style={{ border: '1px solid rgba(34, 197, 94, 0.5)', background: 'rgba(34, 197, 94, 0.1)' }}>
+              <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-green-400 font-medium">Connecté en tant que</p>
+                <p className="text-white text-lg">{googleUser.name || googleUser.email}</p>
+                <p className="text-white/60 text-sm">{googleUser.email}</p>
+              </div>
+            </div>
+          )}
 
           {/* Avantages */}
           <div className="glass rounded-2xl p-6 mb-8" style={{ border: '1px solid rgba(217, 28, 210, 0.3)' }}>
@@ -221,7 +408,9 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
           {/* Formulaire */}
           {selectedPack && (
             <div className="glass rounded-2xl p-6" style={{ border: '1px solid rgba(217, 28, 210, 0.3)' }}>
-              <h2 className="text-xl font-semibold text-white mb-4">Vos Informations</h2>
+              <h2 className="text-xl font-semibold text-white mb-4">
+                {googleUser ? 'Confirmer vos informations' : 'Vos Informations'}
+              </h2>
               
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -230,10 +419,11 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
                     <input
                       type="text"
                       name="name"
-                      value={formData.name}
+                      value={googleUser?.name || formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg"
+                      disabled={!!googleUser}
+                      className="w-full px-4 py-3 rounded-lg disabled:opacity-60"
                       style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
                       data-testid="coach-name-input"
                     />
@@ -243,10 +433,11 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
                     <input
                       type="email"
                       name="email"
-                      value={formData.email}
+                      value={googleUser?.email || formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg"
+                      disabled={!!googleUser}
+                      className="w-full px-4 py-3 rounded-lg disabled:opacity-60"
                       style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
                       data-testid="coach-email-input"
                     />
@@ -304,7 +495,7 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
 
                 <button
                   type="submit"
-                  disabled={submitting || !formData.name || !formData.email}
+                  disabled={submitting || (!googleUser && (!formData.name || !formData.email))}
                   className="w-full py-4 rounded-xl text-white font-bold text-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ background: 'linear-gradient(135deg, #D91CD2, #8b5cf6)' }}
                   data-testid="submit-coach-registration"
