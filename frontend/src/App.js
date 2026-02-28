@@ -30,6 +30,7 @@ import BecomeCoachPage from "./components/BecomeCoachPage";
 import SuperAdminPanel from "./components/SuperAdminPanel";
 import { CoachSearchModal } from "./components/CoachSearch";
 import CoachVitrine from "./components/CoachVitrine";
+import PartnersCarousel from "./components/PartnersCarousel";
 import { useDataCache, invalidateCache } from "./hooks/useDataCache";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
