@@ -143,7 +143,28 @@ const OfferCardVitrine = ({ offer, onSelect }) => {
 };
 
 // Composant carte cours avec style Afroboost
-const CourseCardVitrine = ({ course }) => {
+const CourseCardVitrine = ({ course, onBookClick }) => {
+  // v9.2.8: Générer les prochaines dates pour ce cours
+  const getNextOccurrences = (weekday, count = 4) => {
+    const now = new Date();
+    const results = [];
+    const day = now.getDay();
+    let diff = weekday - day;
+    if (diff < 0) diff += 7;
+    let current = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff);
+    for (let i = 0; i < count; i++) {
+      results.push(new Date(current));
+      current.setDate(current.getDate() + 7);
+    }
+    return results;
+  };
+  
+  const formatDateShort = (d) => {
+    return d.toLocaleDateString('fr-CH', { weekday: 'short', day: '2-digit', month: '2-digit' });
+  };
+  
+  const upcomingDates = course.weekday !== undefined ? getNextOccurrences(course.weekday, 4) : [];
+  
   return (
     <div 
       className="rounded-xl p-4 transition-all duration-300 hover:scale-[1.01]"
@@ -174,7 +195,32 @@ const CourseCardVitrine = ({ course }) => {
         </div>
       )}
       
-      {course.weekday !== undefined && (
+      {/* v9.2.8: Dates cliquables pour réservation */}
+      {upcomingDates.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs text-white/50 mb-2">Prochaines sessions :</p>
+          <div className="flex flex-wrap gap-2">
+            {upcomingDates.map((date, idx) => (
+              <button
+                key={idx}
+                onClick={() => onBookClick && onBookClick(course, date)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105"
+                style={{
+                  background: 'rgba(217, 28, 210, 0.2)',
+                  border: '1px solid rgba(217, 28, 210, 0.4)',
+                  color: '#d91cd2',
+                  cursor: 'pointer'
+                }}
+                data-testid={`book-course-${course.id}-${idx}`}
+              >
+                {formatDateShort(date)} • {course.time}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      
+      {course.weekday !== undefined && upcomingDates.length === 0 && (
         <div className="mt-2 px-3 py-1 inline-block rounded-full text-xs font-medium"
           style={{ background: 'rgba(217, 28, 210, 0.2)', color: '#d91cd2' }}>
           {['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'][course.weekday]}
