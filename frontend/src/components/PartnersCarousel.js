@@ -1,6 +1,6 @@
 /**
- * PartnersCarousel - Carousel horizontal des vidéos partenaires v9.4.7
- * Affiche les vidéos de profil des partenaires actifs avec swipe
+ * PartnersCarousel - Scroll vertical style Reels v9.4.8
+ * Format 16:9 strict, snap scroll vertical, UI overlay minimaliste
  */
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
@@ -8,9 +8,26 @@ import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
-// Icône haut-parleur pour le son
+// Icône Coeur pour Like
+const HeartIcon = ({ filled, className = "" }) => (
+  <svg 
+    width="28" 
+    height="28" 
+    viewBox="0 0 24 24" 
+    fill={filled ? "currentColor" : "none"} 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+  </svg>
+);
+
+// Icône Son
 const SoundIcon = ({ muted }) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     {muted ? (
       <>
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
@@ -26,12 +43,12 @@ const SoundIcon = ({ muted }) => (
   </svg>
 );
 
-// Composant vidéo partenaire individuel
-const PartnerVideoCard = ({ partner, onClick, isActive, onToggleMute, isMuted }) => {
+// Composant vidéo partenaire - Style Reels minimaliste
+const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isLiked }) => {
   const videoRef = useRef(null);
   const [hasError, setHasError] = useState(false);
   
-  // Extraire l'ID YouTube si c'est une URL YouTube
+  // Extraire l'ID YouTube
   const getYoutubeId = (url) => {
     if (!url) return null;
     const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -45,41 +62,37 @@ const PartnerVideoCard = ({ partner, onClick, isActive, onToggleMute, isMuted })
     return match ? match[1] : null;
   };
   
-  // Déterminer le type de média
   const videoUrl = partner.video_url || partner.heroImageUrl;
   const youtubeId = getYoutubeId(videoUrl);
   const vimeoId = getVimeoId(videoUrl);
   const isDirectVideo = videoUrl && videoUrl.match(/\.(mp4|webm|mov|avi)$/i);
   const isImage = videoUrl && videoUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i);
   
-  // Photo de profil ou initiale
   const initial = (partner.name || partner.platform_name || 'P').charAt(0).toUpperCase();
   const displayName = partner.platform_name || partner.name || 'Partenaire';
 
   return (
     <div 
-      className="flex-shrink-0 snap-start cursor-pointer transition-all duration-300 hover:scale-105"
+      className="snap-start snap-always w-full flex-shrink-0 flex items-center justify-center cursor-pointer"
       style={{ 
-        width: '280px', 
-        minWidth: '280px',
-        padding: '8px'
+        height: 'calc(100vh - 200px)',
+        minHeight: '400px',
+        maxHeight: '600px',
+        background: '#000000'
       }}
       onClick={() => onClick(partner)}
       data-testid={`partner-card-${partner.id || partner.email}`}
     >
+      {/* Container 16:9 centré */}
       <div 
-        className="relative rounded-2xl overflow-hidden"
+        className="relative w-full max-w-lg mx-auto"
         style={{
-          height: '400px',
-          background: 'linear-gradient(180deg, rgba(10,5,20,1) 0%, rgba(26,10,41,1) 100%)',
-          border: isActive ? '3px solid #D91CD2' : '1px solid rgba(217, 28, 210, 0.3)',
-          boxShadow: isActive 
-            ? '0 0 30px rgba(217, 28, 210, 0.5)' 
-            : '0 4px 20px rgba(0,0,0,0.5)'
+          aspectRatio: '16/9',
+          maxHeight: '100%'
         }}
       >
-        {/* Vidéo/Image de fond */}
-        <div className="absolute inset-0">
+        {/* Vidéo/Image - Plein écran 16:9 */}
+        <div className="absolute inset-0 overflow-hidden rounded-lg">
           {youtubeId ? (
             <iframe
               className="absolute inset-0 w-full h-full"
@@ -115,35 +128,45 @@ const PartnerVideoCard = ({ partner, onClick, isActive, onToggleMute, isMuted })
               src={videoUrl} 
               alt={displayName}
               className="absolute inset-0 w-full h-full object-cover"
-              style={{ filter: 'brightness(0.7)' }}
               onError={() => setHasError(true)}
             />
           ) : (
-            /* Placeholder animé si pas de média */
+            /* Placeholder animé */
             <div 
               className="absolute inset-0"
               style={{
-                background: 'radial-gradient(circle at 50% 30%, rgba(217, 28, 210, 0.3) 0%, transparent 60%)'
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(217, 28, 210, 0.3) 100%)'
               }}
-            />
+            >
+              <div 
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  background: 'radial-gradient(circle at 50% 50%, rgba(217, 28, 210, 0.4) 0%, transparent 70%)'
+                }}
+              >
+                <span className="text-6xl opacity-50">🎬</span>
+              </div>
+            </div>
           )}
           
           {hasError && (
-            <div className="absolute inset-0 flex items-center justify-center bg-purple-900/50">
-              <span className="text-4xl">🎬</span>
+            <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.3)' }}>
+              <span className="text-5xl">🎬</span>
             </div>
           )}
         </div>
         
-        {/* Overlay gradient */}
+        {/* Overlay gradient discret en bas */}
         <div 
-          className="absolute inset-0"
+          className="absolute inset-0 pointer-events-none rounded-lg"
           style={{
-            background: 'linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 40%, transparent 60%)'
+            background: 'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 40%)'
           }}
         />
         
-        {/* Bouton son discret */}
+        {/* === UI OVERLAY MINIMALISTE === */}
+        
+        {/* Bouton Son - Haut droite */}
         {(youtubeId || vimeoId || isDirectVideo) && (
           <button
             onClick={(e) => {
@@ -152,8 +175,8 @@ const PartnerVideoCard = ({ partner, onClick, isActive, onToggleMute, isMuted })
             }}
             className="absolute top-3 right-3 p-2 rounded-full transition-all hover:scale-110"
             style={{
-              background: isMuted ? 'rgba(217, 28, 210, 0.8)' : 'rgba(0,0,0,0.6)',
-              border: '1px solid rgba(255,255,255,0.3)'
+              background: 'rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(4px)'
             }}
             data-testid={`mute-btn-${partner.id || partner.email}`}
           >
@@ -161,52 +184,57 @@ const PartnerVideoCard = ({ partner, onClick, isActive, onToggleMute, isMuted })
           </button>
         )}
         
-        {/* Contenu en bas */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          {/* Photo de profil */}
-          <div className="flex items-center gap-3 mb-3">
-            {partner.photo_url || partner.logo_url ? (
-              <img 
-                src={partner.photo_url || partner.logo_url} 
-                alt={displayName}
-                className="w-12 h-12 rounded-full object-cover"
-                style={{ border: '2px solid rgba(217, 28, 210, 0.6)' }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClick(partner);
-                }}
-              />
-            ) : (
-              <div 
-                className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold"
-                style={{ 
-                  background: 'linear-gradient(135deg, #D91CD2 0%, #8b5cf6 100%)',
-                  color: 'white'
-                }}
-              >
-                {initial}
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <h3 className="text-white font-semibold text-lg truncate">{displayName}</h3>
-              {partner.bio && (
-                <p className="text-white/60 text-xs truncate">{partner.bio}</p>
-              )}
+        {/* Like Button - Droite milieu */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onLike();
+          }}
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 transition-all hover:scale-125 active:scale-95"
+          style={{
+            color: isLiked ? 'var(--primary-color, #D91CD2)' : 'white',
+            filter: isLiked ? 'drop-shadow(0 0 8px var(--primary-color, #D91CD2))' : 'none'
+          }}
+          data-testid={`like-btn-${partner.id || partner.email}`}
+        >
+          <HeartIcon filled={isLiked} />
+        </button>
+        
+        {/* Profil + Nom - Bas gauche */}
+        <div className="absolute bottom-3 left-3 flex items-center gap-2">
+          {/* Photo de profil - Petite bulle */}
+          {partner.photo_url || partner.logo_url ? (
+            <img 
+              src={partner.photo_url || partner.logo_url} 
+              alt={displayName}
+              className="w-10 h-10 rounded-full object-cover"
+              style={{ 
+                border: '2px solid var(--primary-color, #D91CD2)',
+                boxShadow: '0 0 10px var(--glow-color, rgba(217, 28, 210, 0.5))'
+              }}
+            />
+          ) : (
+            <div 
+              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
+              style={{ 
+                background: 'linear-gradient(135deg, var(--primary-color, #D91CD2) 0%, var(--secondary-color, #8b5cf6) 100%)',
+                color: 'white',
+                boxShadow: '0 0 10px var(--glow-color, rgba(217, 28, 210, 0.5))'
+              }}
+            >
+              {initial}
             </div>
-          </div>
+          )}
           
-          {/* Bouton Voir */}
-          <button
-            className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105"
+          {/* Nom du partenaire - Texte fin */}
+          <span 
+            className="text-white text-sm font-medium"
             style={{
-              background: 'linear-gradient(135deg, var(--primary-color, #D91CD2) 0%, var(--secondary-color, #8b5cf6) 100%)',
-              color: 'white',
-              boxShadow: '0 0 15px rgba(217, 28, 210, 0.4)'
+              textShadow: '0 1px 3px rgba(0,0,0,0.8)'
             }}
-            data-testid={`view-partner-${partner.id || partner.email}`}
           >
-            Voir la page
-          </button>
+            {displayName}
+          </span>
         </div>
       </div>
     </div>
@@ -219,23 +247,30 @@ const PartnersCarousel = ({ onPartnerClick }) => {
   const [error, setError] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [mutedStates, setMutedStates] = useState({});
+  const [likedStates, setLikedStates] = useState({});
   const sliderRef = useRef(null);
   
-  // Charger les partenaires actifs avec leurs vidéos
+  // Charger les partenaires actifs
   useEffect(() => {
     const fetchPartners = async () => {
       try {
         const res = await axios.get(`${API}/partners/active`);
         setPartners(res.data || []);
         
-        // Initialiser tous les partenaires en mode muet
+        // Initialiser tous en mode muet
         const initialMuted = {};
         (res.data || []).forEach(p => {
           initialMuted[p.id || p.email] = true;
         });
         setMutedStates(initialMuted);
+        
+        // Charger les likes depuis localStorage
+        const savedLikes = localStorage.getItem('afroboost_partner_likes');
+        if (savedLikes) {
+          setLikedStates(JSON.parse(savedLikes));
+        }
       } catch (err) {
-        console.error('[PARTNERS-CAROUSEL] Erreur:', err);
+        console.error('[PARTNERS-REELS] Erreur:', err);
         setError('Impossible de charger les partenaires');
       } finally {
         setLoading(false);
@@ -244,7 +279,7 @@ const PartnersCarousel = ({ onPartnerClick }) => {
     fetchPartners();
   }, []);
   
-  // Toggle mute pour un partenaire
+  // Toggle mute
   const handleToggleMute = (partnerId) => {
     setMutedStates(prev => ({
       ...prev,
@@ -252,12 +287,21 @@ const PartnersCarousel = ({ onPartnerClick }) => {
     }));
   };
   
-  // Scroll handler
+  // Toggle like avec persistence
+  const handleToggleLike = (partnerId) => {
+    setLikedStates(prev => {
+      const newState = { ...prev, [partnerId]: !prev[partnerId] };
+      localStorage.setItem('afroboost_partner_likes', JSON.stringify(newState));
+      return newState;
+    });
+  };
+  
+  // Scroll handler vertical
   const handleScroll = () => {
     if (sliderRef.current) {
-      const scrollLeft = sliderRef.current.scrollLeft;
-      const cardWidth = 296; // 280px + 16px padding
-      const newIndex = Math.round(scrollLeft / cardWidth);
+      const scrollTop = sliderRef.current.scrollTop;
+      const cardHeight = sliderRef.current.clientHeight;
+      const newIndex = Math.round(scrollTop / cardHeight);
       if (newIndex !== activeIndex && newIndex >= 0 && newIndex < partners.length) {
         setActiveIndex(newIndex);
       }
@@ -266,70 +310,67 @@ const PartnersCarousel = ({ onPartnerClick }) => {
   
   // Clic sur un partenaire
   const handlePartnerClick = (partner) => {
-    // Rediriger vers la vitrine du partenaire via pathname (pas hash)
     const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
     if (onPartnerClick) {
       onPartnerClick(partner);
     } else {
-      // v9.4.7: Utiliser pathname pour que le router detecte correctement
       window.location.href = `/coach/${username}`;
     }
   };
   
   if (loading) {
     return (
-      <div className="py-8 text-center">
-        <div className="animate-spin w-8 h-8 border-3 border-purple-500 border-t-transparent rounded-full mx-auto"></div>
-        <p className="text-white/50 text-sm mt-2">Chargement des partenaires...</p>
+      <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 200px)', background: '#000000' }}>
+        <div className="text-center">
+          <div className="animate-spin w-10 h-10 border-3 rounded-full mx-auto mb-3" style={{ borderColor: 'var(--primary-color, #D91CD2)', borderTopColor: 'transparent' }}></div>
+          <p className="text-white/50 text-sm">Chargement...</p>
+        </div>
       </div>
     );
   }
   
   if (error || partners.length === 0) {
-    return null; // Ne rien afficher si pas de partenaires
+    return null;
   }
   
   return (
-    <div className="mb-8" data-testid="partners-carousel-section">
-      {/* Titre */}
-      <div className="flex items-center justify-between mb-4 px-2">
-        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-          <span className="text-xl">🎬</span>
-          Nos Partenaires
-        </h2>
-        <span className="text-white/50 text-sm">
-          {partners.length} partenaire{partners.length > 1 ? 's' : ''}
-        </span>
-      </div>
-      
-      {/* Carousel */}
+    <div 
+      className="relative"
+      style={{ background: '#000000' }}
+      data-testid="partners-reels-section"
+    >
+      {/* Container scroll vertical avec snap */}
       <div 
         ref={sliderRef}
         onScroll={handleScroll}
-        className="flex gap-2 overflow-x-auto snap-x snap-mandatory pb-4"
+        className="snap-y snap-mandatory overflow-y-auto"
         style={{ 
+          height: 'calc(100vh - 200px)',
+          minHeight: '400px',
+          maxHeight: '600px',
           scrollBehavior: 'smooth',
-          WebkitOverflowScrolling: 'touch',
           scrollbarWidth: 'none',
-          msOverflowStyle: 'none'
+          msOverflowStyle: 'none',
+          WebkitOverflowScrolling: 'touch'
         }}
-        data-testid="partners-slider"
+        data-testid="partners-vertical-slider"
       >
         {partners.map((partner, index) => (
           <PartnerVideoCard
             key={partner.id || partner.email || index}
             partner={partner}
             onClick={handlePartnerClick}
-            isActive={index === activeIndex}
             isMuted={mutedStates[partner.id || partner.email] !== false}
             onToggleMute={() => handleToggleMute(partner.id || partner.email)}
+            isLiked={likedStates[partner.id || partner.email] || false}
+            onLike={() => handleToggleLike(partner.id || partner.email)}
           />
         ))}
       </div>
       
-      {/* Indicateurs de pagination */}
+      {/* Indicateurs verticaux - Droite */}
       {partners.length > 1 && (
-        <div className="flex justify-center gap-2 mt-2">
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
           {partners.map((_, idx) => (
             <button
               key={idx}
@@ -337,22 +378,31 @@ const PartnersCarousel = ({ onPartnerClick }) => {
                 setActiveIndex(idx);
                 if (sliderRef.current) {
                   sliderRef.current.scrollTo({
-                    left: idx * 296,
+                    top: idx * sliderRef.current.clientHeight,
                     behavior: 'smooth'
                   });
                 }
               }}
-              className={`transition-all duration-300 rounded-full ${
-                idx === activeIndex 
-                  ? 'w-6 h-2 bg-pink-500' 
-                  : 'w-2 h-2 bg-white/30 hover:bg-white/50'
-              }`}
+              className="transition-all duration-300 rounded-full"
+              style={{
+                width: idx === activeIndex ? '4px' : '4px',
+                height: idx === activeIndex ? '24px' : '8px',
+                background: idx === activeIndex ? 'var(--primary-color, #D91CD2)' : 'rgba(255,255,255,0.3)'
+              }}
               aria-label={`Voir partenaire ${idx + 1}`}
               data-testid={`partner-dot-${idx}`}
             />
           ))}
         </div>
       )}
+      
+      {/* Compteur discret */}
+      <div 
+        className="absolute bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs text-white/60"
+        style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }}
+      >
+        {activeIndex + 1} / {partners.length}
+      </div>
     </div>
   );
 };
