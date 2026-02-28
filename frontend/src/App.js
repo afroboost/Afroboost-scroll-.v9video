@@ -2205,7 +2205,7 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // === v9.1.9: PROPULSION ZÉRO CLIC - Détection paiement Stripe réussi ===
+  // === v9.2.2: PROPULSION ZÉRO CLIC - Détection paiement Stripe réussi ===
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const hash = window.location.hash;
@@ -2213,16 +2213,17 @@ function App() {
     // Détecter success=true ou session_id dans l'URL (retour de Stripe)
     const isSuccess = urlParams.get('success') === 'true' || 
                       urlParams.get('status') === 'success' ||
-                      hash.includes('success=true');
+                      hash.includes('success=true') ||
+                      hash.includes('welcome=true');
     const sessionId = urlParams.get('session_id') || 
                       new URLSearchParams(hash.split('?')[1] || '').get('session_id');
     
-    // Si c'est un retour de paiement partenaire (pas une réservation client)
-    const isPartnerPayment = isSuccess && sessionId && !localStorage.getItem('pendingReservation');
+    // v9.2.2: Propulsion même sans session_id (juste success=true suffit)
+    const isPartnerPayment = isSuccess && !localStorage.getItem('pendingReservation');
     
     if (isPartnerPayment) {
-      console.log('[APP] 🚀 v9.1.9 - PROPULSION ZÉRO CLIC détectée');
-      console.log('[APP] 💳 Session Stripe:', sessionId);
+      console.log('[APP] 🚀 v9.2.2 - PROPULSION ZÉRO CLIC détectée');
+      console.log('[APP] 💳 Session Stripe:', sessionId || 'Non fournie');
       
       // Nettoyer l'URL et forcer le hash dashboard
       const cleanUrl = () => {
@@ -2230,6 +2231,7 @@ function App() {
         url.searchParams.delete('success');
         url.searchParams.delete('status');
         url.searchParams.delete('session_id');
+        url.searchParams.delete('welcome');
         url.hash = '#coach-dashboard';
         window.history.replaceState({}, '', url.pathname + url.hash);
       };
@@ -2237,7 +2239,7 @@ function App() {
       const savedCoachUser = localStorage.getItem('afroboost_coach_user');
       
       if (savedCoachUser) {
-        // v9.1.9: Partenaire déjà connecté → PROPULSION IMMÉDIATE SANS MODAL
+        // v9.2.2: Partenaire déjà connecté → PROPULSION IMMÉDIATE SANS MODAL
         try {
           const user = JSON.parse(savedCoachUser);
           setCoachUser(user);
@@ -2246,7 +2248,7 @@ function App() {
           // Message de validation visible temporairement (pas de modal!)
           setValidationMessage("🎉 Paiement validé ! Bienvenue dans votre espace Partenaire");
           setTimeout(() => setValidationMessage(""), 5000);
-          console.log('[APP] ✅ v9.1.9 PROPULSION ZÉRO CLIC: Dashboard activé SANS modal pour:', user?.email);
+          console.log('[APP] ✅ v9.2.2 PROPULSION ZÉRO CLIC: Dashboard activé SANS modal pour:', user?.email);
           // NE PAS ouvrir le modal de connexion si déjà authentifié
           return;
         } catch (e) {
@@ -2255,7 +2257,7 @@ function App() {
       }
       
       // Uniquement si pas connecté → Ouvrir modal de connexion avec message de bienvenue
-      console.log('[APP] 🔐 Paiement réussi mais non connecté - Affichage modal connexion');
+      console.log('[APP] 🔐 v9.2.2 Paiement réussi mais non connecté - Affichage modal connexion');
       setLoginWelcomeMessage("🎉 Paiement validé ! Bienvenue Partenaire. Connectez-vous pour accéder à votre espace.");
       setShowCoachLogin(true);
       cleanUrl();
