@@ -1,0 +1,63 @@
+{
+  "summary": "Mission v9.0.1 Franchise & White Label Testing Complete - All features verified: Super Admin powers (7 reservations, coach toggle/delete), Dynamic personalization (platform_name, logo_url), Vitrine displays platform_name",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v901_franchise.py",
+    "/app/test_reports/pytest/pytest_v901_franchise.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ NON-REGRESSION CRITICAL: Super Admin sees 7 reservations - coach_id filter bypassed correctly",
+    "✅ API /api/coach/vitrine/bassi returns platform_name: 'Afroboost' and logo_url: null",
+    "✅ API /api/admin/coaches returns 5 coaches with all required fields (id, email, name, is_active, credits, etc.)",
+    "✅ API POST /api/admin/coaches/{id}/toggle - 403 for non-Super Admin, 404 for non-existent coach, 200 for valid toggle",
+    "✅ API DELETE /api/admin/coaches/{id} - 403 for non-Super Admin, 404 for non-existent coach",
+    "✅ Frontend CoachVitrine.js line 106 correctly displays platform_name instead of name",
+    "✅ Frontend SuperAdminPanel.js has Pause/Delete buttons with data-testid='toggle-coach-{id}' and 'delete-coach-{id}'",
+    "✅ Coach model (line 688) includes platform_name and logo_url fields as per v9.0.1"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v901_franchise.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (vitrine displays platform_name correctly)"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com"
+  },
+  "seed_data_creation": "None - used existing 5 coaches and 7 reservations",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "v9.0.1 fully tested. Backend: 14 tests passed covering non-regression (7 reservations), vitrine API (platform_name='Afroboost'), admin coaches (5 coaches listed), toggle/delete endpoints (auth checks work). Frontend: Vitrine /coach/bassi shows 'Afroboost' as title (platform_name), not 'Bassi - Afroboost'. SuperAdminPanel has Pause/Delete buttons for each coach.",
+  "verified_features_v901": {
+    "SUPER_ADMIN_RESERVATIONS": "PASSED - 7 reservations visible with coach_id filter bypassed",
+    "VITRINE_PLATFORM_NAME": "PASSED - API returns platform_name='Afroboost', frontend displays it",
+    "VITRINE_LOGO_URL": "PASSED - API returns logo_url field (null for bassi)",
+    "ADMIN_COACHES_LIST": "PASSED - 5 coaches returned with all fields",
+    "TOGGLE_COACH_AUTH": "PASSED - 403 for non-Super Admin",
+    "TOGGLE_COACH_404": "PASSED - 404 for non-existent coach",
+    "TOGGLE_COACH_SUCCESS": "PASSED - Status toggled successfully",
+    "DELETE_COACH_AUTH": "PASSED - 403 for non-Super Admin",
+    "DELETE_COACH_404": "PASSED - 404 for non-existent coach",
+    "FRONTEND_VITRINE_DISPLAY": "PASSED - Shows 'Afroboost' title with offers (30/150/109 CHF) and courses"
+  },
+  "api_verification_results": {
+    "reservations_total": 7,
+    "coaches_total": 5,
+    "vitrine_bassi_platform_name": "Afroboost",
+    "vitrine_bassi_offers_count": 3,
+    "vitrine_bassi_courses_count": 2
+  },
+  "screenshots": [
+    ".screenshots/v901_vitrine_platform_name.png - Vitrine page showing 'Afroboost' as title"
+  ]
+}
