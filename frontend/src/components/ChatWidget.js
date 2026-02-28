@@ -841,6 +841,7 @@ export const ChatWidget = () => {
   });
   
   // v9.3.1: Vérification côté serveur si l'utilisateur est partenaire
+  // v9.3.2: Ajout d'une vérification au changement du profil pour persistance
   useEffect(() => {
     const checkPartnerStatus = async () => {
       // Vérifier avec le profil abonné existant ou le profil coach
@@ -855,7 +856,11 @@ export const ChatWidget = () => {
             setIsRegisteredCoach(true);
             // Synchroniser le localStorage
             localStorage.setItem('afroboost_coach_mode', 'true');
+            localStorage.setItem('afroboost_partner_verified', 'true');
             console.log('[CHAT] ✅ Partenaire vérifié côté serveur:', email);
+          } else {
+            // Nettoyer si pas partenaire
+            localStorage.removeItem('afroboost_partner_verified');
           }
         } catch (e) {
           console.log('[CHAT] Vérification partenaire impossible:', e.message);
@@ -864,6 +869,20 @@ export const ChatWidget = () => {
     };
     
     checkPartnerStatus();
+    
+    // v9.3.2: Re-vérifier lors du storage change (après login)
+    const handleStorageChange = () => {
+      checkPartnerStatus();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    
+    // v9.3.2: Re-vérifier périodiquement pour persistance
+    const interval = setInterval(checkPartnerStatus, 30000); // Toutes les 30 secondes
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
   }, []);
   
   // === PROFIL ABONNÉ VALIDÉ (afroboost_profile) ===
