@@ -1100,6 +1100,7 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                     </div>
                   )}
                   
+                  {/* v9.4.5: Bouton Confirmer et Payer - Style épuré */}
                   <button
                     type="submit"
                     disabled={bookingLoading}
@@ -1107,12 +1108,24 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                     style={{
                       background: bookingLoading 
                         ? 'rgba(139, 92, 246, 0.5)' 
-                        : 'linear-gradient(135deg, #8b5cf6 0%, #d91cd2 100%)',
-                      boxShadow: '0 0 20px rgba(217, 28, 210, 0.3)'
+                        : 'linear-gradient(135deg, #D91CD2 0%, #8b5cf6 100%)',
+                      boxShadow: bookingLoading ? 'none' : '0 0 25px rgba(217, 28, 210, 0.4)'
                     }}
                     data-testid="confirm-booking-btn"
                   >
-                    {bookingLoading ? 'Réservation en cours...' : '✓ Confirmer la réservation'}
+                    {bookingLoading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Réservation en cours...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        💳 Confirmer et Payer
+                      </span>
+                    )}
                   </button>
                 </form>
               </>
