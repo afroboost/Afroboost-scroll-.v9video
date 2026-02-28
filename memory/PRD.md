@@ -1,5 +1,70 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.4 - NETTOYAGE CASE ET RÉPARATION BOUTON ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.5.4 COMPLÈTE - "CASE SUPPRIMÉE ET REDIRECTION RÉPARÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| Suppression éléments en trop | ✅ |
+| Flux vidéo plein écran | ✅ |
+| Fix redirection partenaire | ✅ |
+| Toast "Paiement requis" | ✅ |
+
+### 1. SUPPRESSION CASE EN TROP
+
+**Solution:** Position fixed pour le flux Reels
+```jsx
+// App.js L3735-3744
+<div className="fixed inset-0 z-10" style={{ background: '#000000' }}>
+  <PartnersCarousel ... />
+</div>
+```
+
+**Résultat:**
+- ❌ Supprimé: Barre de recherche en doublon en bas
+- ❌ Supprimé: NavigationBar visible sous le flux
+- ✅ Flux vidéo occupe 100% de l'écran
+
+### 2. FIX REDIRECTION PARTENAIRE
+
+```javascript
+// App.js handleGoogleLogin L3345-3414
+
+// 1. Fermer BecomeCoach immédiatement après connexion
+setShowBecomeCoach(false);
+
+// CAS A: Super Admin
+if (roleRes.data?.is_super_admin) {
+  window.location.hash = '#coach-dashboard';
+}
+
+// CAS B: Partenaire Actif (has_credits=true)
+else if (partnerRes.data?.is_partner && partnerRes.data?.has_credits) {
+  window.location.hash = '#coach-dashboard';
+}
+
+// CAS C: Non-payé
+else {
+  setValidationMessage('⚠️ Paiement requis pour accéder au Dashboard.');
+  setShowBecomeCoach(true);
+}
+```
+
+### 3. STABILITÉ FLUX VIDÉO
+
+| Élément | Vérification |
+|---------|--------------|
+| Pas de doublon recherche | 1 seul input[placeholder*="Rechercher"] |
+| Pas de case fantôme | Position fixed élimine overflow |
+| Fallback vidéo | DEFAULT_VIDEO_URL fonctionne |
+
+### Tests v9.5.4 - Iteration 112
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Chat violet, Retour au Flux, Lazy loading, Recherche** ✅
+
+---
+
 ## v9.5.3 - FIX VIDÉO ET AUTONOMIE PARTENAIRE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.5.3 COMPLÈTE - "FLUX VIDÉO RÉPARÉ ET PARTENAIRES AUTONOMES"
