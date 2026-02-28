@@ -3734,9 +3734,9 @@ function App() {
         />
       )}
 
-      {/* v9.5.1: Flux Reels pleine largeur - Design épuré style Apple */}
-      <div className="w-full">
-        {/* v9.5.1: Scroll vertical style Reels avec logo Afroboost */}
+      {/* v9.5.2: Flux Reels pleine hauteur - Optimisé pour mobile */}
+      <div className="w-full" style={{ height: 'calc(100vh - 60px)' }}>
+        {/* v9.5.2: Scroll vertical style Reels avec logo Afroboost */}
         <PartnersCarousel 
           onPartnerClick={(partner) => {
             const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
