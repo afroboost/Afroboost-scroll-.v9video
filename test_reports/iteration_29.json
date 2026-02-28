@@ -58,7 +58,7 @@
     "frontend": "100% (responsive sizes verified, code review passed)"
   },
   "test_credentials": {
-    "API_URL": "https://coach-marketplace-8.preview.emergentagent.com",
+    "API_URL": "https://stripe-connect-hub-4.preview.emergentagent.com",
     "Coach_Auth": "Google OAuth (contact.artboost@gmail.com) - not testable automatically"
   },
   "seed_data_creation": "Test participants and sessions created during testing (cleaned up)",

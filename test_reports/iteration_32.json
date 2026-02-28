@@ -74,7 +74,7 @@
     "frontend": "100% (all UI elements verified)"
   },
   "test_credentials": {
-    "API_URL": "https://coach-marketplace-8.preview.emergentagent.com",
+    "API_URL": "https://stripe-connect-hub-4.preview.emergentagent.com",
     "test_media_slug": "test-video-1"
   },
   "seed_data_creation": "test-video-1 media link exists with title 'Session Afrobeat Janvier 2025'",
