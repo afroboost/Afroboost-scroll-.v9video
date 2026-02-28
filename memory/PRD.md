@@ -1,5 +1,57 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.4.1 - CAMPAGNES INTELLIGENTES ET NOTIFICATIONS EMAIL ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.4.1 COMPLÈTE - "CAMPAGNES INTELLIGENTES ET EMAILS SÉCURISÉS"
+
+| Objectif | Statut |
+|----------|--------|
+| Assistant IA Campagnes | ✅ |
+| Double Case (Objectif + Message) | ✅ |
+| Notifications Email Resend | ✅ |
+| Anti-régression Badge v9.4.0 | ✅ |
+
+### Assistant IA Campagnes v9.4.1
+
+**Endpoint:** `POST /api/ai/campaign-suggestions`
+
+**Request:**
+```json
+{
+  "campaign_goal": "Promo cours du dimanche -20%",
+  "campaign_name": "Promo Weekend",
+  "recipient_count": 10
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "suggestions": [
+    {"type": "Promo", "text": "🔥 Salut {prénom}! ..."},
+    {"type": "Relance", "text": "👋 Hey {prénom}! ..."},
+    {"type": "Info", "text": "📢 {prénom}, ..."}
+  ],
+  "source": "ai"
+}
+```
+
+### Double Case UI v9.4.1
+
+| Champ | data-testid | Description |
+|-------|-------------|-------------|
+| Objectif | `campaign-goal-input` | Prompt pour l'IA |
+| Message | `campaign-message-input` | Texte final à envoyer |
+| Bouton IA | `ai-suggest-btn` | Déclenche la génération |
+
+### Tests v9.4.1 - Iteration 100
+- Backend: **100%** (11/11 tests) ✅
+- Frontend: **Code review vérifié** ✅
+- Anti-régression: **Badge v9.4.0 OK** ✅
+
+---
+
 ## v9.4.0 - MÉMOIRE DU CHAT ET BADGES DE NOTIFICATION ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.4.0 COMPLÈTE - "CHAT PERSISTANT ET NOTIFICATIONS OPÉRATIONNELS"
