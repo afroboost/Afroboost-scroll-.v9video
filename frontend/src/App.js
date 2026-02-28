@@ -1997,6 +1997,29 @@ function App() {
   const [userRole, setUserRole] = useState(null); // 'super_admin', 'coach', 'user'
   const [showCoachSearch, setShowCoachSearch] = useState(false); // v8.9.4: Modal recherche coach
   const [showCoachVitrine, setShowCoachVitrine] = useState(null); // v8.9.6: Username du coach pour vitrine
+  
+  // === v9.2.8: PLATFORM SETTINGS - Contrôles globaux ===
+  const [platformSettings, setPlatformSettings] = useState({
+    partner_access_enabled: true,
+    maintenance_mode: false
+  });
+  
+  // v9.2.8: Charger les settings au démarrage
+  useEffect(() => {
+    const loadPlatformSettings = async () => {
+      try {
+        const res = await axios.get(`${API}/platform-settings`);
+        setPlatformSettings({
+          partner_access_enabled: res.data?.partner_access_enabled ?? true,
+          maintenance_mode: res.data?.maintenance_mode ?? false
+        });
+        console.log('[PLATFORM] Settings chargés:', res.data);
+      } catch (err) {
+        console.log('[PLATFORM] Settings par défaut utilisés');
+      }
+    };
+    loadPlatformSettings();
+  }, []);
 
   const [courses, setCourses] = useState([]);
   const [offers, setOffers] = useState([]);
