@@ -518,8 +518,8 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
           onClick={onBack || onClose}
           className="px-6 py-3 rounded-xl text-white font-medium transition-all hover:scale-105"
           style={{ 
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #d91cd2 100%)',
-            boxShadow: '0 0 20px rgba(217, 28, 210, 0.3)'
+            background: `linear-gradient(135deg, var(--primary-color, #8b5cf6) 0%, var(--secondary-color, #d91cd2) 100%)`,
+            boxShadow: `0 0 20px var(--glow-color, rgba(217, 28, 210, 0.3))`
           }}
         >
           ← Retour à l'accueil
@@ -535,7 +535,7 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: 'linear-gradient(180deg, #0a0a0f 0%, #1a0a1f 100%)' }}>
+    <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: 'var(--background-color, #0a0a0f)' }}>
       
       {/* QR Code Modal */}
       {showQR && (
