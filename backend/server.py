@@ -4105,9 +4105,14 @@ async def create_chat_participant(participant: ChatParticipantCreate, request: R
         participant_data = participant_obj.model_dump()
         participant_data["coach_id"] = coach_email if not is_super_admin(coach_email) else DEFAULT_COACH_ID
         await db.chat_participants.insert_one(participant_data)
+        # Fix: exclude _id from response
+        participant_data.pop("_id", None)
         return participant_data
-    await db.chat_participants.insert_one(participant_obj.model_dump())
-    return participant_obj.model_dump()
+    doc = participant_obj.model_dump()
+    await db.chat_participants.insert_one(doc)
+    # Fix: exclude _id from response
+    doc.pop("_id", None)
+    return doc
 
 @api_router.get("/chat/participants/find")
 async def find_participant(
