@@ -35,6 +35,7 @@ except ImportError:
 
 # v9.1.1: Import routes modulaires
 from routes.coach_routes import coach_router, init_db as init_coach_db
+from routes.campaign_routes import campaign_router, init_campaign_db
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
