@@ -78,6 +78,8 @@ init_campaign_db(db)
 init_reservation_db(db)
 # v9.1.9: Initialiser la db pour auth routes
 init_auth_db(db)
+# v9.2.0: Initialiser la db pour promo routes
+init_promo_db(db)
 
 # Configure logging FIRST (needed for socketio)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
