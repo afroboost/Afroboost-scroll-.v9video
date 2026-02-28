@@ -244,6 +244,9 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
     stripe: '', paypal: '', twint: '', coachWhatsapp: ''
   });
   
+  // v9.3.2: Concept du coach (contient la vidéo header)
+  const [coachConcept, setCoachConcept] = useState(null);
+  
   // v9.2.8: Modal de réservation pour les cours
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null); // { course, date }
