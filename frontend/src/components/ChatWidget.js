@@ -3380,6 +3380,43 @@ export const ChatWidget = () => {
                       
                       <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }} />
                       
+                      {/* v9.2.6: Bouton Accéder au Dashboard - si partenaire inscrit (a acheté un pack) */}
+                      {(isRegisteredCoach || isCoachMode) && (
+                        <>
+                          <button
+                            onClick={() => { 
+                              window.location.hash = '#partner-dashboard'; 
+                              setShowUserMenu(false); 
+                            }}
+                            style={{
+                              width: '100%',
+                              padding: '10px 14px',
+                              textAlign: 'left',
+                              fontSize: '12px',
+                              color: '#D91CD2',
+                              background: 'linear-gradient(135deg, rgba(217, 28, 210, 0.15), rgba(139, 92, 246, 0.15))',
+                              border: 'none',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '10px',
+                              fontWeight: '600'
+                            }}
+                            className="hover:bg-white/10"
+                            data-testid="access-dashboard-btn"
+                          >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                              <rect x="3" y="3" width="7" height="7"></rect>
+                              <rect x="14" y="3" width="7" height="7"></rect>
+                              <rect x="14" y="14" width="7" height="7"></rect>
+                              <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Accéder à mon Dashboard
+                          </button>
+                          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }} />
+                        </>
+                      )}
+                      
                       {/* Mode Visiteur - seulement si abonné */}
                       {afroboostProfile?.code && (
                         <>
