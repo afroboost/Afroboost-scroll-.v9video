@@ -1,5 +1,63 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.4.7 - CAROUSEL VIDÉO ET FLUX PARTENAIRE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.4.7 COMPLÈTE - "VITRINE DYNAMIQUE ET LOGIN PARTENAIRE PRÊTS"
+
+| Objectif | Statut |
+|----------|--------|
+| Carousel vidéos partenaires sur Home | ✅ |
+| Clic sur vidéo → Vitrine partenaire | ✅ |
+| Google Login sur page Packs | ✅ |
+| Hero vidéo sans texte superposé | ✅ |
+
+### 1. CAROUSEL PARTENAIRES - Home Page
+
+**Nouveau composant:** `PartnersCarousel.js`
+
+| Élément | data-testid | Description |
+|---------|-------------|-------------|
+| Section carousel | partners-carousel-section | Section "Nos Partenaires" |
+| Slider horizontal | partners-slider | Swipe horizontal |
+| Carte partenaire | partner-card-{id} | Carte vidéo cliquable |
+| Bouton son | mute-btn-{id} | Toggle audio |
+| Pagination | partner-dot-{idx} | Indicateurs en bas |
+
+**API Backend:** `GET /api/partners/active`
+- Retourne les partenaires actifs avec leurs vidéos
+- Super Admin (Bassi) en premier si vidéo configurée
+- Champs: `id, name, email, platform_name, video_url, heroImageUrl`
+
+### 2. PARCOURS "DEVENIR PARTENAIRE"
+
+**Accès:** `#become-coach` ou événement `openBecomeCoach`
+
+| Élément | data-testid | Description |
+|---------|-------------|-------------|
+| Bouton Google | google-login-pack-btn | "Se connecter avec Google" |
+| Badge connecté | - | Affiche nom/email si connecté |
+| Form nom | coach-name-input | Pré-rempli si Google |
+| Form email | coach-email-input | Pré-rempli si Google |
+
+**Logique v9.4.7:**
+1. Nouveau visiteur → Bouton Google visible en haut
+2. Connexion Google → Création profil "En attente de paiement" (0 crédits)
+3. Formulaire pré-rempli → Sélection pack → Paiement Stripe
+
+### 3. NETTOYAGE UI VITRINE
+
+**Hero vidéo épuré (v9.4.6 confirmé):**
+- Pas de texte superposé sur la vidéo
+- Seul le bouton "Réserver mon cours" visible
+- Nom du coach dans le header (haut-droite)
+
+### Tests v9.4.7 - Iteration 105
+- Backend: **100%** (6/6 tests) ✅
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Chat violet, bouton PWA, couleurs dynamiques confirmés** ✅
+
+---
+
 ## v9.4.5 - ÉPURE DESIGN ET VIDÉO PARTENAIRE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.4.5 COMPLÈTE - "DESIGN ÉPURÉ ET VIDÉO PARTENAIRE OPÉRATIONNELS"
