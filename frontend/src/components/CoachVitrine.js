@@ -595,14 +595,17 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
           
           {/* Header avec boutons */}
           <div className="flex justify-between items-center mb-6">
+            {/* v9.4.9: Bouton Retour avec couleur primaire */}
             <button 
-              onClick={onBack || onClose}
-              className="flex items-center gap-2 text-white/60 hover:text-white transition-colors"
+              onClick={cameFromFlux ? handleReturnToFlux : (onBack || onClose)}
+              className="flex items-center gap-2 transition-all hover:scale-105"
+              style={{ color: 'var(--primary-color, #D91CD2)' }}
+              data-testid="vitrine-back-btn"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Retour
+              <span className="text-sm font-medium">{cameFromFlux ? 'Retour au Flux' : 'Retour'}</span>
             </button>
             
             <div className="flex items-center gap-3">
