@@ -6352,20 +6352,11 @@ async def send_campaign_email(request: Request):
     media_url = body.get("media_url", None)
     
     # LOG DEBUG CRITIQUE
-    logger.info(f"=== CAMPAGNE EMAIL ===")
-    logger.info(f"To: {to_email}")
-    logger.info(f"Subject: {subject}")
-    logger.info(f"Media URL reçu: {media_url}")
-    logger.info(f"======================")
-    
     if not to_email:
         raise HTTPException(status_code=400, detail="to_email requis")
     if not message:
         raise HTTPException(status_code=400, detail="message requis")
-    
-    # Vérifier que Resend est configuré
     if not RESEND_AVAILABLE or not RESEND_API_KEY:
-        logger.warning("Resend non configuré pour les campagnes")
         return {"success": False, "error": "Resend non configuré"}
     
     # === TRAITEMENT DU MEDIA URL ===
