@@ -464,7 +464,9 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
     const fetchPartners = async () => {
       try {
         const res = await axios.get(`${API}/partners/active`);
-        setPartners(res.data || []);
+        const data = res.data || [];
+        setPartners(data);
+        setFilteredPartners(data); // v9.5.3: Initialiser filteredPartners
         
         const initialMuted = {};
         const initialPaused = {};
