@@ -609,20 +609,33 @@ export const ChatWidget = () => {
     return null;
   };
 
-  // === CACHE HYBRIDE: Chargement instantané via sessionStorage ===
+  // === CACHE HYBRIDE v9.4.0: Chargement instantané via localStorage (persistant) + sessionStorage ===
   // Stocke les 20 derniers messages pour affichage immédiat (0ms)
   const getCachedMessages = () => {
     try {
-      const cached = sessionStorage.getItem(MESSAGE_CACHE_KEY);
-      if (cached) {
-        const messages = JSON.parse(cached);
+      // Priorité 1: sessionStorage (session actuelle)
+      const sessionCached = sessionStorage.getItem(MESSAGE_CACHE_KEY);
+      if (sessionCached) {
+        const messages = JSON.parse(sessionCached);
         if (Array.isArray(messages) && messages.length > 0) {
-          console.log('[CACHE] Messages cachés trouvés:', messages.length);
+          console.log('[CACHE v9.4.0] Messages de session trouvés:', messages.length);
+          return messages;
+        }
+      }
+      
+      // Priorité 2: localStorage (persistant entre sessions)
+      const localCached = localStorage.getItem(MESSAGE_CACHE_KEY + '_persist');
+      if (localCached) {
+        const messages = JSON.parse(localCached);
+        if (Array.isArray(messages) && messages.length > 0) {
+          console.log('[CACHE v9.4.0] Messages persistants trouvés:', messages.length);
+          // Restaurer aussi dans sessionStorage
+          sessionStorage.setItem(MESSAGE_CACHE_KEY, JSON.stringify(messages));
           return messages;
         }
       }
     } catch (e) {
-      console.warn('[CACHE] Erreur lecture cache:', e.message);
+      console.warn('[CACHE v9.4.0] Erreur lecture cache:', e.message);
     }
     return [];
   };
@@ -631,10 +644,13 @@ export const ChatWidget = () => {
     try {
       // Stocker les 20 derniers messages uniquement
       const toCache = messages.slice(-20);
+      // Sauvegarder dans sessionStorage (session actuelle)
       sessionStorage.setItem(MESSAGE_CACHE_KEY, JSON.stringify(toCache));
-      console.log('[CACHE] 💾 Messages mis en cache:', toCache.length);
+      // Sauvegarder aussi dans localStorage (persistant)
+      localStorage.setItem(MESSAGE_CACHE_KEY + '_persist', JSON.stringify(toCache));
+      console.log('[CACHE v9.4.0] 💾 Messages mis en cache (session+persist):', toCache.length);
     } catch (e) {
-      console.warn('[CACHE] Erreur écriture cache:', e.message);
+      console.warn('[CACHE v9.4.0] Erreur écriture cache:', e.message);
     }
   };
 
