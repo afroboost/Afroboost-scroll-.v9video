@@ -6339,17 +6339,11 @@ async def notify_coach_new_message(participant_name: str, message_preview: str, 
 async def send_campaign_email(request: Request):
     """Envoie un email de campagne via Resend - v9.0.2: Déduit 1 crédit"""
     coach_email = request.headers.get("X-User-Email", "").lower().strip()
-    # v9.0.2: Vérifier et déduire les crédits
     if coach_email and not is_super_admin(coach_email):
         credit_check = await check_credits(coach_email)
         if not credit_check.get("has_credits"):
             raise HTTPException(status_code=402, detail="Crédits insuffisants. Achetez un pack pour continuer.")
         await deduct_credit(coach_email, "envoi campagne email")
-    
-    body = await request.json()
-        "media_url": "URL du visuel ou lien interne /v/slug (optionnel)"
-    }
-    """
     body = await request.json()
     to_email = body.get("to_email")
     to_name = body.get("to_name", "")
