@@ -668,6 +668,9 @@ class ConceptUpdate(BaseModel):
     # Personnalisation des couleurs
     primaryColor: Optional[str] = None
     secondaryColor: Optional[str] = None
+    # v9.4.4: Couleurs avancées
+    backgroundColor: Optional[str] = None
+    glowColor: Optional[str] = None
 
 class AppConfig(BaseModel):
     model_config = ConfigDict(extra="ignore")
