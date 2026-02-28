@@ -138,7 +138,7 @@ class TestStripeConfiguration:
         """
         Coach packs should be available for purchase
         """
-        response = requests.get(f"{BASE_URL}/api/coach/packs")
+        response = requests.get(f"{BASE_URL}/api/admin/coach-packs")
         
         assert response.status_code == 200
         
