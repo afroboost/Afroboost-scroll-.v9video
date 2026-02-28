@@ -4205,7 +4205,6 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             >
               🚪 {t('logout')}
             </button>
-            </button>
           </div>
         </div>
 
