@@ -567,11 +567,11 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
   
   return (
     <div 
-      className="relative"
-      style={{ background: '#000000', height: 'calc(100vh - 60px)' }}
+      className="relative w-full h-full"
+      style={{ background: '#000000' }}
       data-testid="partners-reels-section"
     >
-      {/* v9.5.3: HEADER avec Logo Afroboost et Recherche */}
+      {/* v9.5.4: HEADER avec Logo Afroboost et Recherche - Suppression éléments en trop */}
       <div 
         className="absolute top-0 left-0 right-0 z-20"
         style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)' }}
