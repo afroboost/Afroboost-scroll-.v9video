@@ -4737,7 +4737,7 @@ export const ChatWidget = () => {
                       width: '44px',
                       height: '44px',
                       borderRadius: '50%',
-                      background: '#25D366',
+                      background: '#D91CD2', /* v9.4.2: Violet Afroboost */
                       border: 'none',
                       cursor: isLoading || !inputMessage.trim() ? 'not-allowed' : 'pointer',
                       display: 'flex',
