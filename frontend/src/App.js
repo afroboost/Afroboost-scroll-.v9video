@@ -2143,16 +2143,21 @@ function App() {
     // Aussi parser les params dans le hash (ex: #coach-dashboard?session_id=xxx)
     const hashParams = new URLSearchParams(hash.split('?')[1] || '');
     
-    // === v9.2.4: PROPULSION AUTOMATIQUE #coach-dashboard ou #partner-dashboard ===
+    // === v9.2.5: PROPULSION AUTOMATIQUE #coach-dashboard ou #partner-dashboard ===
+    // Force l'état dashboard sans AUCUNE autre condition
     if (hash.includes('coach-dashboard') || hash.includes('partner-dashboard') || window.location.href.includes('coach-dashboard') || window.location.href.includes('partner-dashboard')) {
-      console.log('[APP] 🚀 v9.2.4 - Propulsion automatique dashboard');
+      console.log('[APP] 🚀 v9.2.5 - Propulsion automatique dashboard FORCÉE');
       
-      // Récupérer session_id Stripe si présent
+      // v9.2.5: Détecter auth=success pour propulsion garantie
+      const authSuccess = searchParams.get('auth') === 'success' || hash.includes('auth=success');
       const sessionId = searchParams.get('session_id') || hashParams.get('session_id');
-      const isWelcome = searchParams.get('welcome') === 'true' || hash.includes('welcome=true');
+      const isSuccess = searchParams.get('success') === 'true' || hash.includes('success=true');
       
-      if (sessionId) {
-        console.log('[APP] 💳 Session Stripe détectée:', sessionId);
+      if (authSuccess || sessionId || isSuccess) {
+        console.log('[APP] 💳 Retour Stripe détecté - auth:', authSuccess, 'session:', sessionId);
+        // Mémoriser pour propulsion post-login
+        localStorage.setItem('redirect_to_dash', 'true');
+        localStorage.setItem('afroboost_redirect_message', '🎉 Paiement validé ! Bienvenue Partenaire');
       }
       
       const savedCoachUser = localStorage.getItem('afroboost_coach_user');
@@ -2163,11 +2168,14 @@ function App() {
           const user = JSON.parse(savedCoachUser);
           setCoachUser(user);
           setCoachMode(true);
-          // Nettoyer l'URL pour éviter les boucles
-          window.history.replaceState({}, '', window.location.pathname);
-          console.log('[APP] ✅ PROPULSION: Dashboard coach activé pour:', user?.email);
-          if (isWelcome) {
-            console.log('[APP] 🎉 Bienvenue nouveau coach! Session:', sessionId);
+          // Nettoyer l'URL pour éviter les boucles (garder juste le hash)
+          window.history.replaceState({}, '', window.location.pathname + '#partner-dashboard');
+          console.log('[APP] ✅ v9.2.5 PROPULSION FORCÉE: Dashboard activé pour:', user?.email);
+          
+          // Afficher message de bienvenue si retour Stripe
+          if (authSuccess || isSuccess) {
+            setValidationMessage('🎉 Paiement validé ! Bienvenue Partenaire');
+            setTimeout(() => setValidationMessage(''), 5000);
           }
         } catch (e) {
           console.error('[APP] Erreur parsing user:', e);
@@ -2175,7 +2183,10 @@ function App() {
         }
       } else {
         // Pas connecté → Ouvrir modal de connexion (sera propulsé après login)
-        console.log('[APP] 🔐 Non connecté - Affichage modal connexion');
+        console.log('[APP] 🔐 v9.2.5 Non connecté - Modal connexion avec message bienvenue');
+        if (authSuccess || isSuccess) {
+          setLoginWelcomeMessage('🎉 Paiement validé ! Connectez-vous pour accéder à votre espace Partenaire');
+        }
         setShowCoachLogin(true);
       }
       return;
