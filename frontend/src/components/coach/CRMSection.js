@@ -1,0 +1,673 @@
+// CRMSection.js - Section CRM/Conversations v9.2.0
+// Extrait de CoachDashboard.js pour modularisation
+
+import React, { useRef, useCallback, memo } from 'react';
+import { ChevronDown, Trash2, Send, Copy, Check, ExternalLink } from 'lucide-react';
+
+// ====== COMPOSANT NOTIFICATION BANNER ======
+const NotificationBanner = memo(({ 
+  showPermissionBanner, 
+  notificationPermission, 
+  setShowPermissionBanner, 
+  requestNotificationAccess 
+}) => {
+  if (!showPermissionBanner || notificationPermission !== 'default') return null;
+  
+  return (
+    <div 
+      className="flex items-center justify-between p-4 rounded-xl animate-pulse"
+      style={{ background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(217, 28, 210, 0.2))', border: '1px solid rgba(139, 92, 246, 0.5)' }}
+      data-testid="notification-permission-banner"
+    >
+      <div className="flex items-center gap-3">
+        <span className="text-2xl">🔔</span>
+        <div>
+          <p className="text-white font-medium">Activez les notifications</p>
+          <p className="text-white/60 text-sm">Recevez une alerte sonore et visuelle à chaque nouveau message client.</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setShowPermissionBanner(false)}
+          className="px-3 py-2 text-white/60 hover:text-white text-sm"
+        >
+          Plus tard
+        </button>
+        <button
+          onClick={requestNotificationAccess}
+          className="px-4 py-2 rounded-lg text-white font-medium transition-all hover:scale-105"
+          style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}
+          data-testid="enable-notifications-btn"
+        >
+          ✅ Activer
+        </button>
+      </div>
+    </div>
+  );
+});
+NotificationBanner.displayName = 'NotificationBanner';
+
+// ====== COMPOSANT NOTIFICATION BLOCKED BANNER ======
+const NotificationBlockedBanner = memo(({ notificationPermission }) => {
+  if (notificationPermission !== 'denied') return null;
+  
+  return (
+    <div 
+      className="flex items-center justify-between p-3 rounded-xl"
+      style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+    >
+      <div className="flex items-center gap-3">
+        <span className="text-xl">⚠️</span>
+        <p className="text-white/90 text-sm">Notifications bloquées - Les alertes visuelles apparaîtront ici à la place.</p>
+      </div>
+      <button
+        onClick={() => {
+          alert('Pour activer les notifications:\n\n1. Cliquez sur l\'icône 🔒 dans la barre d\'adresse\n2. Trouvez "Notifications"\n3. Changez de "Bloquer" à "Autoriser"\n4. Rafraîchissez la page');
+        }}
+        className="px-3 py-1 text-xs rounded bg-white/10 text-white/70 hover:text-white"
+      >
+        Comment activer ?
+      </button>
+    </div>
+  );
+});
+NotificationBlockedBanner.displayName = 'NotificationBlockedBanner';
+
+// ====== COMPOSANT TOAST NOTIFICATIONS ======
+const ToastNotifications = memo(({ toastNotifications, handleToastClick, dismissToast }) => {
+  if (toastNotifications.length === 0) return null;
+  
+  return (
+    <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm" data-testid="notification-toasts">
+      {toastNotifications.map(toast => (
+        <div
+          key={toast.id}
+          onClick={() => handleToastClick(toast)}
+          className="p-4 rounded-xl shadow-2xl cursor-pointer transform transition-all hover:scale-102 animate-slideIn"
+          style={{ 
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.95), rgba(217, 28, 210, 0.9))',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}
+          data-testid={`toast-${toast.id}`}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-white font-medium text-sm flex items-center gap-2">
+                💬 {toast.senderName}
+              </p>
+              <p className="text-white/80 text-sm mt-1 truncate">
+                {toast.content.substring(0, 60)}{toast.content.length > 60 ? '...' : ''}
+              </p>
+              <p className="text-white/50 text-xs mt-1">Cliquez pour répondre</p>
+            </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); dismissToast(toast.id); }}
+              className="text-white/60 hover:text-white p-1"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+});
+ToastNotifications.displayName = 'ToastNotifications';
+
+// ====== COMPOSANT NOTIFICATION TEST ======
+const NotificationTestPanel = memo(({ 
+  notificationPermission, 
+  handleTestNotification, 
+  notifyOnAiResponse, 
+  toggleNotifyOnAiResponse 
+}) => (
+  <div 
+    className="p-4 rounded-xl"
+    style={{ background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.1))', border: '1px solid rgba(34, 197, 94, 0.4)' }}
+  >
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center gap-3">
+        <span className="text-2xl">🔔</span>
+        <div>
+          <p className="text-white font-medium text-sm">Test des notifications</p>
+          <p className="text-white/60 text-xs">
+            Statut: {notificationPermission === 'granted' ? '✅ Activées (son + popup)' : 
+                    notificationPermission === 'denied' ? '⚠️ Bloquées (fallback visuel)' : 
+                    notificationPermission === 'unsupported' ? '❌ Non supportées' : 
+                    '🔔 En attente (cliquez pour activer)'}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={notifyOnAiResponse}
+            onChange={toggleNotifyOnAiResponse}
+            className="w-4 h-4 accent-violet-500"
+          />
+          <span className="text-white/70 text-xs">Notifier réponses IA</span>
+        </label>
+        <button
+          onClick={handleTestNotification}
+          className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-all hover:scale-105"
+          style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}
+          data-testid="test-notification-btn"
+        >
+          🔔 Tester
+        </button>
+      </div>
+    </div>
+  </div>
+));
+NotificationTestPanel.displayName = 'NotificationTestPanel';
+
+// ====== COMPOSANT GENERATE LINK CARD ======
+const GenerateLinkCard = memo(({ 
+  newLinkTitle, 
+  setNewLinkTitle, 
+  newLinkCustomPrompt, 
+  setNewLinkCustomPrompt,
+  generateShareableLink,
+  loadingConversations,
+  isSuperAdmin
+}) => (
+  <div 
+    className="p-6 rounded-2xl"
+    style={{ background: 'linear-gradient(135deg, rgba(217, 28, 210, 0.15), rgba(139, 92, 246, 0.1))', border: '1px solid rgba(217, 28, 210, 0.3)' }}
+  >
+    <h3 className="text-xl font-semibold text-white mb-4">🔗 Générer un lien de chat</h3>
+    <div className="flex flex-wrap gap-4 items-end">
+      <div className="flex-1 min-w-[200px]">
+        <label className="block text-sm text-white/60 mb-2">Titre (ex: Offre Janvier)</label>
+        <input
+          type="text"
+          value={newLinkTitle}
+          onChange={(e) => setNewLinkTitle(e.target.value)}
+          placeholder="Lien de janvier"
+          className="w-full px-4 py-3 rounded-lg bg-black/30 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500"
+          data-testid="link-title-input"
+        />
+      </div>
+      {isSuperAdmin && (
+        <div className="flex-1 min-w-[200px]">
+          <label className="block text-sm text-white/60 mb-2">Prompt personnalisé (Super Admin)</label>
+          <input
+            type="text"
+            value={newLinkCustomPrompt}
+            onChange={(e) => setNewLinkCustomPrompt(e.target.value)}
+            placeholder="Ex: Focus sur les cours de fitness..."
+            className="w-full px-4 py-3 rounded-lg bg-black/30 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            data-testid="link-prompt-input"
+          />
+        </div>
+      )}
+      <button
+        onClick={generateShareableLink}
+        disabled={loadingConversations}
+        className="px-6 py-3 rounded-lg text-white font-semibold transition-all hover:scale-105 disabled:opacity-50"
+        style={{ background: 'linear-gradient(135deg, #8b5cf6, #d91cd2)' }}
+        data-testid="generate-link-btn"
+      >
+        {loadingConversations ? '⏳' : '➕ Créer le lien'}
+      </button>
+    </div>
+  </div>
+));
+GenerateLinkCard.displayName = 'GenerateLinkCard';
+
+// ====== COMPOSANT COMMUNITY CHAT CARD ======
+const CommunityCard = memo(({ 
+  newCommunityName, 
+  setNewCommunityName, 
+  createCommunityChat, 
+  loadingConversations 
+}) => (
+  <div 
+    className="p-6 rounded-2xl"
+    style={{ background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(22, 163, 74, 0.1))', border: '1px solid rgba(34, 197, 94, 0.3)' }}
+  >
+    <h3 className="text-xl font-semibold text-white mb-4">👥 Créer une communauté</h3>
+    <div className="flex flex-wrap gap-4 items-end">
+      <div className="flex-1 min-w-[200px]">
+        <label className="block text-sm text-white/60 mb-2">Nom de la communauté</label>
+        <input
+          type="text"
+          value={newCommunityName}
+          onChange={(e) => setNewCommunityName(e.target.value)}
+          placeholder="Ex: Groupe Fitness Mars"
+          className="w-full px-4 py-3 rounded-lg bg-black/30 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-500"
+          data-testid="community-name-input"
+        />
+      </div>
+      <button
+        onClick={createCommunityChat}
+        disabled={loadingConversations || !newCommunityName.trim()}
+        className="px-6 py-3 rounded-lg text-white font-semibold transition-all hover:scale-105 disabled:opacity-50"
+        style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}
+        data-testid="create-community-btn"
+      >
+        {loadingConversations ? '⏳' : '👥 Créer'}
+      </button>
+    </div>
+  </div>
+));
+CommunityCard.displayName = 'CommunityCard';
+
+// ====== COMPOSANT LINK ITEM ======
+const LinkItem = memo(({ link, copiedLinkId, copyLinkToClipboard, deleteChatLink }) => {
+  const fullUrl = `${window.location.origin}/?link=${link.token}`;
+  
+  return (
+    <div 
+      className="flex items-center justify-between p-4 rounded-xl bg-black/30 border border-white/10"
+      data-testid={`link-item-${link.id}`}
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-white font-medium truncate">
+          {link.title || 'Lien sans titre'}
+        </p>
+        <p className="text-white/40 text-xs mt-1 truncate">{fullUrl}</p>
+        <div className="flex items-center gap-3 mt-2 text-xs text-white/60">
+          <span>📊 {link.usageCount || 0} utilisations</span>
+          <span>📅 {new Date(link.createdAt).toLocaleDateString('fr-FR')}</span>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 ml-4">
+        <button
+          onClick={() => copyLinkToClipboard(link.token)}
+          className="p-2 rounded-lg bg-violet-500/20 text-violet-400 hover:bg-violet-500/40 transition-colors"
+          title="Copier le lien"
+          data-testid={`copy-link-${link.id}`}
+        >
+          {copiedLinkId === link.id ? <Check size={18} /> : <Copy size={18} />}
+        </button>
+        <a
+          href={fullUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="p-2 rounded-lg bg-green-500/20 text-green-400 hover:bg-green-500/40 transition-colors"
+          title="Ouvrir le lien"
+        >
+          <ExternalLink size={18} />
+        </a>
+        <button
+          onClick={() => deleteChatLink(link.id)}
+          className="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/40 transition-colors"
+          title="Supprimer le lien"
+          data-testid={`delete-link-${link.id}`}
+        >
+          <Trash2 size={18} />
+        </button>
+      </div>
+    </div>
+  );
+});
+LinkItem.displayName = 'LinkItem';
+
+// ====== COMPOSANT CHAT LINKS LIST ======
+const ChatLinksList = memo(({ chatLinks, copiedLinkId, copyLinkToClipboard, deleteChatLink }) => {
+  if (chatLinks.length === 0) return null;
+  
+  return (
+    <div 
+      className="p-6 rounded-2xl"
+      style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}
+    >
+      <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+        🔗 Liens actifs ({chatLinks.length})
+      </h3>
+      <div className="space-y-3 max-h-[300px] overflow-y-auto">
+        {chatLinks.map(link => (
+          <LinkItem 
+            key={link.id}
+            link={link}
+            copiedLinkId={copiedLinkId}
+            copyLinkToClipboard={copyLinkToClipboard}
+            deleteChatLink={deleteChatLink}
+          />
+        ))}
+      </div>
+    </div>
+  );
+});
+ChatLinksList.displayName = 'ChatLinksList';
+
+// ====== COMPOSANT CONVERSATION ITEM ======
+const ConversationItem = memo(({ 
+  session, 
+  selectedSession, 
+  setSelectedSession, 
+  loadSessionMessages,
+  setSessionMode,
+  deleteChatSession,
+  isSuperAdmin
+}) => {
+  const isSelected = selectedSession?.id === session.id;
+  const hasUnread = session.unreadCount > 0;
+  
+  return (
+    <div
+      onClick={() => {
+        setSelectedSession(session);
+        loadSessionMessages(session.id);
+      }}
+      className={`p-4 rounded-xl cursor-pointer transition-all ${
+        isSelected 
+          ? 'bg-violet-500/30 border-violet-500' 
+          : 'bg-black/30 border-white/10 hover:bg-white/5'
+      } border`}
+      data-testid={`conversation-${session.id}`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">
+              {session.type === 'community' ? '👥' : 
+               session.mode === 'bot' ? '🤖' : '👤'}
+            </span>
+            <p className="text-white font-medium truncate">
+              {session.participantName || session.participantEmail || 'Visiteur'}
+            </p>
+            {hasUnread && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white">
+                {session.unreadCount}
+              </span>
+            )}
+          </div>
+          <p className="text-white/60 text-sm mt-1 truncate">
+            {session.lastMessage || 'Nouvelle conversation'}
+          </p>
+          <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
+            <span>📅 {new Date(session.lastActivity || session.createdAt).toLocaleDateString('fr-FR')}</span>
+            <span>💬 {session.messageCount || 0} messages</span>
+          </div>
+        </div>
+        
+        {/* Actions */}
+        <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
+          <select
+            value={session.mode || 'bot'}
+            onChange={(e) => setSessionMode(session.id, e.target.value)}
+            className="px-2 py-1 text-xs rounded bg-black/40 text-white border border-white/20"
+            title="Mode de conversation"
+          >
+            <option value="bot">🤖 Bot</option>
+            <option value="human">👤 Manuel</option>
+          </select>
+          <button
+            onClick={() => deleteChatSession(session.id)}
+            className="p-1 rounded bg-red-500/20 text-red-400 hover:bg-red-500/40 text-xs"
+            title="Supprimer"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
+ConversationItem.displayName = 'ConversationItem';
+
+// ====== COMPOSANT MAIN CRM SECTION ======
+const CRMSection = ({
+  // Notification state
+  showPermissionBanner,
+  setShowPermissionBanner,
+  notificationPermission,
+  requestNotificationAccess,
+  toastNotifications,
+  handleToastClick,
+  dismissToast,
+  handleTestNotification,
+  notifyOnAiResponse,
+  toggleNotifyOnAiResponse,
+  // Link generation
+  newLinkTitle,
+  setNewLinkTitle,
+  newLinkCustomPrompt,
+  setNewLinkCustomPrompt,
+  generateShareableLink,
+  // Community
+  newCommunityName,
+  setNewCommunityName,
+  createCommunityChat,
+  // Chat links
+  chatLinks,
+  copiedLinkId,
+  copyLinkToClipboard,
+  deleteChatLink,
+  // Conversations
+  enrichedConversations,
+  selectedSession,
+  setSelectedSession,
+  loadSessionMessages,
+  setSessionMode,
+  deleteChatSession,
+  conversationsLoading,
+  conversationsHasMore,
+  handleConversationsScroll,
+  conversationsListRef,
+  conversationSearch,
+  setConversationSearch,
+  loadConversations,
+  // Messages
+  sessionMessages,
+  coachMessage,
+  setCoachMessage,
+  handleSendMessage,
+  // General
+  loadingConversations,
+  isSuperAdmin,
+  API_URL
+}) => {
+  return (
+    <div className="space-y-6">
+      {/* Banner Permission */}
+      <NotificationBanner 
+        showPermissionBanner={showPermissionBanner}
+        notificationPermission={notificationPermission}
+        setShowPermissionBanner={setShowPermissionBanner}
+        requestNotificationAccess={requestNotificationAccess}
+      />
+      
+      {/* Banner Blocked */}
+      <NotificationBlockedBanner notificationPermission={notificationPermission} />
+      
+      {/* Toast Notifications */}
+      <ToastNotifications 
+        toastNotifications={toastNotifications}
+        handleToastClick={handleToastClick}
+        dismissToast={dismissToast}
+      />
+      
+      {/* Notification Test */}
+      <NotificationTestPanel 
+        notificationPermission={notificationPermission}
+        handleTestNotification={handleTestNotification}
+        notifyOnAiResponse={notifyOnAiResponse}
+        toggleNotifyOnAiResponse={toggleNotifyOnAiResponse}
+      />
+      
+      {/* Generate Link */}
+      <GenerateLinkCard 
+        newLinkTitle={newLinkTitle}
+        setNewLinkTitle={setNewLinkTitle}
+        newLinkCustomPrompt={newLinkCustomPrompt}
+        setNewLinkCustomPrompt={setNewLinkCustomPrompt}
+        generateShareableLink={generateShareableLink}
+        loadingConversations={loadingConversations}
+        isSuperAdmin={isSuperAdmin}
+      />
+      
+      {/* Create Community */}
+      <CommunityCard 
+        newCommunityName={newCommunityName}
+        setNewCommunityName={setNewCommunityName}
+        createCommunityChat={createCommunityChat}
+        loadingConversations={loadingConversations}
+      />
+      
+      {/* Chat Links List */}
+      <ChatLinksList 
+        chatLinks={chatLinks}
+        copiedLinkId={copiedLinkId}
+        copyLinkToClipboard={copyLinkToClipboard}
+        deleteChatLink={deleteChatLink}
+      />
+      
+      {/* Main Conversations Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Conversations List */}
+        <div 
+          className="p-6 rounded-2xl"
+          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+              💬 Conversations ({enrichedConversations.length})
+            </h3>
+            <button
+              onClick={() => loadConversations(true)}
+              className="px-3 py-1 text-sm rounded bg-violet-500/20 text-violet-400 hover:bg-violet-500/40"
+              disabled={conversationsLoading}
+            >
+              {conversationsLoading ? '⏳' : '🔄'}
+            </button>
+          </div>
+          
+          {/* Search */}
+          <input
+            type="text"
+            value={conversationSearch}
+            onChange={(e) => setConversationSearch(e.target.value)}
+            placeholder="🔍 Rechercher par nom, email..."
+            className="w-full px-4 py-2 mb-4 rounded-lg bg-black/30 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            data-testid="conversation-search"
+          />
+          
+          {/* List */}
+          <div 
+            ref={conversationsListRef}
+            onScroll={handleConversationsScroll}
+            className="space-y-3 max-h-[500px] overflow-y-auto pr-2"
+          >
+            {enrichedConversations.length === 0 ? (
+              <p className="text-white/40 text-center py-8">Aucune conversation pour le moment</p>
+            ) : (
+              enrichedConversations.map(session => (
+                <ConversationItem 
+                  key={session.id}
+                  session={session}
+                  selectedSession={selectedSession}
+                  setSelectedSession={setSelectedSession}
+                  loadSessionMessages={loadSessionMessages}
+                  setSessionMode={setSessionMode}
+                  deleteChatSession={deleteChatSession}
+                  isSuperAdmin={isSuperAdmin}
+                />
+              ))
+            )}
+            {conversationsHasMore && (
+              <div className="text-center py-3 text-white/40">
+                {conversationsLoading ? '⏳ Chargement...' : '↓ Scroll pour plus'}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Right: Selected Conversation Messages */}
+        <div 
+          className="p-6 rounded-2xl flex flex-col"
+          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', minHeight: '600px' }}
+        >
+          {selectedSession ? (
+            <>
+              {/* Header */}
+              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                <div>
+                  <p className="text-white font-medium flex items-center gap-2">
+                    {selectedSession.type === 'community' ? '👥' : 
+                     selectedSession.mode === 'bot' ? '🤖' : '👤'}
+                    {selectedSession.participantName || selectedSession.participantEmail || 'Visiteur'}
+                  </p>
+                  <p className="text-white/40 text-sm">{selectedSession.participantEmail || ''}</p>
+                </div>
+                <span className={`px-2 py-1 text-xs rounded ${
+                  selectedSession.mode === 'bot' ? 'bg-violet-500/20 text-violet-400' : 'bg-green-500/20 text-green-400'
+                }`}>
+                  {selectedSession.mode === 'bot' ? '🤖 Bot actif' : '👤 Mode manuel'}
+                </span>
+              </div>
+              
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto py-4 space-y-3">
+                {sessionMessages.length === 0 ? (
+                  <p className="text-white/40 text-center py-8">Aucun message</p>
+                ) : (
+                  sessionMessages.map((msg, idx) => (
+                    <div
+                      key={msg.id || idx}
+                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] p-3 rounded-2xl ${
+                          msg.role === 'user'
+                            ? 'bg-violet-500/30 text-white'
+                            : msg.role === 'coach'
+                            ? 'bg-green-500/30 text-white'
+                            : 'bg-white/10 text-white/80'
+                        }`}
+                      >
+                        <p className="text-sm">{msg.content}</p>
+                        <p className="text-xs text-white/40 mt-1">
+                          {new Date(msg.timestamp || msg.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                          {msg.role === 'coach' && ' • 👤 Vous'}
+                          {msg.role === 'assistant' && ' • 🤖 Bot'}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              
+              {/* Input */}
+              <div className="pt-4 border-t border-white/10">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={coachMessage}
+                    onChange={(e) => setCoachMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="Tapez votre message..."
+                    className="flex-1 px-4 py-3 rounded-lg bg-black/30 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    data-testid="coach-message-input"
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={!coachMessage.trim()}
+                    className="px-4 py-3 rounded-lg text-white font-semibold transition-all hover:scale-105 disabled:opacity-50"
+                    style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}
+                    data-testid="send-message-btn"
+                  >
+                    <Send size={20} />
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center text-white/40">
+                <span className="text-4xl block mb-4">💬</span>
+                <p>Sélectionnez une conversation</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CRMSection;
