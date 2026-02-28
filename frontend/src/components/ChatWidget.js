@@ -2030,6 +2030,9 @@ export const ChatWidget = () => {
         // Notification si en mode groupe
         if (chatMode === 'group' && !document.hasFocus()) {
           playSoundIfEnabled('coach');
+          // v9.4.0: Incrémenter le badge pour les messages de groupe aussi
+          setUnreadPrivateCount(prev => prev + 1);
+          setHasNewMessage(true);
         }
       });
       
