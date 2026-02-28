@@ -315,6 +315,11 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com";
   const isSuperAdmin = coachUser?.email?.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
   
+  // v9.2.3: Initialisation immédiate pour éviter page blanche
+  // Si pas de coachUser, on affiche quand même le dashboard avec des valeurs par défaut
+  const displayEmail = coachUser?.email || 'Chargement...';
+  const displayName = coachUser?.name || 'Partenaire';
+  
   // v8.9.5: Helper pour créer les headers avec l'email coach (isolation des données)
   const getCoachHeaders = () => ({
     headers: { 'X-User-Email': coachUser?.email || '' }
@@ -328,8 +333,8 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const [stripeConnectLoading, setStripeConnectLoading] = useState(false);
   
   // === CRÉDITS COACH v8.9.7 ===
-  // v9.2.3: Initialiser à 0 au lieu de null pour éviter page blanche
-  const [coachCredits, setCoachCredits] = useState(0); // 0=défaut, -1=illimité (Super Admin)
+  // v9.2.3: Initialiser selon le rôle immédiatement pour éviter page blanche
+  const [coachCredits, setCoachCredits] = useState(isSuperAdmin ? -1 : 0); // -1=illimité (Super Admin), 0=défaut
   
   // === v8.9.9: VITRINE COACH ===
   const [coachUsername, setCoachUsername] = useState(null);
