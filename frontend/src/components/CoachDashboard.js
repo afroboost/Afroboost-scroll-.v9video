@@ -3595,10 +3595,11 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // v8.9.5: Tabs dynamiques avec "Mon Stripe" pour les coachs (pas Bassi)
   // v9.1.3: DASHBOARD JUMEAU - Tous les coaches ont FULL ACCESS (même interface que Bassi)
   // L'indicateur requiresCredits est supprimé - seul le filtrage coach_id sépare les données
+  // v9.2.9: Renommé "payments" en "page-vente" pour clarté
   const baseTabs = [
     { id: "reservations", label: t('reservations') }, { id: "concept", label: t('conceptVisual') },
     { id: "courses", label: t('courses') }, { id: "offers", label: t('offers') },
-    { id: "payments", label: t('payments') }, { id: "codes", label: t('promoCodes') },
+    { id: "page-vente", label: "🏪 Ma Page" }, { id: "codes", label: t('promoCodes') },
     { id: "campaigns", label: "📢 Campagnes" },
     { id: "conversations", label: unreadCount > 0 ? `💬 Conversations (${unreadCount})` : "💬 Conversations" }
   ];
