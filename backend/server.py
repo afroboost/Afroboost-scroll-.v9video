@@ -74,6 +74,8 @@ db = client[os.environ.get('DB_NAME', 'afroboost_db')]
 init_coach_db(db)
 init_campaign_db(db)
 init_reservation_db(db)
+# v9.1.9: Initialiser la db pour auth routes
+init_auth_db(db)
 
 # Configure logging FIRST (needed for socketio)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
