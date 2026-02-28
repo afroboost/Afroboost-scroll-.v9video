@@ -4070,12 +4070,23 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
           </div>
         </div>
 
-        <div className="flex gap-2 mb-6 flex-wrap items-center">
+        {/* v9.3.6: Menu tabs mobile scrollable horizontalement */}
+        <div 
+          className="flex gap-2 mb-6 items-center pb-2"
+          style={{
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            whiteSpace: 'nowrap',
+            WebkitOverflowScrolling: 'touch',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
           {tabs.map(tb => (
             <button 
               key={tb.id} 
               onClick={() => setTab(tb.id)} 
-              className={`coach-tab px-3 py-2 rounded-lg text-xs sm:text-sm ${tab === tb.id ? 'active' : ''}`}
+              className={`coach-tab px-3 py-2 rounded-lg text-xs sm:text-sm flex-shrink-0 ${tab === tb.id ? 'active' : ''}`}
               style={{ color: 'white' }} 
               data-testid={`coach-tab-${tb.id}`}
             >
@@ -4086,7 +4097,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
           {/* Bouton Vue Visiteur - Toggle mode apercu */}
           <button
             onClick={toggleVisitorPreview}
-            className="ml-auto px-3 py-2 rounded-lg text-xs sm:text-sm flex items-center gap-2"
+            className="ml-auto px-3 py-2 rounded-lg text-xs sm:text-sm flex items-center gap-2 flex-shrink-0"
             style={{
               background: isVisitorPreviewActive ? 'rgba(147, 51, 234, 0.3)' : 'rgba(255,255,255,0.1)',
               border: isVisitorPreviewActive ? '1px solid rgba(147, 51, 234, 0.5)' : '1px solid rgba(255,255,255,0.2)',
