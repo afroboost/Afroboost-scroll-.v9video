@@ -250,7 +250,8 @@ class TestCoachesWithCredits:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
-        coaches = data.get("coaches", [])
+        # API returns list directly, not wrapped
+        coaches = data if isinstance(data, list) else data.get("coaches", [])
         print(f"[COACHES] Total: {len(coaches)}")
         
         for coach in coaches:
