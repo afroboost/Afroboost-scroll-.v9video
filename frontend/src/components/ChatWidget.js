@@ -4422,26 +4422,72 @@ export const ChatWidget = () => {
                   <div ref={messagesEndRef} />
                 </div>
                 
-                {/* === PANNEAU DE RÉSERVATION - Extrait vers BookingPanel.js === */}
-                {showReservationPanel && afroboostProfile && (
-                  <div style={{
-                    padding: '12px',
-                    borderTop: '1px solid rgba(147, 51, 234, 0.3)',
-                    background: 'rgba(0,0,0,0.7)',
-                    maxHeight: '300px',
-                    overflowY: 'auto'
-                  }}>
-                    <BookingPanel
-                      afroboostProfile={afroboostProfile}
-                      availableCourses={availableCourses}
-                      selectedCourse={selectedCourse}
-                      setSelectedCourse={setSelectedCourse}
-                      loadingCourses={loadingCourses}
-                      reservationLoading={reservationLoading}
-                      reservationError={reservationError}
-                      onConfirmReservation={handleConfirmReservation}
-                      onClose={() => { setShowReservationPanel(false); setSelectedCourse(null); }}
-                    />
+                {/* === v9.3.7: PANNEAU DE RÉSERVATION - Visible pour TOUS, par-dessus le chat === */}
+                {showReservationPanel && (
+                  <div 
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 10000, /* Par-dessus tout dans le chat */
+                      background: 'rgba(0,0,0,0.95)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      overflow: 'hidden'
+                    }}
+                    data-testid="booking-panel-overlay"
+                  >
+                    {/* Header avec bouton fermer */}
+                    <div style={{
+                      padding: '16px',
+                      borderBottom: '1px solid rgba(147, 51, 234, 0.3)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(99, 102, 241, 0.2))'
+                    }}>
+                      <h3 style={{ color: '#fff', fontSize: '16px', fontWeight: '600', margin: 0 }}>
+                        📅 Réserver un cours
+                      </h3>
+                      <button
+                        onClick={() => { setShowReservationPanel(false); setSelectedCourse(null); setReservationError(''); }}
+                        style={{
+                          background: 'rgba(255,255,255,0.1)',
+                          border: 'none',
+                          borderRadius: '50%',
+                          width: '32px',
+                          height: '32px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#fff'
+                        }}
+                        data-testid="close-booking-panel"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    {/* Contenu du panel */}
+                    <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
+                      <BookingPanel
+                        afroboostProfile={afroboostProfile || {}}
+                        availableCourses={availableCourses}
+                        selectedCourse={selectedCourse}
+                        setSelectedCourse={setSelectedCourse}
+                        loadingCourses={loadingCourses}
+                        reservationLoading={reservationLoading}
+                        reservationError={reservationError}
+                        onConfirmReservation={handleConfirmReservation}
+                        onClose={() => { setShowReservationPanel(false); setSelectedCourse(null); setReservationError(''); }}
+                      />
+                    </div>
                   </div>
                 )}
                 
