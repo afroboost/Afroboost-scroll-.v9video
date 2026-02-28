@@ -319,8 +319,11 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const [loadError, setLoadError] = useState(null);
   
   // Email Super Admin
-  const SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com";
-  const isSuperAdmin = (safeCoachUser?.email || '').toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+  // v9.5.6: Liste des Super Admins autorisés
+  const SUPER_ADMIN_EMAILS = ['contact.artboost@gmail.com', 'afroboost.bassi@gmail.com'];
+  const isSuperAdmin = SUPER_ADMIN_EMAILS.some(email => 
+    (safeCoachUser?.email || '').toLowerCase() === email.toLowerCase()
+  );
   
   // v9.2.5: Valeurs par défaut TOUJOURS présentes pour éviter page blanche
   const displayEmail = safeCoachUser?.email || 'Partenaire';
