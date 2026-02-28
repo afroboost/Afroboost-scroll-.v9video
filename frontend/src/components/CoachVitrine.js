@@ -238,6 +238,55 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
   const [courses, setCourses] = useState([]);
   const [showQR, setShowQR] = useState(false);
   const sliderRef = useRef(null);
+  
+  // v9.2.8: Modal de réservation pour les cours
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null); // { course, date }
+  const [bookingForm, setBookingForm] = useState({ name: '', email: '', whatsapp: '' });
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  
+  // v9.2.8: Handler clic sur date de cours
+  const handleBookClick = (course, date) => {
+    setSelectedBooking({ course, date });
+    setShowBookingModal(true);
+    setBookingSuccess(false);
+  };
+  
+  // v9.2.8: Soumettre réservation
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedBooking || bookingLoading) return;
+    
+    setBookingLoading(true);
+    try {
+      const res = await axios.post(`${API}/reservations`, {
+        userName: bookingForm.name,
+        userEmail: bookingForm.email,
+        userWhatsapp: bookingForm.whatsapp,
+        courseId: selectedBooking.course.id,
+        courseName: selectedBooking.course.name || selectedBooking.course.title,
+        courseTime: selectedBooking.course.time,
+        datetime: selectedBooking.date.toISOString(),
+        coach_id: coach?.email || username,
+        source: 'vitrine_partenaire'
+      });
+      
+      if (res.data) {
+        setBookingSuccess(true);
+        setBookingForm({ name: '', email: '', whatsapp: '' });
+        setTimeout(() => {
+          setShowBookingModal(false);
+          setSelectedBooking(null);
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('[BOOKING] Erreur:', err);
+      alert(err.response?.data?.detail || 'Erreur lors de la réservation');
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   // URL de la vitrine pour le QR code
   const vitrineUrl = typeof window !== 'undefined' 
