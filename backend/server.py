@@ -66,6 +66,9 @@ if not mongo_url:
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ.get('DB_NAME', 'afroboost_db')]
 
+# v9.1.1: Initialiser la db pour les routes modulaires
+init_coach_db(db)
+
 # Configure logging FIRST (needed for socketio)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
