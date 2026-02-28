@@ -2217,8 +2217,8 @@ function App() {
       const hash = window.location.hash;
       console.log('App.js - Hash changed:', hash);
       
-      // v9.1.1: Détection #coach-dashboard
-      if (hash.includes('#coach-dashboard') || hash.includes('coach-dashboard')) {
+      // v9.2.4: Détection #coach-dashboard ou #partner-dashboard
+      if (hash.includes('#coach-dashboard') || hash.includes('coach-dashboard') || hash.includes('#partner-dashboard') || hash.includes('partner-dashboard')) {
         const savedCoachUser = localStorage.getItem('afroboost_coach_user');
         if (!savedCoachUser) {
           setShowCoachLogin(true);
