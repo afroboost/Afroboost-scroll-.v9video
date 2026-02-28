@@ -1883,16 +1883,16 @@ async def mark_campaign_sent(campaign_id: str, data: dict):
 @api_router.get("/payment-links")
 async def get_payment_links(request: Request):
     user_email = request.headers.get('X-User-Email', '').lower().strip()
-    is_super_admin = user_email == "contact.artboost@gmail.com"
+    is_admin = is_super_admin(user_email)  # v9.5.6
     
     # ID de lien selon le coach
-    link_id = "payment_links" if is_super_admin else f"payment_links_{user_email}"
+    link_id = "payment_links" if is_admin else f"payment_links_{user_email}"
     
     links = await db.payment_links.find_one({"id": link_id}, {"_id": 0})
     if not links:
         default_links = PaymentLinks().model_dump()
         default_links["id"] = link_id
-        default_links["coach_id"] = user_email if not is_super_admin else None
+        default_links["coach_id"] = user_email if not is_admin else None
         await db.payment_links.insert_one(default_links)
         return default_links
     return links
@@ -1900,13 +1900,13 @@ async def get_payment_links(request: Request):
 @api_router.put("/payment-links")
 async def update_payment_links(links: PaymentLinksUpdate, request: Request):
     user_email = request.headers.get('X-User-Email', '').lower().strip()
-    is_super_admin = user_email == "contact.artboost@gmail.com"
+    is_admin = is_super_admin(user_email)  # v9.5.6
     
     # ID de lien selon le coach
-    link_id = "payment_links" if is_super_admin else f"payment_links_{user_email}"
+    link_id = "payment_links" if is_admin else f"payment_links_{user_email}"
     
     link_data = links.model_dump()
-    link_data["coach_id"] = user_email if not is_super_admin else None
+    link_data["coach_id"] = user_email if not is_admin else None
     
     await db.payment_links.update_one(
         {"id": link_id}, 
@@ -1920,9 +1920,9 @@ async def update_payment_links(links: PaymentLinksUpdate, request: Request):
 async def get_coach_payment_links(coach_email: str):
     """Récupère les liens de paiement d'un coach spécifique (pour la vitrine publique)"""
     coach_email = coach_email.lower().strip()
-    is_bassi = coach_email == "contact.artboost@gmail.com"
+    is_admin = is_super_admin(coach_email)  # v9.5.6
     
-    link_id = "payment_links" if is_bassi else f"payment_links_{coach_email}"
+    link_id = "payment_links" if is_admin else f"payment_links_{coach_email}"
     
     links = await db.payment_links.find_one({"id": link_id}, {"_id": 0})
     if not links:
