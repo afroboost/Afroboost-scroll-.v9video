@@ -6127,6 +6127,112 @@ Clique sur le bouton ci-dessous pour la découvrir.
         logger.error(f"Campaign email failed: {str(e)}")
         return {"success": False, "error": str(e)}
 
+# === v9.4.2: ENDPOINT CAMPAGNE MASSE (BACKGROUND TASK) ===
+@api_router.post("/campaigns/send-bulk-email")
+async def send_bulk_campaign_email(request: Request, background_tasks: BackgroundTasks):
+    """
+    Envoie des emails de campagne à plusieurs destinataires en tâche de fond.
+    Garantit que l'interface ne soit jamais bloquée (asynchrone).
+    v9.4.2: Chaque email est envoyé de manière indépendante.
+    """
+    from fastapi import BackgroundTasks
+    
+    body = await request.json()
+    recipients = body.get("recipients", [])  # [{email, name}, ...]
+    subject = body.get("subject", "Message d'Afroboost")
+    message = body.get("message", "")
+    media_url = body.get("media_url", None)
+    coach_email = request.headers.get("X-User-Email", "").lower().strip()
+    
+    if not recipients:
+        raise HTTPException(status_code=400, detail="Aucun destinataire")
+    if not message:
+        raise HTTPException(status_code=400, detail="Message requis")
+    
+    # Vérification des crédits pour tous les emails
+    total_credits_needed = len(recipients)
+    if coach_email and not is_super_admin(coach_email):
+        credit_check = await check_credits(coach_email)
+        current_credits = credit_check.get("credits", 0)
+        if current_credits < total_credits_needed:
+            raise HTTPException(
+                status_code=402, 
+                detail=f"Crédits insuffisants. Requis: {total_credits_needed}, Disponibles: {current_credits}"
+            )
+    
+    # Fonction d'envoi en arrière-plan
+    async def send_emails_background(recipients_list, subj, msg, media, coach):
+        results = {"sent": 0, "failed": 0, "errors": []}
+        for recipient in recipients_list:
+            try:
+                to_email = recipient.get("email")
+                to_name = recipient.get("name", "")
+                if not to_email:
+                    continue
+                
+                # Personnaliser le message avec le prénom
+                personalized_msg = msg.replace("{prénom}", to_name).replace("{prenom}", to_name)
+                
+                # Préparer l'email
+                if not RESEND_AVAILABLE or not RESEND_API_KEY:
+                    results["failed"] += 1
+                    results["errors"].append(f"{to_email}: Resend non configuré")
+                    continue
+                
+                # Construire le HTML (version simplifiée)
+                html_content = f'''<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#0f0f0f;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0f0f0f;">
+<tr><td align="center" style="padding:20px;">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#1a1a1a;border-radius:12px;">
+<tr><td style="padding:30px;">
+<h1 style="color:#D91CD2;margin:0;font-size:24px;">Afroboost</h1>
+<p style="color:#ffffff;margin-top:20px;line-height:1.6;">{personalized_msg.replace(chr(10), '<br>')}</p>
+</td></tr>
+<tr><td style="padding:15px;border-top:1px solid #333;text-align:center;">
+<a href="https://afroboosteur.com" style="color:#9333EA;font-size:12px;">afroboosteur.com</a>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body></html>'''
+                
+                params = {
+                    "from": "Afroboost <notifications@afroboosteur.com>",
+                    "to": [to_email],
+                    "subject": subj,
+                    "html": html_content
+                }
+                
+                await asyncio.to_thread(resend.Emails.send, params)
+                results["sent"] += 1
+                
+                # Déduire le crédit
+                if coach and not is_super_admin(coach):
+                    await deduct_credit(coach, f"email campagne à {to_email}")
+                
+                # Petit délai entre les emails pour éviter le rate limiting
+                await asyncio.sleep(0.2)
+                
+            except Exception as e:
+                results["failed"] += 1
+                results["errors"].append(f"{to_email}: {str(e)}")
+                logger.error(f"Bulk email failed for {to_email}: {e}")
+        
+        logger.info(f"[BULK EMAIL] Terminé: {results['sent']} envoyés, {results['failed']} échoués")
+        return results
+    
+    # Lancer en arrière-plan
+    background_tasks.add_task(send_emails_background, recipients, subject, message, media_url, coach_email)
+    
+    return {
+        "success": True,
+        "message": f"Envoi de {len(recipients)} emails lancé en arrière-plan",
+        "total_recipients": len(recipients),
+        "status": "processing"
+    }
+
 @api_router.post("/push/send")
 async def send_push_to_participant(request: Request):
     """
