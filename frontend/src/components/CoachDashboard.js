@@ -5642,7 +5642,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             // General
             loadingConversations={loadingConversations}
             isSuperAdmin={isSuperAdmin}
-            API_URL={API_URL}
+            API_URL={API}
           />
           </SectionErrorBoundary>
         )}
