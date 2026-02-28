@@ -4441,32 +4441,42 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                   </div>
                 </div>
                 
-                {/* Présets de couleurs */}
+                {/* Présets de couleurs - v9.4.4: Incluant fond et glow */}
                 <div className="mt-4">
                   <label className="block mb-2 text-white text-sm">🎯 Préréglages rapides</label>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { name: 'Rose Néon', primary: '#D91CD2', secondary: '#8b5cf6' },
-                      { name: 'Bleu Électrique', primary: '#0ea5e9', secondary: '#6366f1' },
-                      { name: 'Vert Menthe', primary: '#10b981', secondary: '#14b8a6' },
-                      { name: 'Orange Sunset', primary: '#f97316', secondary: '#eab308' },
-                      { name: 'Rouge Passion', primary: '#ef4444', secondary: '#ec4899' },
-                      { name: 'Or Luxe', primary: '#d4af37', secondary: '#b8860b' },
+                      { name: 'Afroboost Classic', primary: '#D91CD2', secondary: '#8b5cf6', bg: '#000000', glow: '#D91CD2' },
+                      { name: 'Blanc Élégant', primary: '#9333ea', secondary: '#6366f1', bg: '#ffffff', glow: '#9333ea' },
+                      { name: 'Bleu Ocean', primary: '#0ea5e9', secondary: '#6366f1', bg: '#0a1628', glow: '#0ea5e9' },
+                      { name: 'Or Luxe', primary: '#d4af37', secondary: '#b8860b', bg: '#1a1a0a', glow: '#d4af37' },
+                      { name: 'Vert Nature', primary: '#10b981', secondary: '#14b8a6', bg: '#0a1a0f', glow: '#10b981' },
+                      { name: 'Rouge Passion', primary: '#ef4444', secondary: '#ec4899', bg: '#1a0a0a', glow: '#ef4444' },
                     ].map((preset) => (
                       <button
                         key={preset.name}
                         onClick={() => {
-                          setConcept({ ...concept, primaryColor: preset.primary, secondaryColor: preset.secondary });
+                          setConcept({ 
+                            ...concept, 
+                            primaryColor: preset.primary, 
+                            secondaryColor: preset.secondary,
+                            backgroundColor: preset.bg,
+                            glowColor: preset.glow
+                          });
                           document.documentElement.style.setProperty('--primary-color', preset.primary);
                           document.documentElement.style.setProperty('--secondary-color', preset.secondary);
-                          document.documentElement.style.setProperty('--glow-color', `${preset.primary}66`);
-                          document.documentElement.style.setProperty('--glow-color-strong', `${preset.primary}99`);
+                          document.documentElement.style.setProperty('--background-color', preset.bg);
+                          document.documentElement.style.setProperty('--glow-color', `${preset.glow}66`);
+                          document.documentElement.style.setProperty('--glow-color-strong', `${preset.glow}99`);
+                          document.body.style.backgroundColor = preset.bg;
                         }}
-                        className="px-3 py-2 rounded-full text-xs font-medium text-white transition-all hover:scale-105"
+                        className="px-3 py-2 rounded-full text-xs font-medium transition-all hover:scale-105"
                         style={{ 
                           background: `linear-gradient(135deg, ${preset.primary}, ${preset.secondary})`,
-                          boxShadow: `0 2px 10px ${preset.primary}40`
+                          boxShadow: `0 2px 10px ${preset.primary}40`,
+                          color: preset.bg === '#ffffff' ? '#000' : '#fff'
                         }}
+                        data-testid={`preset-${preset.name.toLowerCase().replace(/\s/g, '-')}`}
                       >
                         {preset.name}
                       </button>
@@ -4477,13 +4487,22 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 {/* Bouton reset */}
                 <button
                   onClick={() => {
-                    setConcept({ ...concept, primaryColor: '#D91CD2', secondaryColor: '#8b5cf6' });
+                    setConcept({ 
+                      ...concept, 
+                      primaryColor: '#D91CD2', 
+                      secondaryColor: '#8b5cf6',
+                      backgroundColor: '#000000',
+                      glowColor: ''
+                    });
                     document.documentElement.style.setProperty('--primary-color', '#D91CD2');
                     document.documentElement.style.setProperty('--secondary-color', '#8b5cf6');
+                    document.documentElement.style.setProperty('--background-color', '#000000');
                     document.documentElement.style.setProperty('--glow-color', 'rgba(217, 28, 210, 0.4)');
                     document.documentElement.style.setProperty('--glow-color-strong', 'rgba(217, 28, 210, 0.6)');
+                    document.body.style.backgroundColor = '#000000';
                   }}
                   className="mt-4 px-4 py-2 rounded-lg text-sm text-white/70 hover:text-white border border-white/20 hover:border-white/40 transition-all"
+                  data-testid="reset-colors-btn"
                 >
                   🔄 Réinitialiser les couleurs par défaut
                 </button>
