@@ -185,7 +185,7 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
       {/* v9.5.6: Container vidéo optimisé - Prend MAXIMUM de place sur mobile */}
       <div 
         className="relative w-full h-full flex items-center justify-center"
-        style={{ padding: '50px 8px 60px 8px' }}  // 50px top pour le header, 60px bottom pour overlay
+        style={{ padding: '40px 4px 60px 4px' }}  // v9.5.6: Réduit à 40px top, 4px sides
       >
         <div 
           className="relative w-full"
