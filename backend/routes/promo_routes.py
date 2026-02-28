@@ -36,6 +36,7 @@ class DiscountCode(BaseModel):
     maxUses: Optional[int] = None
     used: int = 0
     active: bool = True
+    coach_id: Optional[str] = None  # v9.3.0: Isolation par coach
 
 
 class DiscountCodeCreate(BaseModel):
@@ -46,6 +47,7 @@ class DiscountCodeCreate(BaseModel):
     expiresAt: Optional[str] = None
     courses: List[str] = []
     maxUses: Optional[int] = None
+    coach_id: Optional[str] = None  # v9.3.0: Isolation par coach
 
 
 # === ROUTES ===
