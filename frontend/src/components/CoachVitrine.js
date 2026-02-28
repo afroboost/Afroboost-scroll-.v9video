@@ -564,6 +564,85 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
               </button>
             </div>
           </div>
+          
+          {/* v9.2.9: Header Vidéo Dynamique - Miroir Afroboost */}
+          <div 
+            className="rounded-2xl mb-6 overflow-hidden relative"
+            style={{ 
+              aspectRatio: '16/9',
+              maxHeight: '400px',
+              background: 'linear-gradient(180deg, rgba(10,5,15,1) 0%, rgba(26,10,31,1) 100%)',
+              border: '1px solid rgba(217, 28, 210, 0.2)',
+              boxShadow: '0 0 30px rgba(217, 28, 210, 0.1)'
+            }}
+          >
+            {/* Vidéo du coach ou placeholder animé */}
+            {coach.video_url ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+                style={{ filter: 'brightness(0.9)' }}
+                data-testid="vitrine-video"
+              >
+                <source src={coach.video_url} type="video/mp4" />
+              </video>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center relative">
+                {/* Animation de fond */}
+                <div 
+                  className="absolute inset-0"
+                  style={{
+                    background: 'radial-gradient(circle at 50% 50%, rgba(217, 28, 210, 0.15) 0%, transparent 60%)'
+                  }}
+                />
+                
+                {/* Logo animé */}
+                <div 
+                  className="relative z-10 mb-4"
+                  style={{
+                    animation: 'pulse 3s ease-in-out infinite',
+                    filter: 'drop-shadow(0 0 20px rgba(217, 28, 210, 0.5))'
+                  }}
+                >
+                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#D91CD2" strokeWidth="1">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                  </svg>
+                </div>
+                
+                {/* Nom du coach stylisé */}
+                <h2 
+                  className="text-2xl font-bold relative z-10"
+                  style={{
+                    background: 'linear-gradient(135deg, #D91CD2, #8B5CF6)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}
+                >
+                  {displayName}
+                </h2>
+                <p className="text-white/50 text-sm mt-2 relative z-10">Partenaire Afroboost</p>
+                
+                {/* Animation CSS */}
+                <style>{`
+                  @keyframes pulse {
+                    0%, 100% { transform: scale(1); opacity: 0.9; }
+                    50% { transform: scale(1.05); opacity: 1; }
+                  }
+                `}</style>
+              </div>
+            )}
+            
+            {/* Overlay gradient */}
+            <div 
+              className="absolute bottom-0 left-0 right-0 h-20"
+              style={{ background: 'linear-gradient(transparent, rgba(10,5,15,0.9))' }}
+            />
+          </div>
 
           {/* Profil Coach - Design miroir Afroboost */}
           <div 
