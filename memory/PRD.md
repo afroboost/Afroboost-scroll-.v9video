@@ -1,5 +1,40 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.5 - RÉPARATION VISUELLE FORCÉE & BRANCHEMENT RÉEL ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.5 COMPLÈTE
+
+| Composant | Description |
+|-----------|-------------|
+| LoadingFallback | Composant de secours avec squelette dashboard (lignes 3565-3625) |
+| dashboardReady | État de chargement (ligne 318) |
+| success_url | `#partner-dashboard?success=true&auth=success` |
+| Propulsion | App.js détecte `auth=success` et redirige automatiquement |
+
+### Modifications v9.2.5
+
+| Fichier | Modification |
+|---------|--------------|
+| CoachDashboard.js | LoadingFallback component + dashboardReady state |
+| server.py | success_url → `#partner-dashboard?success=true&auth=success` |
+| App.js | Détection `auth=success` pour propulsion garantie |
+
+### Comportement v9.2.5
+
+| Situation | Affichage |
+|-----------|-----------|
+| Chargement en cours | LoadingFallback (squelette avec logo Afroboost) |
+| Partenaire vierge | Dashboard complet avec 0 crédit rouge |
+| Super Admin | Dashboard complet avec 👑 + 7 réservations |
+| Retour Stripe ?auth=success | Propulsion FORCÉE vers dashboard |
+
+### Tests v9.2.5 - Iteration 88
+- Backend: **100%** ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi (04/03/2026)** ✅
+
+---
+
 ## v9.2.4 - FORCE AFFICHAGE PARTENAIRE & FIX REDIRECTION ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.4 COMPLÈTE
