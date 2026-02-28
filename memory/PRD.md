@@ -1,5 +1,40 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.3 - BRANCHEMENT PARTENAIRE & PROPULSION RÉELLE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.3 COMPLÈTE
+
+| Problème | Solution |
+|----------|----------|
+| Dashboard blanc pour nouveaux partenaires | `coachCredits` initialisé à `isSuperAdmin ? -1 : 0` |
+| Badge non affiché si crédits = null | Suppression condition `coachCredits !== null` |
+| Propulsion Stripe tardive | Détection AVANT React avec `detectStripeSuccess()` |
+| Intent perdu après redirect | Stockage dans `localStorage.afroboost_redirect_intent` |
+
+### Modifications v9.2.3
+
+| Fichier | Modification |
+|---------|--------------|
+| App.js | Lignes 38-70: `detectStripeSuccess()` exécuté AVANT React |
+| CoachDashboard.js | Ligne 337: `coachCredits = isSuperAdmin ? -1 : 0` |
+| CoachDashboard.js | Lignes 3711-3724: Badge TOUJOURS visible (plus de null check) |
+
+### Comportement "Compte Vierge" v9.2.3
+
+| État | Affichage |
+|------|-----------|
+| Profil inexistant (404) | Dashboard avec crédits = 0 |
+| Données vides | Onglets fonctionnels, messages "Aucune..." |
+| Campagnes | Avertissement "⚠️ Crédits insuffisants" + bouton "Acheter" |
+| Conversations | "Liens actifs" visible, formulaires accessibles |
+
+### Tests v9.2.3 - Iteration 86
+- Backend: **100% (18/18 tests)** ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi (04/03/2026)** ✅
+
+---
+
 ## v9.2.2 - VISIBILITÉ PARTENAIRE & FIX REDIRECTION ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.2 COMPLÈTE
