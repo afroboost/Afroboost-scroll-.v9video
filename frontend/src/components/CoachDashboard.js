@@ -5644,6 +5644,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             isSuperAdmin={isSuperAdmin}
             API_URL={API_URL}
           />
+          </SectionErrorBoundary>
         )}
         {/* [CONVERSATIONS_END] - Section extraite vers CRMSection.js (~940 lignes économisées) */}
 
