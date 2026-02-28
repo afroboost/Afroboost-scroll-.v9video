@@ -535,8 +535,14 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
     }, 50);
   }, [activeIndex, filteredPartners.length]);
   
-  // Navigation vers vitrine
+  // Navigation vers vitrine - v9.5.7: Bloquer en mode maintenance
   const handleNavigate = useCallback((partner) => {
+    // v9.5.7: QUICK CONTROL - Bloquer navigation si maintenance ON (sauf Super Admin)
+    if (maintenanceMode && !isSuperAdmin) {
+      console.log('[MAINTENANCE] Navigation bloquée - mode maintenance actif');
+      return; // Ne rien faire
+    }
+    
     sessionStorage.setItem('afroboost_flux_index', activeIndex.toString());
     
     const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
@@ -549,7 +555,7 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
         window.location.href = targetPath;
       }
     }
-  }, [activeIndex, onPartnerClick]);
+  }, [activeIndex, onPartnerClick, maintenanceMode, isSuperAdmin]);
   
   if (loading) {
     return (
