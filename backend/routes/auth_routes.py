@@ -65,15 +65,11 @@ async def process_google_session(request: Request, response: Response):
         picture = user_data.get("picture", "")
         session_token = user_data.get("session_token", "")
         
-        # ===== VÉRIFICATION CRITIQUE : Email autorisé uniquement =====
-        if email != AUTHORIZED_COACH_EMAIL.lower():
-            return {
-                "success": False,
-                "error": "access_denied",
-                "message": f"⛔ Accès réservé. Seul {AUTHORIZED_COACH_EMAIL} peut accéder à ce dashboard."
-            }
+        # v9.2.2: Permettre l'accès à tous les emails (Super Admin + Partenaires)
+        # Le Super Admin (contact.artboost@gmail.com) a des privilèges spéciaux dans le frontend
+        is_super_admin = (email == AUTHORIZED_COACH_EMAIL.lower())
         
-        # Créer ou mettre à jour l'utilisateur
+        # Créer ou mettre à jour l'utilisateur Google
         user_id = f"coach_{uuid.uuid4().hex[:12]}"
         existing_user = await _db.google_users.find_one({"email": email}, {"_id": 0})
         
