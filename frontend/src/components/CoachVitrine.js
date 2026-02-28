@@ -587,7 +587,7 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
             </div>
           </div>
           
-          {/* v9.2.9: Header Vidéo Dynamique - Miroir Afroboost */}
+          {/* v9.3.2: Header Vidéo Dynamique - Miroir exact de Bassi */}
           <div 
             className="rounded-2xl mb-6 overflow-hidden relative"
             style={{ 
@@ -597,9 +597,67 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
               border: '1px solid rgba(217, 28, 210, 0.2)',
               boxShadow: '0 0 30px rgba(217, 28, 210, 0.1)'
             }}
+            data-testid="vitrine-hero-container"
           >
-            {/* Vidéo du coach ou placeholder animé */}
-            {coach.video_url ? (
+            {/* v9.3.2: Vidéo du concept (YouTube/Vimeo/MP4) OU placeholder animé */}
+            {coachConcept?.heroImageUrl ? (
+              <div className="w-full h-full relative">
+                {/* YouTube */}
+                {coachConcept.heroImageUrl.includes('youtube.com') || coachConcept.heroImageUrl.includes('youtu.be') ? (
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://www.youtube.com/embed/${
+                      coachConcept.heroImageUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1] || ''
+                    }?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&playlist=${
+                      coachConcept.heroImageUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/)?.[1] || ''
+                    }`}
+                    title="Video"
+                    frameBorder="0"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    style={{ border: 'none' }}
+                    data-testid="vitrine-youtube-video"
+                  />
+                ) : coachConcept.heroImageUrl.includes('vimeo.com') ? (
+                  /* Vimeo */
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://player.vimeo.com/video/${
+                      coachConcept.heroImageUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/)?.[1] || ''
+                    }?autoplay=1&muted=1&loop=1&background=1`}
+                    title="Video"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen"
+                    allowFullScreen
+                    style={{ border: 'none' }}
+                    data-testid="vitrine-vimeo-video"
+                  />
+                ) : coachConcept.heroImageUrl.match(/\.(mp4|webm|mov|avi)$/i) ? (
+                  /* MP4/Video file */
+                  <video
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="w-full h-full object-cover"
+                    style={{ filter: 'brightness(0.9)' }}
+                    data-testid="vitrine-mp4-video"
+                  >
+                    <source src={coachConcept.heroImageUrl} type="video/mp4" />
+                  </video>
+                ) : (
+                  /* Image */
+                  <img 
+                    src={coachConcept.heroImageUrl}
+                    alt="Coach Banner"
+                    className="w-full h-full object-cover"
+                    style={{ filter: 'brightness(0.9)' }}
+                    data-testid="vitrine-hero-image"
+                  />
+                )}
+              </div>
+            ) : coach.video_url ? (
+              /* Fallback: video_url du coach */
               <video
                 autoPlay
                 muted
