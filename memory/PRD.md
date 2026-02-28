@@ -1,5 +1,119 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.6 - RÉPARATION STRUCTURELLE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.5.6 COMPLÈTE - "STRUCTURE ET ACCÈS RÉPARÉS"
+
+| Objectif | Statut |
+|----------|--------|
+| Déblocage Super Admin (afroboost.bassi@gmail.com) | ✅ |
+| Réparation scroll vers horaires/footer | ✅ |
+| Compacité mobile (zéro espace vide) | ✅ |
+| Bouton déconnexion visible (z-index: 9999) | ✅ |
+| Visibilité offres et formulaire | ✅ |
+| Chat violet préservé | ✅ |
+
+### 1. SUPER ADMIN - LISTE ÉTENDUE
+
+**Avant:** Un seul email Super Admin
+**Après:** Liste de Super Admins
+
+```javascript
+// backend/routes/coach_routes.py, shared.py, server.py
+SUPER_ADMIN_EMAILS = [
+    "contact.artboost@gmail.com",
+    "afroboost.bassi@gmail.com"
+];
+
+function is_super_admin(email) {
+  return SUPER_ADMIN_EMAILS.some(e => e.toLowerCase() === email.toLowerCase());
+}
+```
+
+**Fichiers modifiés:**
+- `backend/server.py` (L263-290)
+- `backend/routes/coach_routes.py` (L14-25)
+- `backend/routes/shared.py` (L8-25)
+- `frontend/src/App.js` (L40-50)
+- `frontend/src/components/CoachDashboard.js` (L322-325)
+- `frontend/src/components/ChatWidget.js` (L838-845, L1450-1465, L1573-1575)
+
+### 2. SCROLL VERS HORAIRES ET FOOTER
+
+**Problème:** Le flux Reels en `position: fixed` bloquait le scroll
+**Solution:** Position `relative` avec hauteur `100vh`
+
+```jsx
+// App.js L3755-3770
+<div 
+  className="relative w-full" 
+  style={{ height: '100vh', background: '#000000' }}
+>
+  <PartnersCarousel />
+</div>
+
+{/* Contenu scrollable SOUS le flux Reels */}
+<div className="max-w-4xl mx-auto px-4 pt-8">
+  {/* Sessions, Offres, Footer... */}
+</div>
+```
+
+**Résultat:**
+- ✅ Le doigt peut scroller jusqu'au bas du site
+- ✅ Section "Choisissez votre session" visible
+- ✅ Footer "© Afroboost 2026" accessible
+
+### 3. COMPACITÉ MOBILE (SAMSUNG ULTRA 24)
+
+| Élément | Avant | Après |
+|---------|-------|-------|
+| Format vidéo | 16:9 | 9:16 |
+| maxHeight vidéo | 70% | 95% |
+| paddingTop header | 8px | 4px |
+| paddingTop vidéo | 50px | 35px |
+| ScrollIndicator | Visible | ❌ Supprimé |
+
+**Code vidéo optimisé:**
+```jsx
+// PartnersCarousel.js L176-195
+<div style={{
+  aspectRatio: '9/16',  // Format portrait
+  maxHeight: '95%',
+  maxWidth: '100%'
+}}>
+```
+
+### 4. BOUTON DÉCONNEXION VISIBLE
+
+```jsx
+// CoachDashboard.js L4195-4210
+<button 
+  onClick={handleSecureLogout}
+  style={{ 
+    background: 'rgba(239, 68, 68, 0.3)', 
+    border: '1px solid rgba(239, 68, 68, 0.5)',
+    zIndex: 9999,
+    position: 'relative'
+  }}
+>
+  🚪 {t('logout')}
+</button>
+```
+
+### Tests v9.5.6 - Iteration 113
+
+| Test | Statut |
+|------|--------|
+| Backend: 10/10 tests | ✅ 100% |
+| Frontend: All features | ✅ 100% |
+| Super Admin afroboost.bassi | ✅ role=super_admin |
+| Super Admin contact.artboost | ✅ role=super_admin |
+| Page scroll | ✅ scrollHeight=1465px |
+| Sessions visible | ✅ "Choisissez votre session" |
+| Chat violet | ✅ rgb(217, 28, 210) |
+
+---
+
 ## v9.5.4 - NETTOYAGE CASE ET RÉPARATION BOUTON ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.5.4 COMPLÈTE - "CASE SUPPRIMÉE ET REDIRECTION RÉPARÉE"
