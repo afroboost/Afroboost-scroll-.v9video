@@ -831,6 +831,7 @@ export const ChatWidget = () => {
   
   // === v8.9.9: VÉRIFICATION COACH INSCRIT ===
   // v9.3.0: Initialiser depuis localStorage pour persistance après reconnexion
+  // v9.3.1: Aussi vérifier côté serveur pour synchronisation
   const [isRegisteredCoach, setIsRegisteredCoach] = useState(() => {
     try {
       const coachModeFlag = localStorage.getItem('afroboost_coach_mode');
@@ -838,6 +839,32 @@ export const ChatWidget = () => {
       return coachModeFlag === 'true' || !!coachUser;
     } catch { return false; }
   });
+  
+  // v9.3.1: Vérification côté serveur si l'utilisateur est partenaire
+  useEffect(() => {
+    const checkPartnerStatus = async () => {
+      // Vérifier avec le profil abonné existant ou le profil coach
+      const profile = getStoredProfile();
+      const coachUserStr = localStorage.getItem('afroboost_coach_user');
+      const email = profile?.email || (coachUserStr ? JSON.parse(coachUserStr)?.email : null);
+      
+      if (email) {
+        try {
+          const res = await axios.get(`${API}/check-partner/${encodeURIComponent(email)}`);
+          if (res.data?.is_partner) {
+            setIsRegisteredCoach(true);
+            // Synchroniser le localStorage
+            localStorage.setItem('afroboost_coach_mode', 'true');
+            console.log('[CHAT] ✅ Partenaire vérifié côté serveur:', email);
+          }
+        } catch (e) {
+          console.log('[CHAT] Vérification partenaire impossible:', e.message);
+        }
+      }
+    };
+    
+    checkPartnerStatus();
+  }, []);
   
   // === PROFIL ABONNÉ VALIDÉ (afroboost_profile) ===
   const [afroboostProfile, setAfroboostProfile] = useState(getStoredProfile);
