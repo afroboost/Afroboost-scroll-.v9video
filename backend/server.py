@@ -6810,6 +6810,15 @@ async def get_coach_profile(request: Request):
         logger.error(f"[COACH] Erreur profil: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/coach/check-credits")
+async def api_check_credits(request: Request):
+    """v9.0.2: Vérifie le solde de crédits du coach"""
+    coach_email = request.headers.get("X-User-Email", "").lower().strip()
+    if not coach_email:
+        raise HTTPException(status_code=401, detail="Email requis")
+    result = await check_credits(coach_email)
+    return result
+
 @api_router.post("/coach/register")
 async def register_coach(coach_data: CoachCreate):
     """Inscription d'un nouveau coach (après paiement)"""
