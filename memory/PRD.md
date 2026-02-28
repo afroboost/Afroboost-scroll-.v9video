@@ -1,5 +1,42 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.3.2 - ÉTANCHÉITÉ TOTALE, MIROIR RÉEL & FIX BOUTON ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.3.2 COMPLÈTE - "INTERFACE MIROIR ET ÉTANCHÉITÉ VERROUILLÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| Fix Header Vitrine (vidéo unique) | ✅ |
+| Formulaire paiement & code promo | ✅ |
+| Étanchéité des comptes | ✅ |
+| Bouton Chat persistant | ✅ |
+| Anti-Régression (7 réservations Bassi) | ✅ |
+
+### Étanchéité v9.3.2
+
+| Ressource | Bassi (Super Admin) | Nouveau Partenaire |
+|-----------|---------------------|-------------------|
+| Réservations | 7 | 0 |
+| Contacts | 8 | 0 |
+| Codes Promo | Tous | Seulement les siens |
+| Concept | Global | Personnel |
+
+### Header Vidéo Vitrine v9.3.2
+
+Supporte maintenant :
+- **YouTube** : Extraction automatique de l'ID vidéo
+- **Vimeo** : Mode background autoplay
+- **MP4/WebM/MOV** : Lecture native HTML5
+- **Images** : Fallback pour photos/bannières
+- **Placeholder** : Animation logo si aucun média configuré
+
+### Tests v9.3.2 - Iteration 95
+- Backend: **100%** (12/12 tests) ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi, 8 contacts** ✅
+
+---
+
 ## v9.3.1 - SÉCURITÉ STORAGE, FIX BOUTON & PAIEMENT ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.3.1 COMPLÈTE - "ÉTANCHÉITÉ STORAGE ET BOUTON INTELLIGENT ACTIVÉS"
