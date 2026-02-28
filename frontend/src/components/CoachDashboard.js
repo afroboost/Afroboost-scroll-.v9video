@@ -3612,7 +3612,10 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
           <div>
-            <h1 className="font-bold text-white" style={{ fontSize: '28px' }}>{t('coachMode')}</h1>
+            {/* v9.1.3: Marque blanche - Affiche platform_name ou "Mon Espace Afroboost" */}
+            <h1 className="font-bold text-white" style={{ fontSize: '28px' }} data-testid="dashboard-title">
+              {dashboardTitle}
+            </h1>
             {/* Affichage de l'utilisateur connecté via Google OAuth */}
             {coachUser && (
               <div className="flex items-center gap-2 mt-2 flex-wrap">
