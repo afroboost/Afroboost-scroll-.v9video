@@ -2164,6 +2164,13 @@ function App() {
     // Aussi parser les params dans le hash (ex: #coach-dashboard?session_id=xxx)
     const hashParams = new URLSearchParams(hash.split('?')[1] || '');
     
+    // v9.4.7: Détection #become-coach pour afficher la page d'inscription partenaire
+    if (hash.includes('become-coach') || window.location.href.includes('become-coach')) {
+      console.log('[APP] 🚀 v9.4.7 - Page Devenir Partenaire via hash');
+      setShowBecomeCoach(true);
+      return;
+    }
+    
     // === v9.2.5: PROPULSION AUTOMATIQUE #coach-dashboard ou #partner-dashboard ===
     // Force l'état dashboard sans AUCUNE autre condition
     if (hash.includes('coach-dashboard') || hash.includes('partner-dashboard') || window.location.href.includes('coach-dashboard') || window.location.href.includes('partner-dashboard')) {
