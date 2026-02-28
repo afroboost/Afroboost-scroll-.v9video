@@ -503,8 +503,8 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
     >
       {/* v9.5.1: HEADER avec Logo Afroboost + Recherche */}
       <div 
-        className="sticky top-0 z-20 flex items-center justify-between px-4 py-3"
-        style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 70%, transparent 100%)' }}
+        className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3"
+        style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%)' }}
       >
         {/* Espace gauche (équilibrage) */}
         <div className="w-10"></div>
