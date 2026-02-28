@@ -402,6 +402,17 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
         } catch (e) {
           console.log('[VITRINE] Pas de liens de paiement configurés');
         }
+        
+        // v9.3.2: Charger le concept du coach (pour la vidéo header)
+        try {
+          const conceptRes = await axios.get(`${API}/concept`, {
+            headers: { 'X-User-Email': res.data.coach.email || username }
+          });
+          setCoachConcept(conceptRes.data);
+          console.log('[VITRINE] Concept chargé:', conceptRes.data?.heroImageUrl);
+        } catch (e) {
+          console.log('[VITRINE] Pas de concept trouvé, utilisation du placeholder');
+        }
       } catch (err) {
         console.error('[VITRINE] Erreur:', err);
         setError(err.response?.data?.detail || 'Coach non trouvé');
