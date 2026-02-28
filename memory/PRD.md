@@ -1,5 +1,42 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.0 - DÉCOUPAGE DASHBOARD & SÉCURITÉ ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.0 COMPLÈTE
+
+| Composant | Avant | Après | Changement |
+|-----------|-------|-------|------------|
+| CoachDashboard.js | 6633 | 5749 | -884 lignes |
+| CRMSection.js | 0 | 673 | +673 lignes (nouveau) |
+| server.py | 6257 | 6191 | -66 lignes |
+| promo_routes.py | 0 | 159 | +159 lignes (nouveau) |
+
+### Modularisation v9.2.0
+
+| Module | Lignes | Routes extraites |
+|--------|--------|------------------|
+| coach/CRMSection.js | 673 | Section Conversations/CRM UI |
+| routes/promo_routes.py | 159 | /discount-codes CRUD + validate |
+| routes/auth_routes.py | 232 | /auth/* + /coach-auth/* |
+| routes/coach_routes.py | existant | /coach/*, /partner/* |
+| routes/campaign_routes.py | existant | /campaigns/* |
+| routes/reservation_routes.py | existant | /reservations/* |
+
+### Protection Badge Crédits v9.2.0
+
+| Email | Badge affiché |
+|-------|---------------|
+| contact.artboost@gmail.com | 👑 Crédits Illimités (violet néon) |
+| Tout autre email | 💰 Solde : X Crédits (violet ou rouge si < 5) |
+
+### Tests v9.2.0 - Iteration 83
+- Backend: **12/12 pytest ✅**
+- Frontend: **2/2 Playwright ✅**
+- Non-régression: **7 réservations ✅**
+- Dates mars: **04.03, 11.03, 18.03, 25.03 ✅**
+
+---
+
 ## v9.1.9 - PROPULSION TOTALE & VISIBILITÉ CRÉDITS ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.1.9 COMPLÈTE
