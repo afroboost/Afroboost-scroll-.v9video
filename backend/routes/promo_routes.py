@@ -55,17 +55,35 @@ class DiscountCodeCreate(BaseModel):
 
 
 # === ROUTES ===
-@promo_router.get("", response_model=List[DiscountCode])
-async def get_discount_codes():
-    """Récupère tous les codes promo"""
-    codes = await _db.discount_codes.find({}, {"_id": 0}).to_list(1000)
+@promo_router.get("")
+async def get_discount_codes(request: Request):
+    """Récupère les codes promo - filtrés par coach_id sauf Super Admin"""
+    user_email = request.headers.get('X-User-Email', '').lower().strip()
+    is_super_admin = user_email == SUPER_ADMIN_EMAIL.lower()
+    
+    # Super Admin voit tous les codes, coach voit seulement les siens
+    query = {} if is_super_admin else {"$or": [
+        {"coach_id": user_email},
+        {"coach_id": None},  # Codes sans coach_id (legacy)
+        {"coach_id": {"$exists": False}}
+    ]}
+    
+    codes = await _db.discount_codes.find(query, {"_id": 0}).to_list(1000)
     return codes
 
 
-@promo_router.post("", response_model=DiscountCode)
-async def create_discount_code(code: DiscountCodeCreate):
-    """Crée un nouveau code promo"""
-    code_obj = DiscountCode(**code.model_dump())
+@promo_router.post("")
+async def create_discount_code(code: DiscountCodeCreate, request: Request):
+    """Crée un nouveau code promo avec coach_id"""
+    user_email = request.headers.get('X-User-Email', '').lower().strip()
+    is_super_admin = user_email == SUPER_ADMIN_EMAIL.lower()
+    
+    code_data = code.model_dump()
+    # v9.3.0: Assigner le coach_id si pas Super Admin
+    if not is_super_admin and user_email:
+        code_data["coach_id"] = user_email
+    
+    code_obj = DiscountCode(**code_data)
     await _db.discount_codes.insert_one(code_obj.model_dump())
     return code_obj
 
