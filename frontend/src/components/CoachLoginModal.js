@@ -131,9 +131,22 @@ const CoachLoginModal = ({ t, onLogin, onCancel, welcomeMessage }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <h2 className="font-bold text-white text-xl mb-2">{t('coachLogin') || 'Espace Coach'}</h2>
+          <h2 className="font-bold text-white text-xl mb-2">{t('coachLogin') || 'Espace Partenaire'}</h2>
           <p className="text-white/60 text-sm">Connectez-vous avec votre compte Google autorisé</p>
         </div>
+
+        {/* v9.1.8: Message de bienvenue après paiement */}
+        {welcomeMessage && (
+          <div 
+            className="mb-6 p-4 rounded-lg text-center"
+            style={{ 
+              background: 'rgba(34, 197, 94, 0.2)', 
+              border: '1px solid rgba(34, 197, 94, 0.5)' 
+            }}
+          >
+            <p className="text-green-400 text-sm font-medium">{welcomeMessage}</p>
+          </div>
+        )}
 
         {/* Message d'erreur */}
         {error && (
