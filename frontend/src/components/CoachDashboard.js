@@ -4301,8 +4301,22 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
               
               {/* ========================= PERSONNALISATION DES COULEURS ========================= */}
               <div className="border border-purple-500/30 rounded-lg p-4 bg-purple-900/10">
-                <h3 className="text-purple-400 font-semibold mb-4">🎨 Personnalisation des couleurs</h3>
-                <p className="text-white/60 text-xs mb-4">Changez les couleurs principales du site. Les modifications s'appliquent en temps réel.</p>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-purple-400 font-semibold">🎨 Personnalisation des couleurs</h3>
+                  {/* v9.5.1: Bouton de sauvegarde manuelle */}
+                  <button
+                    onClick={saveConcept}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105"
+                    style={{
+                      background: 'linear-gradient(135deg, var(--primary-color, #D91CD2), var(--secondary-color, #8b5cf6))',
+                      color: 'white'
+                    }}
+                    data-testid="save-colors-btn"
+                  >
+                    💾 Sauvegarder
+                  </button>
+                </div>
+                <p className="text-white/60 text-xs mb-4">Les modifications s'appliquent en temps réel et sont auto-sauvegardées après 1 seconde.</p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {/* Couleur principale */}
