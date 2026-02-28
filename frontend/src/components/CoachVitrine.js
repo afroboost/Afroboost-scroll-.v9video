@@ -239,18 +239,81 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
   const [showQR, setShowQR] = useState(false);
   const sliderRef = useRef(null);
   
+  // v9.2.9: Configuration paiement du coach
+  const [paymentConfig, setPaymentConfig] = useState({
+    stripe: '', paypal: '', twint: '', coachWhatsapp: ''
+  });
+  
   // v9.2.8: Modal de réservation pour les cours
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null); // { course, date }
-  const [bookingForm, setBookingForm] = useState({ name: '', email: '', whatsapp: '' });
+  const [bookingForm, setBookingForm] = useState({ name: '', email: '', whatsapp: '', promoCode: '' });
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  
+  // v9.2.9: Code promo
+  const [promoMessage, setPromoMessage] = useState({ type: '', text: '' });
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
+  const [selectedOffer, setSelectedOffer] = useState(null);
   
   // v9.2.8: Handler clic sur date de cours
   const handleBookClick = (course, date) => {
     setSelectedBooking({ course, date });
     setShowBookingModal(true);
     setBookingSuccess(false);
+    setPromoMessage({ type: '', text: '' });
+    setAppliedDiscount(null);
+  };
+  
+  // v9.2.9: Valider code promo
+  const validatePromoCode = async (code) => {
+    if (!code || code.length < 2) {
+      setPromoMessage({ type: '', text: '' });
+      setAppliedDiscount(null);
+      return;
+    }
+    
+    try {
+      const res = await axios.post(`${API}/discount-codes/validate`, { 
+        code: code.trim(),
+        coach_id: coach?.email || username
+      });
+      
+      if (res.data && res.data.valid) {
+        const discountCode = res.data.code;
+        let discountText = '';
+        
+        if (discountCode.type === '100%') {
+          discountText = `Code validé : GRATUIT`;
+        } else if (discountCode.type === '%') {
+          discountText = `Code validé : -${discountCode.value}%`;
+        } else {
+          discountText = `Code validé : -${discountCode.value} CHF`;
+        }
+        
+        setPromoMessage({ type: 'success', text: `✅ ${discountText}` });
+        setAppliedDiscount(discountCode);
+      } else {
+        setPromoMessage({ type: 'error', text: '❌ Code invalide' });
+        setAppliedDiscount(null);
+      }
+    } catch (err) {
+      setPromoMessage({ type: 'error', text: '❌ Code invalide ou expiré' });
+      setAppliedDiscount(null);
+    }
+  };
+  
+  // v9.2.9: Calculer le prix avec réduction
+  const calculateFinalPrice = () => {
+    if (!selectedOffer) return 0;
+    let total = selectedOffer.price || 0;
+    
+    if (appliedDiscount) {
+      if (appliedDiscount.type === '100%') return 0;
+      if (appliedDiscount.type === '%') return total * (1 - parseFloat(appliedDiscount.value) / 100);
+      if (appliedDiscount.type === 'CHF') return Math.max(0, total - parseFloat(appliedDiscount.value));
+    }
+    return total;
   };
   
   // v9.2.8: Soumettre réservation
@@ -269,15 +332,29 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
         courseTime: selectedBooking.course.time,
         datetime: selectedBooking.date.toISOString(),
         coach_id: coach?.email || username,
-        source: 'vitrine_partenaire'
+        source: 'vitrine_partenaire',
+        appliedDiscount: appliedDiscount ? {
+          id: appliedDiscount.id,
+          code: appliedDiscount.code,
+          type: appliedDiscount.type,
+          value: appliedDiscount.value
+        } : null
       });
       
       if (res.data) {
+        // v9.2.9: Marquer le code comme utilisé
+        if (appliedDiscount) {
+          try {
+            await axios.post(`${API}/discount-codes/${appliedDiscount.id}/use`);
+          } catch (e) { console.log('[PROMO] Code déjà utilisé ou erreur'); }
+        }
+        
         setBookingSuccess(true);
-        setBookingForm({ name: '', email: '', whatsapp: '' });
+        setBookingForm({ name: '', email: '', whatsapp: '', promoCode: '' });
         setTimeout(() => {
           setShowBookingModal(false);
           setSelectedBooking(null);
+          setAppliedDiscount(null);
         }, 3000);
       }
     } catch (err) {
