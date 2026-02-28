@@ -1,5 +1,41 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.5 - BRANCHEMENT RÉEL ET VITRINE MIROIR ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.1.5 COMPLÈTE
+
+| Critère | Validation |
+|---------|------------|
+| Redirection auto login | ✅ **handleGoogleLogin → #coach-dashboard** |
+| Bouton dynamique chat | ✅ **Mon Espace Coach / Devenir Coach** |
+| Vitrine miroir | ✅ **Design Afroboost + offres par défaut** |
+| Non-régression | **7 réservations ✅** |
+| server.py | **6435 lignes** (< 6500) |
+| Tests | **11/11 backend + frontend ✅** |
+
+### Accomplissements v9.1.5
+
+| Feature | Description |
+|---------|-------------|
+| Propulsion auto | handleGoogleLogin force `window.location.hash = '#coach-dashboard'` |
+| Bouton dynamique | Visiteur: "Devenir Coach Partenaire" → Coach: "🏠 Mon Espace Coach" |
+| Détection coach | isCoachMode vérifie `afroboost_coach_mode` dans localStorage |
+| Vitrine miroir | Design CSS Afroboost avec gradient, QR code, bouton partage |
+| Offres par défaut | DEFAULT_STARTER_OFFERS si coach n'a pas créé les siennes |
+
+### Tests v9.1.5 - Iteration 77
+- Backend: **11/11 ✅**
+- Frontend: **100% ✅**
+- Cours Mars: **INTACTS**
+- 7 réservations Bassi: **PRÉSERVÉES**
+
+### API Vérifiées
+- `GET /api/coach/vitrine/bassi` → 3 offres, 2 cours
+- `GET /api/reservations` → 7 réservations Super Admin
+- `GET /api/courses` → Session Cardio + Sunday Vibes
+
+---
+
 ## v9.1.3 - DASHBOARD MIROIR ET PROPULSION ACTIFS ✅ (28 Février 2026)
 
 ### STATUT: PROPULSION ZÉRO-CLIC ACTIVE
