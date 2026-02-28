@@ -2,51 +2,46 @@
 The user wants to transform the existing Afroboost application into a multi-partner SaaS platform. The application owner, Bassi (), will act as the Super Admin with complete control over the platform.
 
 **PRODUCT REQUIREMENTS:**
-1.  **Refactor & Optimize:** Clean up the monolithic  by modularizing its routes.
+1.  **Refactor & Optimize:** Clean up the monolithic  by modularizing its routes and the monolithic .
 2.  **Hierarchy & Access Control:**
-    *   **Super Admin:** Bassi has exclusive, unfiltered access to all platform data (contacts, reservations, campaigns). His credit balance is unlimited.
-    *   **Partner:** Can sign up, purchase credit packs, and access an isolated dashboard to manage their own clients, courses, and campaigns using a mirror of the Super Admin's UI.
+    *   **Super Admin:** Bassi has exclusive, unfiltered access to all platform data and an unlimited credit balance.
+    *   **Partner:** Can sign up, purchase credit packs, and access an isolated dashboard to manage their own clients, courses, and campaigns.
     *   **Data Isolation:** All data must be strictly segregated per partner using a . Bassi, as Super Admin, bypasses this filter.
 3.  **SaaS Monetization & White-Labeling:**
-    *   The Super Admin must be able to create, update, and delete Partner Packs with changes syncing to Stripe.
+    *   Partners must be able to purchase credit packs via Stripe.
     *   Partner actions must consume credits.
-    *   Partners must be able to customize their public-facing brand identity (, ).
 4.  **UI/UX & Features:**
-    *   Implement a Devenir Partenaire (Become a Partner) page and signup flow.
-    *   Create a public-facing vitrine (storefront) page for each partner at  and .
-    *   Implement a dynamic button in the chat widget that shows Devenir Partenaire for visitors and Mon Espace Partenaire for logged-in partners.
-    *   Ensure a seamless post-purchase redirection to the partner dashboard ().
+    *   Implement a seamless post-purchase redirection to the partner dashboard ().
+    *   Ensure the dashboard is always visible and never a blank white page, especially for new partners.
+    *   Display credit balance clearly in the UI.
 
 **User's preferred language**: français
 
 **what currently exists?**
-The application is a functional multi-partner SaaS platform. The initial Coach terminology has been globally rebranded to Partenaire.
+The application is a functional multi-partner SaaS platform where the Coach terminology has been rebranded to Partenaire.
 
-Key features are implemented:
-- **Refactoring:** The  file has been partially modularized, with routes for coaches/partners, campaigns, and reservations moved to separate files. Its size is stable at ~6436 lines.
-- **Super Admin Powers:** The Super Admin () has a verified bypass for all  filters, granting them omniscient access to all contacts, reservations, and campaigns. Their credit consumption is also bypassed, showing an Unlimited balance.
-- **Partner Dashboard:** All partners use the same  component (a Dashboard Mirror), ensuring a consistent feature set. Data is correctly isolated via .
-- **Monetization & Onboarding:** A credit system is active. The post-Stripe purchase flow correctly redirects users, displays a success message, and prompts for login to automatically access the dashboard.
-- **White-Labeling & UI:** Partners' public vitrine pages () now perfectly mirror the CSS and layout of the main Afroboost homepage.
+The backend has been further modularized with authentication () and promo code () logic extracted from the main  file. The frontend monolith  has been partially refactored by extracting the CRM section into its own component ().
+
+A series of critical bugs related to new partner onboarding have been fixed. New partners now have a minimal profile created automatically upon first login, and the dashboard UI is resilient, showing a loading state or default values instead of a blank page. The post-Stripe payment redirection flow is now robust, using both backend URL configuration and frontend  to ensure users are correctly propelled into their dashboard after payment and login.
 
 **Last working item**:
-    - Last item agent was working: The agent was executing **Mission v9.1.8**, which was a consolidation of user requests to ensure the partner experience was seamless and visually consistent. This involved:
-        1.  **Propulsion Post-Paiement:** Perfecting the zero-click redirection after a Stripe payment. If a user returns with , they are shown a welcome message and the login modal is automatically triggered to propel them into their dashboard.
-        2.  **Dashboard Miroir:** Verifying that a single, powerful  component is used for both the Super Admin and all partners, with logic inside to handle role differences ().
-        3.  **Harmonisation Visuelle:** Adding a  alias for the existing  vitrine route and ensuring its design is an exact clone of the main homepage.
+    - Last item agent was working: The agent was executing **Mission v9.2.5**, a critical fix to guarantee the partner dashboard is never a blank white page and to definitively solve the post-payment redirection issue.
+        1.  **Forced UI Visibility:** A  component was added to  to ensure the sidebar and a loading message are always displayed while data is being fetched, preventing a blank screen for new partners.
+        2.  **Definitive Stripe Redirect:** The Stripe  in the backend () was hardcoded to . The frontend () was updated to detect this specific hash and parameter to force the dashboard view.
     - Status: USER VERIFICATION PENDING
     - Agent Testing Done: Y
     - Which testing method agent to use? None (The previous agent has completed and tested the work. Awaiting user feedback.)
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  - Issue 1: Implement Stripe Connect for partner coaches. (P1)
+  - Issue 1:  Implement Stripe Connect for partner coaches. (P1)
   
   Issues Detail:
   - Issue 1: 
-     - **Description**: This is the last major pending feature from the original plan. Partners need the ability to connect their own Stripe accounts to receive payments for their services directly. The basic backend endpoints and a UI tab exist, but the full onboarding and payment processing flow is not implemented.
+     - **Description**: This is the last major pending feature. Partners need the ability to connect their own Stripe accounts to receive payments for their services directly. The UI tab exists, but the full onboarding and payment processing flow is not implemented.
      - **Next debug checklist**:
-       - Connect the frontend Connecter mon Stripe button to the backend onboarding API.
+       - Connect the frontend Connecter mon Stripe button in  to a new backend onboarding API.
+       - Create the backend API to initiate a Stripe Connect onboarding session.
        - Implement the redirect flow to and from Stripe's onboarding page.
        - Modify the Stripe webhook to correctly handle events from connected accounts.
      - **Why fix this issue and what will be achieved with the fix?**: This enables the platform to function as a true marketplace where partners can manage their own revenue, completing a core aspect of the SaaS model.
@@ -56,45 +51,49 @@ Key features are implemented:
      - **Blocked on other issue**: None
 
 **In progress Task List**:
-  - Task 1: Continue modularizing . (P1)
+  - Task 1:  Continue modularizing . (P1)
+  - Task 2:  Continue modularizing . (P0)
 
  Task Detail:
   - Task 1: 
-     - **Where to resume**: The  file is stable at ~6436 lines. The next logical step is to identify other self-contained blocks of functionality (e.g., Stripe webhooks, chat, user authentication, discount codes) and move them to their own files within the  directory.
+     - **Where to resume**:  is now at ~6191 lines. The next logical step is to extract the Stripe-related routes () into  (which was started but not completed) to get the file size under the 6000-line target.
      - **What will be achieved with this?**: Further improving code organization, maintainability, and stability.
      - **Status**:  IN PROGRESS
      - **Should Test frontend/backend/both after fix?** Backend
      - **Blocked on something**: None
+  - Task 2: 
+     - **Where to resume**:  is now at ~5749 lines after extracting . The next step is to extract other major sections like Campagnes, Réservations, or Offres into their own components within  to get the file size under the 4000-line target.
+     - **What will be achieved with this?**: Reducing the complexity of the main dashboard component, making it easier and safer to modify.
+     - **Status**:  IN PROGRESS
+     - **Should Test frontend/backend/both after fix?** Frontend
+     - **Blocked on something**: None
 
 **Upcoming and Future Tasks**
     Upcoming Tasks:
-    - **(P0)** Finalize the partner dashboard UI to clearly display the current credit balance. (While credit consumption is implemented, a dedicated UI element for the balance could be more prominent).
-    - **(P1)** Implement frontend logic to display a clear message or link to buy credits when a feature is disabled due to a zero balance.
+    - **(P0)** Finalize the partner dashboard UI to clearly display the current credit balance. (This was implemented, but could be reviewed for prominence).
+    - **(P1)** Implement frontend logic to display a clear message or link to buy credits when a feature is disabled due to a zero balance. (The ⚠️ Crédits insuffisants message exists for campaigns; this could be standardized).
     
     Future Tasks:
-    - **(CRITICAL)** Refactor the monolithic  file (currently >6500 lines) into smaller, more manageable sub-components.
+    - No new future tasks were added. The focus remains on refactoring and Stripe Connect.
 
 **Completed work in this session**
-- **Mission v9.1.5 (Réparation Visuelle):**
-  - Fixed post-login redirection to .
-  - Made the chat widget button dynamic (🏠 Mon Espace...).
-  - Implemented the Vitrine Miroir, cloning the main page's premium CSS for partner storefronts.
-- **Mission v9.1.6 (Rebranding & Super Admin):**
-  - Executed a global rebranding from Coach to Partenaire across the entire UI.
-  - Confirmed Super Admin's unlimited credits and bypass of all  data filters.
-- **Mission v9.1.7 (Omniscient Admin):**
-  - Verified Super Admin's total data visibility across all dashboard tabs (Réservations, Campagnes, Conversations, Codes promo).
-  - Ensured non-regression of core functionalities like pack creation and the sacred 7 fitness reservations.
-- **Mission v9.1.8 (Propulsion & Miroir Absolu):**
-  - Perfected the post-payment redirection to automatically show a welcome message and open the login modal.
-  - Added a  alias route for the vitrine, making both  and  URLs functional.
-  - Verified the Dashboard Miroir concept, ensuring all partners use the full-featured  component.
+- **Mission v9.1.9 (Propulsion & Visibilité Crédits):**
+  - Modularized auth routes into , reducing  line count.
+  - Implemented the credit balance badge in the dashboard header with dynamic coloring (violet neon, red for low balance).
+- **Mission v9.2.0 (Découpage Dashboard):**
+  - Modularized promo code routes into .
+  - Extracted the Conversations/CRM tab from  into a new  component, reducing the monolith's size by ~900 lines.
+- **Mission v9.2.1 (Réparation Visibilité):**
+  - **Critical Bug Fix:** Fixed a major regression where the dashboard was blank after the v9.2.0 refactor. The issue was due to missing props (, ) passed to .
+  - Introduced a  to prevent a single crashing component from taking down the entire dashboard.
+- **Mission v9.2.2 (Visibilité Partenaire):**
+  - **Critical Bug Fix:** Fixed an issue where only the Super Admin could log in. Modified  to automatically create a minimal  profile for any new user logging in, ensuring they can access their dashboard.
+- **Mission v9.2.3, v9.2.4, v9.2.5 (Force Affichage & Propulsion Définitive):**
+  - Implemented a series of robust fixes to ensure the partner dashboard is never a blank page, using loading states, fallback components (), and default data.
+  - Perfected the post-payment redirect by setting the Stripe  in the backend and using  on the frontend to remember the user's intent to be propelled to the dashboard.
 
 **Earlier issues found/mentioned but not fixed**
-   - **Issue 1**: Stripe Connect for partner payouts remains unimplemented. This was part of the original product requirements but has not been tackled in the recent missions.
-     - **Why to solve this issue and what will be achieved with this?** Enables partners to be financially independent on the platform, a core tenet of the SaaS model.
-     - **Should Test frontend/backend/both after fix:** Both
-     - **Is recurring issue?** N
+   - **Issue 1**: Stripe Connect for partner payouts remains unimplemented. This was part of the original product requirements but has not been tackled.
 
 **Known issue recurrence from previous fork**
   - None.
@@ -103,78 +102,86 @@ Key features are implemented:
 
 
 **Key Technical Concepts**
-- **Backend:** FastAPI (Python) with a modular routing structure using .
+- **Backend:** FastAPI with a progressively modularizing structure.
 - **Frontend:** React.js.
 - **Database:** MongoDB.
-- **Architecture:** Monolithic frontend component () with a progressively modularizing backend.
-- **Key Concepts:**
-    - **Super Admin Bypass:** A global  check () that removes all  data filters and credit limits.
-    - **Dashboard Mirror:** A single, powerful dashboard component () is used for all users (Super Admin and Partners), with internal logic to adjust visibility and functionality based on role.
-    - **Propulsion Post-Paiement:** A  hook in  detects URL parameters () from Stripe checkout to automatically trigger the login flow and guide the user to their dashboard.
+- **Resilient UI Rendering:** The frontend now uses loading states (), fallback components (), and error boundaries () to prevent blank white screens, especially during initial data fetching for new users.
+- **Automatic User Provisioning:** A new user authenticating via Google has a minimal  document automatically created in MongoDB, enabling immediate access to the partner dashboard.
+- **Redirect Intent:** The post-payment flow uses a combination of a specific backend-set  () and  () to robustly remember to send the user to their dashboard after login.
 
 **key DB schema**
-- **coaches**: 
+- **coaches**:  (The  field is now optional for new users, who are created with just an ).
 - **coach_packs**: 
 - **chat_participants (contacts)**: 
 - **reservations**: 
 - **campaigns**: 
 
 **changes in tech stack**
-- No changes to the core technologies. The backend architecture continues to evolve towards a more modular structure.
+- No changes to the core technologies.
 
 **All files of reference**
-- : Heavily modified to handle post-payment redirection, partner routing (), and dynamic login modal messages.
-- : Modified for Partenaire rebranding and displaying Super Admin's unlimited credits badge. Its monolithic nature remains.
-- : Modified for rebranding and to dynamically display the partner's .
-- : Modified for the dynamic Mon Espace Partenaire button.
-- : Modified to accept and display a custom welcome message for the post-payment flow.
-- : Modified to add the  alias endpoint.
-- : Verified for Super Admin bypass logic and its line count was kept stable under the 6500 line limit.
+- **Created:**
+  - : Contains all user authentication logic.
+  - : Contains discount code management routes.
+  - : A large component extracted from .
+  - : A fallback component to show while the dashboard is loading.
+  - : A generic error boundary to wrap dashboard sections.
+- **Updated:**
+  - : Major routes (auth, promo) removed and delegated to routers.
+  - :  for checkout sessions was updated.
+  - : Heavily modified to implement the robust post-payment/post-login redirection logic.
+  - : Refactored to use  and implement resilient rendering with loading states and fallbacks.
 
 **Areas that need refactoring**:
-- ****: **HIGH PRIORITY**. It still contains significant logic (Stripe webhooks, chat, auth, discount codes) that should be extracted into modules.
-- ****: **CRITICAL**. This file is a >6500 line monolith and poses a major risk to future development and maintenance. It must be decomposed.
+- ****: **HIGH PRIORITY**. Still over 6000 lines. Stripe webhook and other logic should be extracted.
+- ****: **CRITICAL**. Still over 5700 lines. Other sections need to be extracted into their own components to improve maintainability.
 
 **key api endpoints**
-- : **New alias**. Fetches public data for a partner's storefront.
-- : The original endpoint, which still works.
-- All data-fetching endpoints (, , etc.) are confirmed to have the Super Admin  filter bypass.
+- : Modified to automatically create a new partner profile if one doesn't exist for the authenticated email.
+- : The  parameter was updated to  to facilitate the new redirection flow.
 
 **Critical Info for New Agent**
-- **Partenaire is the new Coach**: The entire application has been rebranded. Avoid re-introducing the term Coach in user-facing text.
-- **Super Admin is Omniscient**:  is a special user who MUST see all data and have no credit restrictions. This logic is paramount and distributed across the backend and frontend.
-- **NON-REGRESSION IS PARAMOUNT:** The original fitness business for Bassi is the top priority. The 7 legacy reservations and March Cardio classes are key benchmarks that must always work.
-- **Frontend Monolith:** Be extremely careful when editing . It's massive and fragile. The long-term goal is to break it down.
+- **Partner Onboarding is Paramount:** The last several missions were dedicated to fixing regressions that made the app unusable for new partners. The flow is: New user pays via Stripe -> gets redirected -> logs in via Google -> a minimal profile is auto-created -> they are propelled to a functional, non-blank dashboard. This flow must not be broken.
+- **Refactoring is Ongoing but Risky:** Extracting code from  and  is a primary goal, but the last attempt () caused critical regressions. All refactoring must be followed by extensive testing, including logging in as both the Super Admin and a new partner account.
+- **Super Admin is Omniscient**:  is a special user who MUST see all data and have no credit restrictions. This logic is paramount.
+- **NON-REGRESSION IS PARAMOUNT:** The original fitness business for Bassi (7 legacy reservations, March Cardio classes) are key benchmarks that must always work.
 
 **documents and test reports created in this job**
--  (Continuously updated with mission progress)
--  (Latest passing test run for Mission v9.1.8)
+-  (Continuously updated)
+- 
+- 
+- 
+- 
+- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-The user has been providing a series of iterative Missions to refine the platform's UX and solidify business logic.
-- **Mission v9.1.5:** Focused on fixing the post-login redirect, making the chat button dynamic, and cloning the main page's design onto partner storefronts (Vitrine Miroir).
-- **Mission v9.1.6:** Mandated a global rebranding from Coach to Partenaire and confirmed the Super Admin's unlimited credits and data access.
-- **Mission v9.1.7:** Re-verified that the Super Admin's omniscient access applies consistently across all dashboard sections (contacts, campaigns, etc.) and that core logic (pack creation) was not broken.
-- **Mission v9.1.8:** Perfected the post-payment flow (Propulsion) by auto-triggering a login modal with a success message and added a  URL alias for storefronts.
-All missions have been completed and tested by the agent, awaiting final user verification.
+The user has been providing iterative Missions to fix bugs and refine the platform.
+- **v9.2.1:** Fix a critical regression where the dashboard became invisible after a refactor.
+- **v9.2.2:** Fix a critical bug where only the Super Admin could log in; other partners saw a blank page.
+- **v9.2.3:** Refine the UI to show a loading state instead of a blank page for new partners and improve the Stripe redirect logic.
+- **v9.2.4:** Further solidify the redirect logic using  (mémoire morte) and ensure the UI uses default values to prevent crashing.
+- **v9.2.5:** A final, definitive fix for the blank page and Stripe redirect issues by adding a dedicated  component and hardcoding the redirect URL in the backend.
 
 **Project Health Check:**
-- **Brittle:** The project's health is improving on the backend due to modularization. However, the monolithic  on the frontend remains a critical point of fragility that makes UI changes risky.
+- **Brittle but Improving:** The project's health is significantly better. Critical partner onboarding bugs have been resolved. The frontend is now more resilient to regressions thanks to the implementation of loading states and error boundaries. However, the two main monoliths (, ) still pose a significant maintenance risk.
 
 **3rd Party Integrations**
 - **Stripe:** Payment processing for partner credit packs.
 - **Resend:** Transactional emails.
 - **api.qrserver.com:** QR code generation.
+- **Google Auth:** For user login.
 
 **Testing status**
-- **Testing agent used after significant changes:** YES. The agent was used successfully after each of the user's Missions (v9.1.5 through v9.1.8) to ensure all requirements were met and no regressions were introduced.
-- **Troubleshoot agent used after agent stuck in loop:** NO
-- **Test files created:** None
-- **Known regressions:** None
+  - **Testing agent used after significant changes:** YES. The testing agent was used successfully after every mission from v9.1.9 to v9.2.5, proving essential for catching regressions.
+  - **Troubleshoot agent used after agent stuck in loop:** NO
+  - **Test files created:** None
+  - **Known regressions:** None currently, but the previous session was dedicated to fixing major regressions caused by refactoring.
 
 **Credentials to test flow:**
 - **Super Admin Email:** 
-- **Access Method:** Login with Google, then triple-click the © Afroboost 2026 text in the website footer to open the login modal.
+- **Partner Test Account:** Use any new Google account (e.g., ). The system will auto-create a profile.
+- **Access Method:** Login with Google. For Super Admin, triple-click the © Afroboost 2026 footer text to open the login modal.
 
 **What agent forgot to execute**
-- **Stripe Connect Implementation:** The single most important feature from the original product requirements that has not yet been addressed is enabling partners to connect their own Stripe accounts for payouts. The current implementation only handles payments *to* the platform, not *from* the platform to partners.</analysis>
+- **Stripe Connect Implementation:** This core feature from the original product requirements remains untouched.
+- The agent successfully reduced the line counts of  and  but did not fully meet the user's ambitious sub-6000 and sub-4000 line goals. The refactoring is still in progress.</analysis>
