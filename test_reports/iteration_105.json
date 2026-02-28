@@ -1,0 +1,86 @@
+{
+  "summary": "Mission v9.4.7 - Carousel vidéo et flux partenaire - All features VERIFIED. Partners carousel visible on homepage with 'Nos Partenaires' title, Google Login on BecomeCoachPage, clean hero video on coach vitrine without text overlay.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v947_mission.py",
+    "/app/test_reports/pytest/pytest_v947_mission.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ PartnersCarousel.js: New component with horizontal carousel, partner video cards, mute controls",
+    "✅ BecomeCoachPage.js: Google login button (data-testid='google-login-pack-btn') for new users",
+    "✅ coach_routes.py: /api/partners/active endpoint returns partners with video_url",
+    "✅ CoachVitrine.js line 760: v9.4.6 comment confirms text overlay removed from hero",
+    "✅ App.js line 3728-3733: PartnersCarousel integrated with onPartnerClick handler"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v947_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100% - All 6 tests passed",
+    "frontend": "100% - All UI features verified"
+  },
+  "test_credentials": {
+    "api_url": "https://dashboard-refactor-34.preview.emergentagent.com",
+    "test_partner_vitrine": "/coach/bassi"
+  },
+  "seed_data_creation": "None - used existing partners data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.4.7 fully verified. Key features: (1) PartnersCarousel shows 'Nos Partenaires' with 5 partner cards on homepage. (2) Partner card click redirects to /coach/{username} via hash routing. (3) BecomeCoachPage accessible via #become-coach with 'Se connecter avec Google' button for new users. (4) Coach vitrine has clean hero video with NO text overlay - only 'Réserver mon cours' button. (5) /api/partners/active returns partners with video_url field.",
+  "verified_features_v947": {
+    "PARTNERS_CAROUSEL_HOMEPAGE": {
+      "title": "🎬 Nos Partenaires",
+      "partner_count": 5,
+      "data_testids": ["partners-carousel-section", "partners-slider", "partner-card-{id}"],
+      "verified_by": "Playwright test - all elements found"
+    },
+    "PARTNER_CARD_CLICK": {
+      "navigation": "Hash routing #coach/{username}",
+      "redirect_works": true,
+      "verified_by": "Playwright click test"
+    },
+    "BECOME_COACH_GOOGLE_LOGIN": {
+      "page_access": "#become-coach",
+      "google_button_text": "Se connecter avec Google",
+      "data_testid": "google-login-pack-btn",
+      "fallback_form": true,
+      "verified_by": "Playwright - button found and visible"
+    },
+    "CLEAN_HERO_VIDEO_VITRINE": {
+      "hero_text_content": "Réserver mon cours",
+      "no_text_overlay": true,
+      "coach_name_in_header": true,
+      "data_testid": "vitrine-hero-container",
+      "verified_by": "Playwright - hero inner text contains only CTA button"
+    },
+    "API_PARTNERS_ACTIVE": {
+      "endpoint": "/api/partners/active",
+      "returns_list": true,
+      "partner_fields": ["id", "name", "email", "platform_name", "video_url", "heroImageUrl"],
+      "bassi_first": true,
+      "verified_by": "pytest + curl"
+    }
+  },
+  "playwright_tests": {
+    "homepage_carousel": "PASS - Nos Partenaires with 5 partner cards",
+    "partner_card_click": "PASS - Redirects to #coach/{email}",
+    "become_coach_page": "PASS - Google login button visible",
+    "coach_vitrine_hero": "PASS - Clean design, no text overlay",
+    "reserve_button": "PASS - Réserver mon cours with gradient colors"
+  },
+  "pytest_results": {
+    "total_tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "test_file": "/app/backend/tests/test_v947_mission.py"
+  }
+}
