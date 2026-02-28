@@ -938,6 +938,8 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
               Propulsé par <span style={{ color: '#d91cd2' }}>Afroboost</span> - La plateforme des coachs
             </p>
           </div>
+          </div>
+          {/* Fin de la section vitrine-courses-section */}
         </div>
       </div>
       
