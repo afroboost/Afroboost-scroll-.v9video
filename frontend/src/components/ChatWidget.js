@@ -3241,7 +3241,7 @@ export const ChatWidget = () => {
         </div>
       )}
 
-      {/* Bouton flottant WhatsApp - Positionné à DROITE, au-dessus de la barre */}
+      {/* v9.4.2: Bouton flottant Chat Afroboost (violet) - Positionné à DROITE, au-dessus de la barre */}
       {!isOpen && (
         <button
           onClick={handleOpenWidget}
@@ -3253,19 +3253,19 @@ export const ChatWidget = () => {
             width: '56px',
             height: '56px',
             borderRadius: '50%',
-            background: '#25D366',
+            background: '#D91CD2', /* v9.4.2: Violet Afroboost au lieu de vert WhatsApp */
             border: 'none',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 4px 15px rgba(37, 211, 102, 0.4)',
+            boxShadow: '0 4px 15px rgba(217, 28, 210, 0.4)', /* Ombre violette */
             position: 'fixed', /* Assurer position fixe */
             zIndex: 50 /* Inférieur à la barre de saisie */
           }}
           data-testid="chat-widget-button"
         >
-          <WhatsAppIcon />
+          <ChatBubbleIcon /> {/* v9.4.2: Icône bulle de chat */}
           
           {/* Badge MP non lus (pastille rouge) */}
           {unreadPrivateCount > 0 && (
