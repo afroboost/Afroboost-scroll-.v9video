@@ -3750,8 +3750,15 @@ function App() {
         />
       )}
 
-      {/* v9.5.4: Flux Reels PLEIN ÉCRAN - Mobile first (suppression des éléments en trop) */}
-      <div className="fixed inset-0 z-10" style={{ background: '#000000' }}>
+      {/* v9.5.6: Flux Reels - Hauteur fixe permettant le scroll vers le bas */}
+      <div 
+        className="relative w-full" 
+        style={{ 
+          height: 'calc(100vh - 60px)', 
+          marginTop: '10px',
+          background: '#000000' 
+        }}
+      >
         <PartnersCarousel 
           onPartnerClick={(partner) => {
             const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
