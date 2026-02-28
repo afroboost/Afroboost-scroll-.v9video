@@ -4192,10 +4192,16 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             <button 
               onClick={handleSecureLogout} 
               className="px-4 py-2 rounded-lg text-white text-sm"
-              style={{ background: 'rgba(239, 68, 68, 0.3)', border: '1px solid rgba(239, 68, 68, 0.5)' }}
+              style={{ 
+                background: 'rgba(239, 68, 68, 0.3)', 
+                border: '1px solid rgba(239, 68, 68, 0.5)',
+                zIndex: 9999,
+                position: 'relative'
+              }}
               data-testid="coach-logout"
             >
               🚪 {t('logout')}
+            </button>
             </button>
           </div>
         </div>
