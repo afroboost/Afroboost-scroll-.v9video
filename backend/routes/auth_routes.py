@@ -94,6 +94,39 @@ async def process_google_session(request: Request, response: Response):
                 "last_login": datetime.now(timezone.utc).isoformat()
             })
         
+        # v9.2.2: Créer automatiquement un profil coach si inexistant (sauf Super Admin)
+        if not is_super_admin:
+            existing_coach = await _db.coaches.find_one({"email": email})
+            if not existing_coach:
+                # Créer un profil coach minimal avec 0 crédits
+                new_coach = {
+                    "id": str(uuid.uuid4()),
+                    "email": email,
+                    "name": name,
+                    "phone": "",
+                    "bio": "",
+                    "photo_url": picture,
+                    "role": "coach",
+                    "credits": 0,  # Crédits initiaux à 0, doit acheter un pack
+                    "pack_id": None,
+                    "stripe_customer_id": None,
+                    "stripe_connect_id": None,
+                    "is_active": True,
+                    "platform_name": None,
+                    "logo_url": None,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "updated_at": None,
+                    "last_login": datetime.now(timezone.utc).isoformat()
+                }
+                await _db.coaches.insert_one(new_coach)
+                logger.info(f"[AUTH] Nouveau coach créé automatiquement: {email}")
+            else:
+                # Mettre à jour last_login pour les coachs existants
+                await _db.coaches.update_one(
+                    {"email": email},
+                    {"$set": {"last_login": datetime.now(timezone.utc).isoformat()}}
+                )
+        
         # Créer la session
         expires_at = datetime.now(timezone.utc) + timedelta(days=7)
         await _db.coach_sessions.delete_many({"user_id": user_id})  # Supprimer les anciennes sessions
