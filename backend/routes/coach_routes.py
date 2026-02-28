@@ -198,6 +198,27 @@ async def register_coach(coach_data: CoachCreate):
     logger.info(f"[COACH] Nouveau: {coach_data.email}")
     return coach
 
+@coach_router.put("/coach/update-profile")
+async def update_coach_profile(request: Request):
+    """Met à jour le profil du coach (platform_name, bio, etc.) - v9.1.4"""
+    body = await request.json()
+    caller_email = request.headers.get("X-User-Email", "").lower().strip()
+    if not caller_email:
+        raise HTTPException(status_code=401, detail="Email requis")
+    if is_super_admin(caller_email):
+        return {"success": True, "message": "Super Admin - profil non modifiable"}
+    coach = await db.coaches.find_one({"email": caller_email})
+    if not coach:
+        raise HTTPException(status_code=404, detail="Coach non trouvé")
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    for field in ["platform_name", "bio", "logo_url", "phone"]:
+        if field in body:
+            update_data[field] = body[field]
+    await db.coaches.update_one({"email": caller_email}, {"$set": update_data})
+    logger.info(f"[COACH] Profil mis à jour: {caller_email} -> {list(update_data.keys())}")
+    updated = await db.coaches.find_one({"email": caller_email}, {"_id": 0})
+    return updated
+
 @coach_router.post("/coach/deduct-credit")
 async def deduct_coach_credit(request: Request):
     """Déduit 1 crédit"""
