@@ -37,6 +37,8 @@ except ImportError:
 from routes.coach_routes import coach_router, init_db as init_coach_db
 from routes.campaign_routes import campaign_router, init_campaign_db
 from routes.reservation_routes import reservation_router, init_reservation_db
+# v9.1.9: Import routes auth
+from routes.auth_routes import auth_router, legacy_auth_router, init_auth_db
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
