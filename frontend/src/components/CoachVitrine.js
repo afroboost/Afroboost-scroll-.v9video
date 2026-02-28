@@ -264,6 +264,23 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   
+  // v9.4.9: Vérifier si on vient du flux pour afficher "Retour au Flux"
+  const [cameFromFlux, setCameFromFlux] = useState(false);
+  
+  useEffect(() => {
+    // Vérifier si on a une position de flux sauvegardée
+    const fluxIndex = sessionStorage.getItem('afroboost_flux_index');
+    if (fluxIndex !== null) {
+      setCameFromFlux(true);
+    }
+  }, []);
+  
+  // v9.4.9: Retour au flux à la position sauvegardée
+  const handleReturnToFlux = () => {
+    // La position est déjà sauvegardée dans sessionStorage
+    window.location.href = '/';
+  };
+  
   // v9.4.6: Capturer l'événement beforeinstallprompt
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
