@@ -1,5 +1,45 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.3.1 - SÉCURITÉ STORAGE, FIX BOUTON & PAIEMENT ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.3.1 COMPLÈTE - "ÉTANCHÉITÉ STORAGE ET BOUTON INTELLIGENT ACTIVÉS"
+
+| Objectif | Statut |
+|----------|--------|
+| Isolation physique storage | ✅ |
+| Bouton Chat intelligent (côté serveur) | ✅ |
+| Paiement activé dans vitrine | ✅ |
+| Nettoyage doublons Stripe | ✅ |
+| Anti-Régression (7 réservations Bassi) | ✅ |
+
+### Nouvelles APIs v9.3.1
+
+| Endpoint | Description |
+|----------|-------------|
+| POST /api/coach/upload-asset | Upload isolé par coach_id dans /uploads/coaches/{coach_folder}/ |
+| GET /api/check-partner/{email} | Vérifie côté serveur si un utilisateur est partenaire |
+
+### Storage Isolé v9.3.1
+
+```
+/app/backend/uploads/
+├── profiles/           # Photos de profil utilisateurs
+├── coaches/            # v9.3.1: Assets isolés par coach
+│   ├── bassi_at_example_com/
+│   │   ├── image_abc123.jpg
+│   │   └── video_def456.mp4
+│   └── autre_coach_at_gmail_com/
+│       └── logo_xyz789.png
+└── emojis/             # Emojis personnalisés
+```
+
+### Tests v9.3.1 - Iteration 94
+- Backend: **100%** (11/11 tests) ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi** ✅
+
+---
+
 ## v9.3.0 - ÉTANCHÉITÉ TOTALE & MIROIR FONCTIONNEL ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.3.0 COMPLÈTE - "ÉTANCHÉITÉ ASSURÉE ET VITRINE RÉPARÉE"
