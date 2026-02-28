@@ -6028,6 +6028,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             setAiTestMessage={setAiTestMessage}
             aiTestResponse={aiTestResponse}
             aiTestLoading={aiTestLoading}
+            aiConfigSaveStatus={aiConfigSaveStatus} // v9.3.8: Indicateur auto-save
             
             // === PREVIEW MÉDIA ===
             resolvedThumbnail={resolvedThumbnail}
