@@ -6506,6 +6506,9 @@ fastapi_app.include_router(coach_router, prefix="/api")
 # v9.1.2: Include campaign routes
 fastapi_app.include_router(campaign_router, prefix="/api")
 
+# v9.1.4: Include reservation routes
+fastapi_app.include_router(reservation_router, prefix="/api")
+
 fastapi_app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
