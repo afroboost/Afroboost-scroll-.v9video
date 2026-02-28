@@ -264,7 +264,12 @@ COACH_EMAIL = "contact.artboost@gmail.com"
 
 # === SYSTÈME MULTI-COACH v8.9 ===
 # Super Admin: Contrôle total sur les offres, les coachs et les tarifs
-SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"
+# v9.5.6: Liste des Super Admins autorisés
+SUPER_ADMIN_EMAILS = [
+    "contact.artboost@gmail.com",
+    "afroboost.bassi@gmail.com"
+]
+SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"  # Legacy - pour compatibilité
 DEFAULT_COACH_ID = "bassi_default"  # ID par défaut pour les données existantes
 
 # Rôles disponibles
@@ -274,13 +279,13 @@ ROLE_USER = "user"
 
 def get_user_role(email: str) -> str:
     """Détermine le rôle d'un utilisateur basé sur son email"""
-    if email and email.lower().strip() == SUPER_ADMIN_EMAIL.lower():
+    if email and email.lower().strip() in [e.lower() for e in SUPER_ADMIN_EMAILS]:
         return ROLE_SUPER_ADMIN
     return ROLE_USER
 
 def is_super_admin(email: str) -> bool:
-    """Vérifie si l'email est celui du Super Admin"""
-    return email and email.lower().strip() == SUPER_ADMIN_EMAIL.lower()
+    """Vérifie si l'email est celui d'un Super Admin"""
+    return email and email.lower().strip() in [e.lower() for e in SUPER_ADMIN_EMAILS]
 
 def get_coach_filter(email: str) -> dict:
     """Retourne le filtre MongoDB pour l'isolation des données coach"""
