@@ -2065,8 +2065,8 @@ async def create_coach_checkout(request: Request):
         else:
             frontend_url = os.environ.get('FRONTEND_URL', 'https://afroboosteur.com')
         
-        # v8.9.9: FORCER la redirection vers Vercel production
-        COACH_DASHBOARD_URL = "https://afroboost-campagn-v8.vercel.app/#coach-dashboard"
+        # v9.2.5: URL de redirection post-paiement vers partner-dashboard
+        COACH_DASHBOARD_URL = "https://afroboost-campagn-v8.vercel.app/#partner-dashboard"
         
         # Créer la session Stripe Checkout
         checkout_session = stripe.checkout.Session.create(
@@ -2076,7 +2076,8 @@ async def create_coach_checkout(request: Request):
                 "quantity": 1
             }],
             mode="payment",
-            success_url=f"{COACH_DASHBOARD_URL}?session_id={{CHECKOUT_SESSION_ID}}&welcome=true",
+            # v9.2.5: success_url avec auth=success pour propulsion garantie
+            success_url=f"{COACH_DASHBOARD_URL}?success=true&session_id={{CHECKOUT_SESSION_ID}}&auth=success",
             cancel_url=f"https://afroboost-campagn-v8.vercel.app/#devenir-coach",
             customer_email=email,
             metadata={
