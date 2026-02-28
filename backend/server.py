@@ -241,10 +241,10 @@ async def typing_stop(sid, data):
             'is_typing': False
         }, room=session_id, skip_sid=sid)
 
-# ==================== CONSTANTE EMAIL COACH ====================
+# === CONSTANTE EMAIL COACH ===
 COACH_EMAIL = "contact.artboost@gmail.com"
 
-# ==================== SYSTÈME MULTI-COACH v8.9 ====================
+# === SYSTÈME MULTI-COACH v8.9 ===
 # Super Admin: Contrôle total sur les offres, les coachs et les tarifs
 SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"
 DEFAULT_COACH_ID = "bassi_default"  # ID par défaut pour les données existantes
@@ -352,7 +352,7 @@ try:
 except Exception as e:
     logger.warning(f"[UPLOADS] Impossible de monter le dossier: {e}")
 
-# ==================== MODELS ====================
+# === MODELS ===
 
 class Course(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -675,7 +675,7 @@ class FeatureFlagsUpdate(BaseModel):
     VIDEO_SERVICE_ENABLED: Optional[bool] = None
     STREAMING_SERVICE_ENABLED: Optional[bool] = None
 
-# ==================== SYSTÈME MULTI-COACH v8.9 - MODÈLES ====================
+# === SYSTÈME MULTI-COACH v8.9 - MODÈLES ===
 
 class CoachPack(BaseModel):
     """Pack d'abonnement pour les coachs partenaires"""
@@ -1549,7 +1549,7 @@ async def delete_reservation(reservation_id: str):
     await db.reservations.delete_one({"id": reservation_id})
     return {"success": True}
 
-# ==================== COACH NOTIFICATIONS ====================
+# === COACH NOTIFICATIONS ===
 
 class CoachNotificationPayload(BaseModel):
     """Payload for coach notification"""
@@ -1725,7 +1725,7 @@ async def check_reservation_eligibility(data: dict):
         "maxUses": max_uses,
         "remaining": max_uses - used if max_uses > 0 else "illimité"
     }
-# ==================== SANITIZE DATA (Nettoyage des données fantômes) ====================
+# === SANITIZE DATA (Nettoyage des données fantômes) ===
 
 @api_router.post("/sanitize-data")
 async def sanitize_data():
@@ -2646,7 +2646,7 @@ async def update_config(config_update: dict):
     await db.config.update_one({"id": "app_config"}, {"$set": config_update}, upsert=True)
     return await db.config.find_one({"id": "app_config"}, {"_id": 0})
 
-# ==================== GOOGLE OAUTH AUTHENTICATION ====================
+# === GOOGLE OAUTH AUTHENTICATION ===
 # Business: Authentification Google exclusive pour le Super Admin / Coach
 # Seul l'email autorisé peut accéder au dashboard
 
@@ -2870,7 +2870,7 @@ async def coach_login(login: CoachLogin):
         "message": "L'authentification par mot de passe a été désactivée. Veuillez utiliser 'Se connecter avec Google'."
     }
 
-# ==================== FEATURE FLAGS API (Super Admin Only) ====================
+# === FEATURE FLAGS API (Super Admin Only) ===
 # Business: Seul le Super Admin peut activer/désactiver les services globaux
 
 @api_router.get("/feature-flags")
@@ -2912,7 +2912,7 @@ async def update_feature_flags(update: FeatureFlagsUpdate):
     )
     return await db.feature_flags.find_one({"id": "feature_flags"}, {"_id": 0})
 
-# ==================== COACH SUBSCRIPTION API ====================
+# === COACH SUBSCRIPTION API ===
 # Business: Gestion des abonnements et droits des coachs
 
 @api_router.get("/coach-subscription")
@@ -2978,7 +2978,7 @@ async def update_coach_subscription(update: CoachSubscriptionUpdate):
     
     return await db.coach_subscriptions.find_one({"coachEmail": coach_email}, {"_id": 0})
 
-# ==================== SERVICE ACCESS VERIFICATION ====================
+# === SERVICE ACCESS VERIFICATION ===
 # Business: Fonction centrale pour vérifier l'accès aux services
 
 @api_router.get("/verify-service-access/{service_name}")
@@ -3042,7 +3042,7 @@ async def verify_service_access(service_name: str):
         "service": service_name
     }
 
-# ==================== EMAILJS CONFIG (MongoDB) ====================
+# === EMAILJS CONFIG (MongoDB) ===
 
 class EmailJSConfig(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -3070,7 +3070,7 @@ async def update_emailjs_config(config: EmailJSConfigUpdate):
     await db.emailjs_config.update_one({"id": "emailjs_config"}, {"$set": updates}, upsert=True)
     return await db.emailjs_config.find_one({"id": "emailjs_config"}, {"_id": 0})
 
-# ==================== WHATSAPP CONFIG (MongoDB) ====================
+# === WHATSAPP CONFIG (MongoDB) ===
 
 class WhatsAppConfig(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -3100,7 +3100,7 @@ async def update_whatsapp_config(config: WhatsAppConfigUpdate):
     await db.whatsapp_config.update_one({"id": "whatsapp_config"}, {"$set": updates}, upsert=True)
     return await db.whatsapp_config.find_one({"id": "whatsapp_config"}, {"_id": 0})
 
-# ==================== DATA MIGRATION (localStorage -> MongoDB) ====================
+# === DATA MIGRATION (localStorage -> MongoDB) ===
 
 class MigrationData(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -3190,7 +3190,7 @@ async def get_migration_status():
         "migrationComplete": True
     }
 
-# ==================== AI WHATSAPP AGENT ====================
+# === AI WHATSAPP AGENT ===
 
 class AIConfig(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -3361,7 +3361,7 @@ class SendWhatsAppRequest(BaseModel):
     message: str
     mediaUrl: str = None
 
-# ==================== FONCTION UTILITAIRE WHATSAPP ====================
+# === FONCTION UTILITAIRE WHATSAPP ===
 async def _get_twilio_config():
     """
     Récupère la configuration Twilio avec PRIORITÉ aux variables .env.
@@ -4063,7 +4063,7 @@ Si la question ne concerne pas un produit ou un cours Afroboost, réponds:
         logger.error(f"Chat AI error: {str(e)}")
         return {"response": "Désolé, une erreur s'est produite. Veuillez réessayer.", "responseTime": 0}
 
-# ==================== ENHANCED CHAT SYSTEM API ====================
+# === ENHANCED CHAT SYSTEM API ===
 # Système de chat amélioré avec reconnaissance utilisateur, modes et liens partageables
 
 # --- Chat Participants (CRM) ---
@@ -4457,7 +4457,7 @@ async def get_chat_sessions(include_deleted: bool = False):
     sessions = await db.chat_sessions.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
     return sessions
 
-# ==================== CRM AVANCÉ - HISTORIQUE CONVERSATIONS ====================
+# === CRM AVANCÉ - HISTORIQUE CONVERSATIONS ===
 @api_router.get("/conversations")
 async def get_conversations_advanced(
     page: int = 1,
@@ -4721,7 +4721,7 @@ async def get_group_messages(limit: int = 100):
     query = {"$or": [{"is_group": True}, {"session_id": "group"}], "is_deleted": {"$ne": True}}
     raw = await db.chat_messages.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
     return [format_message_for_frontend(m) for m in reversed(raw)]
-# ==================== ENDPOINT SYNC "RAMASSER" ====================
+# === ENDPOINT SYNC "RAMASSER" ===
 @api_router.get("/messages/sync")
 async def sync_messages(session_id: str, since: Optional[str] = None, limit: int = 100):
     """RAMASSER: Messages de la session OU messages de groupe (broadcast). Tri deterministe."""
@@ -4809,7 +4809,7 @@ async def soft_delete_message(message_id: str):
     )
     return {"success": True, "message": "Message marqué comme supprimé"}
 
-# ==================== ROUTES ADMIN SÉCURISÉES ====================
+# === ROUTES ADMIN SÉCURISÉES ===
 
 @api_router.post("/admin/delete-history")
 async def admin_delete_history(request: Request):
@@ -4878,7 +4878,7 @@ async def admin_change_identity(request: Request):
         "message": "Identité réinitialisée. L'utilisateur devra se reconnecter."
     }
 
-# ==================== MESSAGERIE PRIVÉE (MP) - ISOLÉE DE L'IA ====================
+# === MESSAGERIE PRIVÉE (MP) - ISOLÉE DE L'IA ===
 
 @api_router.post("/private/conversations")
 async def create_or_get_private_conversation(request: Request):
@@ -5015,7 +5015,7 @@ async def get_unread_private_count(participant_id: str):
     })
     return {"unread_count": count}
 
-# ==================== UPLOAD PHOTO DE PROFIL (LEGACY REDIRECT) ====================
+# === UPLOAD PHOTO DE PROFIL (LEGACY REDIRECT) ===
 # L'ancien endpoint redirige vers le nouveau moteur /users/upload-photo
 
 @api_router.post("/upload/profile-photo")
@@ -5023,7 +5023,7 @@ async def upload_profile_photo_legacy(file: UploadFile = File(...), participant_
     """Endpoint legacy - redirige vers /users/upload-photo"""
     return await upload_user_photo(file=file, participant_id=participant_id)
 
-# ==================== NOTIFICATIONS (SONORES ET VISUELLES) ====================
+# === NOTIFICATIONS (SONORES ET VISUELLES) ===
 
 @api_router.get("/notifications/unread")
 async def get_unread_notifications(
@@ -6156,7 +6156,7 @@ async def get_session_participants(session_id: str):
     
     return participants
 
-# ==================== WEB PUSH NOTIFICATIONS ====================
+# === WEB PUSH NOTIFICATIONS ===
 
 @api_router.get("/push/vapid-key")
 async def get_vapid_public_key():
@@ -6558,7 +6558,7 @@ async def send_push_to_participant(request: Request):
         "email_sent": email_sent,
         "participant_id": participant_id
     }
-# ==================== SYSTÈME MULTI-COACH v8.9 - ENDPOINTS ====================
+# === SYSTÈME MULTI-COACH v8.9 - ENDPOINTS ===
 
 # === COACH PACKS (Super Admin Only) ===
 
@@ -7188,7 +7188,7 @@ async def get_scheduler_health():
         }
 
 # Fonction de test de persistance (définie au niveau module pour sérialisation)
-# ==================== SCHEDULER GROUP MESSAGE EMISSION ====================
+# === SCHEDULER GROUP MESSAGE EMISSION ===
 @api_router.post("/scheduler/emit-group-message")
 async def scheduler_emit_group_message(request: Request):
     """Endpoint interne pour permettre au scheduler d'emettre des messages via Socket.IO."""
@@ -7322,7 +7322,7 @@ async def get_dynamic_manifest():
     from fastapi.responses import JSONResponse
     return JSONResponse(content=manifest, media_type="application/manifest+json")
 
-# ==================== SCHEDULER INTÉGRÉ (APSCHEDULER AVEC PERSISTANCE) ====================
+# === SCHEDULER INTÉGRÉ (APSCHEDULER AVEC PERSISTANCE) ===
 
 import threading
 import time as time_module
