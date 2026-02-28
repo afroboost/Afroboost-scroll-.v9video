@@ -2103,9 +2103,27 @@ function App() {
   useEffect(() => {
     const path = window.location.pathname;
     const hash = window.location.hash;
+    const searchParams = new URLSearchParams(window.location.search);
     console.log('App.js - Current path:', path);
     console.log('App.js - Current hash:', hash);
     console.log('App.js - Full URL:', window.location.href);
+    
+    // === v9.1.1: DÉTECTION HASH #coach-dashboard (redirection après achat) ===
+    if (hash.includes('#coach-dashboard') || hash.includes('coach-dashboard')) {
+      console.log('[APP] 🔄 Détection #coach-dashboard - Activation mode coach');
+      // Vérifier si welcome=true (nouvel achat)
+      if (searchParams.get('welcome') === 'true' || hash.includes('welcome=true')) {
+        console.log('[APP] 🎉 Nouveau coach - Affichage modal de bienvenue');
+      }
+      // Ouvrir le modal de connexion coach si pas déjà connecté
+      const savedCoachUser = localStorage.getItem('afroboost_coach_user');
+      if (!savedCoachUser) {
+        setShowCoachLogin(true);
+      } else {
+        setCoachMode(true);
+      }
+      return;
+    }
     
     // === HASH ROUTING (PRIORITAIRE) - Fonctionne à 100% côté client ===
     // Format: https://afroboosteur.com/#/v/{slug}
