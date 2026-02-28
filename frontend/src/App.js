@@ -4474,8 +4474,7 @@ function App() {
           </div>
         </footer>
         
-        {/* Indicateur de scroll pour les nouveaux utilisateurs */}
-        <ScrollIndicator show={showScrollIndicator && !coachMode && !showSplash} />
+        {/* v9.5.6: ScrollIndicator supprimé - le flux Reels gère le scroll */}
         
         {/* Bouton flottant "Voir mon dernier ticket" */}
         {hasSavedTicket && !showSuccess && !coachMode && (
