@@ -1,5 +1,51 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.3.7 - MÉMOIRE TOTALE, CALENDRIER CHAT & NAV MOBILE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.3.7 COMPLÈTE - "MÉMOIRE ET CALENDRIER CHAT OPÉRATIONNELS"
+
+| Objectif | Statut |
+|----------|--------|
+| Mémoire Totale (Auto-save) | ✅ |
+| Calendrier dans le Chat | ✅ |
+| Navigation Mobile | ✅ |
+| Bouton Déconnexion Super Admin | ✅ |
+| Anti-Régression (7 résa + 8 contacts) | ✅ |
+
+### Auto-Save v9.3.7
+
+**Implémentation :**
+- Debounce de 1 seconde sur les champs de configuration
+- Sauvegarde automatique via PUT /api/concept et PUT /api/payment-links
+- Indicateur visuel de statut de sauvegarde (⏳ Sauvegarde... / ✓ Sauvegardé / ⚠️ Erreur)
+- Aucun bouton "Enregistrer" manuel requis
+
+**Code de référence :**
+- `CoachDashboard.js` lignes 638-712 (useEffect auto-save avec debounce)
+
+### Calendrier dans le Chat v9.3.7
+
+**Problème résolu :**
+- L'icône calendrier était visible UNIQUEMENT pour les abonnés avec code promo
+- Le panel de réservation s'affichait en bas du chat, pas par-dessus
+
+**Solution implémentée :**
+- Icône calendrier (📅) visible pour TOUS les utilisateurs
+- Panel de réservation s'ouvre PAR-DESSUS le chat avec z-index 10000
+- Header avec bouton de fermeture (X)
+- Message d'erreur si l'utilisateur n'a pas de code promo valide
+
+**Code de référence :**
+- `ChatWidget.js` lignes 4591-4616 (icône calendrier)
+- `ChatWidget.js` lignes 4435-4501 (booking panel overlay)
+
+### Tests v9.3.7 - Iteration 97
+- Backend: **100%** (11/11 tests) ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi, 9 contacts** ✅
+
+---
+
 ## v9.3.3 - L'ULTIME MIROIR VISUEL & PAIEMENT ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.3.3 COMPLÈTE - "MIROIR PREMIUM ET PAIEMENTS SÉCURISÉS"
