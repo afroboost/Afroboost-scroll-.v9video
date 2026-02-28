@@ -1,5 +1,42 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.4.5 - ÉPURE DESIGN ET VIDÉO PARTENAIRE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.4.5 COMPLÈTE - "DESIGN ÉPURÉ ET VIDÉO PARTENAIRE OPÉRATIONNELS"
+
+| Objectif | Statut |
+|----------|--------|
+| Bloc Profil supprimé | ✅ |
+| Vidéo en haut de la vitrine | ✅ |
+| Bouton "Confirmer et Payer" | ✅ |
+| Anti-régression v9.4.2-v9.4.4 | ✅ |
+
+### Nettoyage Header v9.4.5
+
+**Avant:**
+- Bloc "Profil Coach" avec cercle initiale (lignes 767-837)
+- Chevauchait la section vidéo/header
+
+**Après:**
+- Bloc supprimé (commentaire v9.4.5 ligne 766)
+- Infos coach intégrées dans le header vidéo (lignes 710-721)
+
+### Formulaire de Paiement Épuré v9.4.5
+
+| Élément | data-testid | Style |
+|---------|-------------|-------|
+| Confirmer et Payer | confirm-booking-btn | Gradient #D91CD2 → #8b5cf6 |
+| Stripe | stripe-payment-btn | Compact (text-xs rounded-full) |
+| TWINT | twint-payment-btn | Compact (text-xs rounded-full) |
+| PayPal | paypal-payment-btn | Compact (text-xs rounded-full) |
+
+### Tests v9.4.5 - Iteration 104
+- Backend: **100%** ✅
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Chat violet #D91CD2 confirmé** ✅
+
+---
+
 ## v9.4.4 - LIBERTÉ VISUELLE TOTALE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.4.4 COMPLÈTE - "ULTRA-FLEXIBILITÉ VISUELLE ACTIVÉE"
