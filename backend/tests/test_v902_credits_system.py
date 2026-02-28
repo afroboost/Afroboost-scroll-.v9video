@@ -17,7 +17,8 @@ import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"
-TEST_COACH_EMAIL = "henri.bassi@test.com"  # Coach with 100 credits
+# Actual coach with 100 credits (from DB)
+TEST_COACH_EMAIL = "bassicustomshoes@gmail.com"
 
 class TestNonRegressionReservations:
     """Non-régression critique: Super Admin doit voir ses 7 réservations de Mars"""
