@@ -133,10 +133,28 @@ const CampaignManager = ({
   
   // === UTILS ===
   showCampaignToast,
-  API
+  API,
+  
+  // === v9.0.2: CRÉDITS ===
+  hasInsufficientCredits = false,
+  coachCredits = null
 }) => {
+  // v9.0.2: Message de blocage crédits
+  const creditBlockMessage = hasInsufficientCredits ? (
+    <div className="p-4 rounded-lg mb-4" style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)' }}>
+      <p className="text-red-400 font-medium">⚠️ Crédits insuffisants</p>
+      <p className="text-white/70 text-sm mt-1">Achetez un pack de crédits pour envoyer des campagnes.</p>
+      <a href="/#devenir-coach" className="inline-block mt-2 px-4 py-2 rounded-lg text-sm font-semibold" style={{ background: 'linear-gradient(135deg, #d91cd2, #8b5cf6)', color: 'white' }}>
+        Acheter des crédits
+      </a>
+    </div>
+  ) : null;
+  
   return (
     <div className="card-gradient rounded-xl p-4 sm:p-6">
+      {/* v9.0.2: Blocage si crédits insuffisants */}
+      {creditBlockMessage}
+      
       {/* Header responsive */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <h2 className="font-semibold text-white text-lg sm:text-xl">📢 Gestionnaire de Campagnes</h2>
