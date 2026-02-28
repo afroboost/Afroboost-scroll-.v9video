@@ -2043,6 +2043,42 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
     localStorage.setItem('afroboost_notify_ai', newValue.toString());
   }, [notifyOnAiResponse]);
   
+  // v9.2.1: Fonction de test des notifications
+  const handleTestNotification = useCallback(async () => {
+    try {
+      const { playNotificationSound, showBrowserNotification, getNotificationPermissionStatus } = await import('../services/notificationService');
+      
+      // Jouer le son
+      await playNotificationSound();
+      
+      // Afficher une notification de test
+      const permission = getNotificationPermissionStatus();
+      if (permission === 'granted') {
+        await showBrowserNotification('🔔 Test Notification', {
+          body: 'Les notifications fonctionnent correctement !',
+          icon: '/favicon.ico'
+        });
+      } else {
+        // Fallback: ajouter un toast
+        addToastNotification({
+          id: Date.now(),
+          senderName: 'Test',
+          content: '🔔 Les notifications fonctionnent (mode fallback)',
+          sessionId: null
+        });
+      }
+    } catch (error) {
+      console.error('[NOTIFICATION] Test error:', error);
+      // Fallback toast même en cas d'erreur
+      addToastNotification({
+        id: Date.now(),
+        senderName: 'Test',
+        content: '🔔 Notification test (fallback)',
+        sessionId: null
+      });
+    }
+  }, [addToastNotification]);
+  
   // Vérifier le statut de permission au chargement ET activer le polling si déjà autorisé
   useEffect(() => {
     const initNotifications = async () => {
