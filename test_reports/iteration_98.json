@@ -39,7 +39,7 @@
   },
   "test_credentials": {
     "super_admin_email": "contact.artboost@gmail.com",
-    "api_url": "https://coach-platform-46.preview.emergentagent.com"
+    "api_url": "https://dashboard-refactor-34.preview.emergentagent.com"
   },
   "seed_data_creation": "Test data created via pytest for ai-config prompts verification",
   "retest_needed": false,
