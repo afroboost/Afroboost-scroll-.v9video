@@ -391,6 +391,14 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
         }
         
         setCourses(res.data.courses || []);
+        
+        // v9.3.0: Charger les liens de paiement du coach
+        try {
+          const paymentRes = await axios.get(`${API}/payment-links/${encodeURIComponent(res.data.coach.email || username)}`);
+          setPaymentConfig(paymentRes.data);
+        } catch (e) {
+          console.log('[VITRINE] Pas de liens de paiement configurés');
+        }
       } catch (err) {
         console.error('[VITRINE] Erreur:', err);
         setError(err.response?.data?.detail || 'Coach non trouvé');
