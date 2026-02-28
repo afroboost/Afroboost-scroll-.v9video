@@ -863,34 +863,47 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
             </div>
           )}
 
-          {/* Section Contact */}
+          {/* v9.4.6: Section Installation PWA (remplace "Intéressé par les services") */}
           <div 
             className="rounded-xl p-6 text-center"
             style={{ 
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(217, 28, 210, 0.05) 100%)',
-              border: '1px solid rgba(217, 28, 210, 0.2)'
+              background: `linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(217, 28, 210, 0.05) 100%)`,
+              border: `1px solid var(--primary-color, rgba(217, 28, 210, 0.3))`
             }}
           >
-            <p className="text-white/70 mb-4">
-              Intéressé(e) par les services de <strong className="text-white">{displayName}</strong> ?
-            </p>
-            <button
-              onClick={handleShare}
-              className="px-6 py-3 rounded-xl text-white font-medium transition-all hover:scale-105"
-              style={{ 
-                background: 'linear-gradient(135deg, #8b5cf6 0%, #d91cd2 100%)',
-                boxShadow: '0 0 20px rgba(217, 28, 210, 0.3)'
-              }}
-              data-testid="vitrine-contact-btn"
-            >
-              📤 Partager cette vitrine
-            </button>
+            {isInstalled ? (
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-2xl">✅</span>
+                <p className="text-white/70">
+                  Application installée ! Retrouvez <strong className="text-white">{displayName}</strong> sur votre écran.
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="text-white/70 mb-4 flex items-center justify-center gap-2">
+                  <span className="text-xl">📲</span>
+                  Installer la page de <strong className="text-white mx-1">{displayName}</strong> sur votre écran
+                </p>
+                <p className="text-white/40 text-xs mb-4">(Mobile ou PC)</p>
+                <button
+                  onClick={handleInstallPWA}
+                  className="px-6 py-3 rounded-xl text-white font-medium transition-all hover:scale-105"
+                  style={{ 
+                    background: `linear-gradient(135deg, var(--primary-color, #D91CD2) 0%, var(--secondary-color, #8b5cf6) 100%)`,
+                    boxShadow: `0 0 20px var(--glow-color, rgba(217, 28, 210, 0.3))`
+                  }}
+                  data-testid="install-pwa-btn"
+                >
+                  📥 Installer l'application
+                </button>
+              </>
+            )}
           </div>
           
           {/* Footer Afroboost */}
           <div className="text-center mt-8 pb-8">
             <p className="text-white/30 text-xs">
-              Propulsé par <span style={{ color: '#d91cd2' }}>Afroboost</span> - La plateforme des coachs
+              Propulsé par <span style={{ color: 'var(--primary-color, #d91cd2)' }}>Afroboost</span> - La plateforme des coachs
             </p>
           </div>
           </div>
