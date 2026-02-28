@@ -1,5 +1,46 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.7 - INTERRUPTEURS MINIMALISTES & FIX PARCOURS ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.7 COMPLÈTE - "INTERRUPTEURS MINIMALISTES ET PARCOURS RÉPARÉ"
+
+| Objectif | Statut |
+|----------|--------|
+| Quick Control (icône 3 points) | ✅ |
+| Toggles Super Admin (Accès Partenaires, Mode Maintenance) | ✅ |
+| Parcours Pack 0 CHF → Dashboard | ✅ |
+| Vitrine: photo + nom en haut à droite | ✅ |
+| Anti-Régression (7 réservations Bassi) | ✅ |
+
+### Modifications v9.2.7
+
+| Fichier | Modification |
+|---------|--------------|
+| backend/server.py | Lignes 5962-6034: API `/api/platform-settings` GET/PUT |
+| CoachDashboard.js | Lignes 344-390: États Quick Control + refs |
+| CoachDashboard.js | Lignes 3875-3970: UI Quick Control avec toggles |
+| CoachVitrine.js | Lignes 348-368: Photo et nom coach en haut à droite |
+| BecomeCoachPage.js | Lignes 101-106: Redirect vers `#partner-dashboard` après pack gratuit |
+
+### API Platform Settings v9.2.7
+
+```
+GET /api/platform-settings
+Headers: X-User-Email: contact.artboost@gmail.com
+Response: { partner_access_enabled, maintenance_mode, is_super_admin }
+
+PUT /api/platform-settings (Super Admin only)
+Headers: X-User-Email: contact.artboost@gmail.com
+Body: { partner_access_enabled?: boolean, maintenance_mode?: boolean }
+```
+
+### Tests v9.2.7 - Iteration 90
+- Backend: **100%** ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi** ✅
+
+---
+
 ## v9.2.6 - PARCOURS RÉEL & VITRINE MIROIR ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.6 COMPLÈTE - "PARCOURS PARTENAIRE RÉPARÉ ET VITRINE MIROIR ACTIVÉE"
