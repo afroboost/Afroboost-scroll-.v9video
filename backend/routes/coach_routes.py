@@ -281,6 +281,64 @@ async def search_coaches(q: str = ""):
     coaches = await db.coaches.find(query, {"_id": 0, "id": 1, "name": 1, "photo_url": 1, "bio": 1}).to_list(10)
     return coaches
 
+# === v9.4.7: PARTENAIRES ACTIFS AVEC VIDÉOS (CAROUSEL HOME) ===
+@coach_router.get("/partners/active")
+async def get_active_partners():
+    """
+    Récupère les partenaires actifs avec leurs vidéos pour le carousel de la home page.
+    Inclut le concept (heroImageUrl/video_url) de chaque partenaire.
+    """
+    try:
+        # Récupérer tous les coaches actifs
+        coaches = await db.coaches.find(
+            {"is_active": True},
+            {"_id": 0, "id": 1, "name": 1, "email": 1, "photo_url": 1, "logo_url": 1, "bio": 1, "platform_name": 1}
+        ).to_list(20)
+        
+        partners_with_videos = []
+        
+        # Pour chaque coach, récupérer son concept (vidéo)
+        for coach in coaches:
+            coach_email = coach.get("email", "").lower()
+            partner_data = dict(coach)
+            
+            # Chercher le concept du coach pour avoir la vidéo
+            concept = await db.concepts.find_one(
+                {"$or": [{"coach_id": coach_email}, {"id": f"concept_{coach_email}"}]},
+                {"_id": 0, "heroImageUrl": 1, "heroVideoUrl": 1}
+            )
+            
+            if concept:
+                partner_data["video_url"] = concept.get("heroVideoUrl") or concept.get("heroImageUrl")
+                partner_data["heroImageUrl"] = concept.get("heroImageUrl")
+            
+            # Inclure même sans vidéo (affichera placeholder)
+            partners_with_videos.append(partner_data)
+        
+        # Ajouter Bassi (Super Admin) en premier s'il a une vidéo configurée
+        bassi_concept = await db.concepts.find_one({"id": "concept"}, {"_id": 0, "heroImageUrl": 1, "heroVideoUrl": 1})
+        if bassi_concept and (bassi_concept.get("heroImageUrl") or bassi_concept.get("heroVideoUrl")):
+            bassi_data = {
+                "id": "bassi",
+                "name": "Bassi - Afroboost",
+                "email": SUPER_ADMIN_EMAIL,
+                "platform_name": "Afroboost",
+                "photo_url": None,
+                "logo_url": None,
+                "bio": "Coach Afroboost - Fitness & Bien-être",
+                "video_url": bassi_concept.get("heroVideoUrl") or bassi_concept.get("heroImageUrl"),
+                "heroImageUrl": bassi_concept.get("heroImageUrl")
+            }
+            # Ajouter Bassi en premier
+            partners_with_videos.insert(0, bassi_data)
+        
+        logger.info(f"[PARTNERS-CAROUSEL] {len(partners_with_videos)} partenaires avec vidéos")
+        return partners_with_videos
+        
+    except Exception as e:
+        logger.error(f"[PARTNERS-CAROUSEL] Erreur: {e}")
+        return []
+
 @coach_router.get("/coaches/public/{coach_id}")
 async def get_public_coach_profile(coach_id: str):
     """Profil public d'un coach"""
