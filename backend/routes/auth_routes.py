@@ -76,8 +76,8 @@ async def process_google_session(request: Request, response: Response):
         session_token = user_data.get("session_token", "")
         
         # v9.2.2: Permettre l'accès à tous les emails (Super Admin + Partenaires)
-        # Le Super Admin (contact.artboost@gmail.com) a des privilèges spéciaux dans le frontend
-        is_super_admin = (email == AUTHORIZED_COACH_EMAIL.lower())
+        # Le Super Admin (contact.artboost@gmail.com ou afroboost.bassi@gmail.com) a des privilèges spéciaux
+        is_super_admin = is_super_admin_email(email)
         
         # Créer ou mettre à jour l'utilisateur Google
         user_id = f"coach_{uuid.uuid4().hex[:12]}"
