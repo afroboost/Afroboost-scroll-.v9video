@@ -815,6 +815,8 @@ export const ChatWidget = () => {
   const [privateChatTarget, setPrivateChatTarget] = useState(null);
   const [messageCount, setMessageCount] = useState(0); // Compteur de messages pour prompt notif
   const [pushEnabled, setPushEnabled] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0); // v9.4.0: Compteur de messages non lus pour badge
+  const [hasNewMessage, setHasNewMessage] = useState(false); // v9.4.0: Indicateur de nouveau message
   const [isCoachMode, setIsCoachMode] = useState(() => {
     // v9.1.5: Vérifier si c'est un coach connecté (pas seulement Bassi)
     try {
