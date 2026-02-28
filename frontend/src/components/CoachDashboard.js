@@ -957,15 +957,23 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   };
   const savePayments = async () => { await axios.put(`${API}/payment-links`, paymentLinks); alert("Saved!"); };
 
+  // v9.5.8: addCode avec vérification crédits
   const addCode = async (e) => {
     e.preventDefault();
     if (!newCode.type || !newCode.value) return;
+    
+    // v9.5.8: Vérifier les crédits avant l'action (sauf Super Admin)
+    if (!checkCreditsBeforeAction()) return;
     
     // Si mode série activé, utiliser la fonction batch
     if (isBatchMode && newCode.batchCount > 1) {
       await addBatchCodes(e);
       return;
     }
+    
+    // v9.5.8: Consommer un crédit pour cette action
+    const creditResult = await consumeCredit("creation_code_promo");
+    if (!creditResult.success && !creditResult.bypassed) return;
     
     // Mode normal - un seul code
     const beneficiaryEmail = selectedBeneficiaries.length > 0 ? selectedBeneficiaries[0] : null;
