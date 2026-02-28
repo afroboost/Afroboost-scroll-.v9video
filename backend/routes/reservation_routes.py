@@ -1,4 +1,4 @@
-# reservation_routes.py - Routes réservations v9.1.4
+# reservation_routes.py - Routes réservations v9.5.8
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -8,11 +8,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Constantes
-SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"
+# v9.5.8: Liste des Super Admins
+SUPER_ADMIN_EMAILS = [
+    "contact.artboost@gmail.com",
+    "afroboost.bassi@gmail.com"
+]
+SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"  # Legacy
 
 def is_super_admin(email: str) -> bool:
-    return email and email.lower().strip() == SUPER_ADMIN_EMAIL.lower()
+    """Vérifie si l'email est celui d'un Super Admin"""
+    return email and email.lower().strip() in [e.lower() for e in SUPER_ADMIN_EMAILS]
+
+def get_coach_filter(email: str) -> dict:
+    """Retourne le filtre MongoDB pour l'isolation des données coach"""
+    if is_super_admin(email):
+        return {}  # Super Admin voit tout
+    return {"coach_id": email.lower().strip()}
 
 # Router
 reservation_router = APIRouter(tags=["reservations"])
