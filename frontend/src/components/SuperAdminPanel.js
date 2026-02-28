@@ -146,6 +146,29 @@ const SuperAdminPanel = ({ userEmail, onClose }) => {
     }
   };
 
+  // v9.0.1: Toggle statut coach (actif/inactif)
+  const handleToggleCoach = async (coachId, isCurrentlyActive) => {
+    try {
+      await axios.post(`${API}/admin/coaches/${coachId}/toggle`, {}, { headers: { 'X-User-Email': userEmail } });
+      const res = await axios.get(`${API}/admin/coaches`, { headers: { 'X-User-Email': userEmail } });
+      setCoaches(res.data || []);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Erreur lors du changement de statut');
+    }
+  };
+
+  // v9.0.1: Supprimer un coach
+  const handleDeleteCoach = async (coachId, coachName) => {
+    if (!window.confirm(`Supprimer définitivement le coach "${coachName}" ?\n\nCette action est irréversible.`)) return;
+    try {
+      await axios.delete(`${API}/admin/coaches/${coachId}`, { headers: { 'X-User-Email': userEmail } });
+      const res = await axios.get(`${API}/admin/coaches`, { headers: { 'X-User-Email': userEmail } });
+      setCoaches(res.data || []);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Erreur lors de la suppression');
+    }
+  };
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
