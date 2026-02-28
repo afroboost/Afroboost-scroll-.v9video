@@ -3650,7 +3650,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                     style={{ background: 'rgba(217,28,210,0.2)', color: '#d91cd2', border: '1px solid rgba(217,28,210,0.5)' }}
                     data-testid="super-admin-badge"
                   >
-                    ⭐ Super Admin
+                    👑 Crédits Illimités
                   </span>
                 )}
               </div>
