@@ -34,7 +34,7 @@
   },
   "test_credentials": {
     "super_admin_email": "contact.artboost@gmail.com",
-    "api_url": "https://dashboard-refactor-34.preview.emergentagent.com"
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com"
   },
   "seed_data_creation": "None - used existing data",
   "retest_needed": false,

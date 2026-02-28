@@ -13,7 +13,7 @@ import time
 from typing import Dict, List, Optional
 
 # Configuration
-BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://dashboard-refactor-34.preview.emergentagent.com')
+BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://partner-reels-feed.preview.emergentagent.com')
 print(f"Testing backend URL: {BACKEND_URL}")
 
 class BackendTester:

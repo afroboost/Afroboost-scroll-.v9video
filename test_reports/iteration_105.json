@@ -29,7 +29,7 @@
     "frontend": "100% - All UI features verified"
   },
   "test_credentials": {
-    "api_url": "https://dashboard-refactor-34.preview.emergentagent.com",
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com",
     "test_partner_vitrine": "/coach/bassi"
   },
   "seed_data_creation": "None - used existing partners data",

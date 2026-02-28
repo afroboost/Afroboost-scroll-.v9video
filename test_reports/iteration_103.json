@@ -36,7 +36,7 @@
     "frontend": "100% - CSS variables verified, chat button violet confirmed"
   },
   "test_credentials": {
-    "api_url": "https://dashboard-refactor-34.preview.emergentagent.com"
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com"
   },
   "seed_data_creation": "None - tested existing functionality",
   "retest_needed": false,

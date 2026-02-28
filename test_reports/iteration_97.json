@@ -30,7 +30,7 @@
   },
   "test_credentials": {
     "super_admin_email": "contact.artboost@gmail.com",
-    "api_url": "https://dashboard-refactor-34.preview.emergentagent.com"
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com"
   },
   "seed_data_creation": "TestUser937 - test registration for calendar icon verification",
   "retest_needed": false,
