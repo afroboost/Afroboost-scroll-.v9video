@@ -1410,6 +1410,44 @@ async def check_if_partner(email: str):
     
     return {"is_partner": False, "email": email}
 
+# === v9.5.8: ENDPOINT DÉDUCTION CRÉDITS ===
+@api_router.post("/credits/deduct")
+async def api_deduct_credit(request: Request):
+    """
+    Déduit 1 crédit du compte partenaire.
+    Utilisé par le frontend pour les actions consommant des crédits.
+    Super Admin (afroboost.bassi@gmail.com) ne consomme jamais de crédits.
+    """
+    try:
+        body = await request.json()
+        action = body.get("action", "action")
+    except:
+        action = "action"
+    
+    user_email = request.headers.get('X-User-Email', '').lower().strip()
+    
+    if not user_email:
+        raise HTTPException(status_code=400, detail="Email non fourni")
+    
+    result = await deduct_credit(user_email, action)
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=402, detail=result.get("error", "Crédits insuffisants"))
+    
+    return result
+
+@api_router.get("/credits/check")
+async def api_check_credits(request: Request):
+    """
+    Vérifie le solde de crédits d'un partenaire.
+    """
+    user_email = request.headers.get('X-User-Email', '').lower().strip()
+    
+    if not user_email:
+        return {"has_credits": False, "credits": 0, "error": "Email non fourni"}
+    
+    return await check_credits(user_email)
+
 @api_router.get("/users/{participant_id}/profile")
 async def get_user_profile(participant_id: str):
     """
