@@ -328,7 +328,8 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const [stripeConnectLoading, setStripeConnectLoading] = useState(false);
   
   // === CRÉDITS COACH v8.9.7 ===
-  const [coachCredits, setCoachCredits] = useState(null); // null=loading, -1=illimité, >=0=solde
+  // v9.2.3: Initialiser à 0 au lieu de null pour éviter page blanche
+  const [coachCredits, setCoachCredits] = useState(0); // 0=défaut, -1=illimité (Super Admin)
   
   // === v8.9.9: VITRINE COACH ===
   const [coachUsername, setCoachUsername] = useState(null);
