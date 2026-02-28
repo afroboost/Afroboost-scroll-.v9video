@@ -99,6 +99,11 @@ const BecomeCoachPage = ({ onClose, onSuccess }) => {
       });
       
       if (registerRes.data) {
+        // v9.2.7: Propulsion DIRECTE vers le dashboard après inscription gratuite
+        localStorage.setItem('redirect_to_dash', 'true');
+        localStorage.setItem('afroboost_redirect_message', '🎉 Bienvenue ! Votre pack est activé.');
+        window.location.hash = '#partner-dashboard';
+        window.location.reload(); // Force refresh pour déclencher le modal login
         onSuccess?.(registerRes.data);
       }
     } catch (err) {
