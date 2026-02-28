@@ -1,5 +1,48 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.2 - DASHBOARD MIROIR ET REDIRECTION VERROUILLÉS ✅ (28 Février 2026)
+
+### STATUT: REFACTORING PHASE 2 RÉUSSI
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **6719 lignes** (-730 depuis début) |
+| campaign_routes.py | **134 lignes** |
+| coach_routes.py | **341 lignes** |
+| Total backend | 7194 lignes |
+| Non-régression | **7 réservations ✅** |
+| Tests | **14/14 ✅** |
+
+### Accomplissements v9.1.2
+
+| Feature | Description |
+|---------|-------------|
+| Migration campaigns | Routes /campaigns/* → campaign_routes.py |
+| Redirection verrouillée | #coach-dashboard → modal connexion immédiat |
+| Dashboard miroir | Tous les coaches = même CoachDashboard.js |
+
+### Routes migrées vers campaign_routes.py
+- `GET /campaigns`
+- `GET /campaigns/logs`
+- `GET /campaigns/{id}`
+- `PUT /campaigns/{id}`
+- `DELETE /campaigns/{id}`
+- `DELETE /campaigns/purge/all`
+- `POST /campaigns/{id}/mark-sent`
+
+### Tests v9.1.2 - Iteration 74
+- Backend: **10/10 ✅**
+- Frontend: **4/4 ✅**
+- Cours Mars: **INTACTS**
+
+### Bilan refactoring
+- Début (v9.0.2): **7449 lignes**
+- Après v9.1.1: **6877 lignes** (-572)
+- Après v9.1.2: **6719 lignes** (-158 de plus)
+- **Total gagné: 730 lignes**
+
+---
+
 ## v9.1.1 - DASHBOARD MIROIR ET REDIRECTION OK ✅ (28 Février 2026)
 
 ### STATUT: REFACTORING RÉUSSI - 572 LIGNES MIGRÉES
