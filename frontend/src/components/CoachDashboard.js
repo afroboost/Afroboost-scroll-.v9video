@@ -3,7 +3,7 @@
  * Admin panel for managing the Afroboost application
  * Extracted from App.js for better maintainability
  */
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback, Component } from "react";
 import axios from "axios";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -26,6 +26,37 @@ import CampaignManager from "./coach/CampaignManager"; // Import Campaign Manage
 import CRMSection from "./coach/CRMSection"; // v9.2.0 Import CRM Section
 import { parseMediaUrl, getMediaThumbnail } from "../services/MediaParser"; // Media Parser
 import SuperAdminPanel from "./SuperAdminPanel"; // v8.9 Super Admin Panel
+
+// v9.2.1: ErrorBoundary pour isoler les erreurs de composants
+class SectionErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, info) {
+    console.error('[SectionErrorBoundary]', this.props.sectionName, error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 rounded-xl bg-red-500/20 border border-red-500/50 text-white">
+          <h3 className="text-lg font-bold mb-2">⚠️ Erreur dans la section {this.props.sectionName}</h3>
+          <p className="text-white/70 text-sm mb-3">{this.state.error?.message || 'Une erreur est survenue'}</p>
+          <button 
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="px-4 py-2 bg-violet-500 rounded-lg text-white text-sm"
+          >
+            🔄 Réessayer
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // === API BACKEND URL (UNIQUE) ===
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
