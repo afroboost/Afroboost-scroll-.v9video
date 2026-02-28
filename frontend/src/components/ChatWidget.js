@@ -1452,6 +1452,7 @@ export const ChatWidget = () => {
   }, [afroboostProfile?.email]);
 
   // === HANDLER CLIC BOUTON RÉSERVATION ===
+  // v9.3.7: Toujours ouvrir le panel, vérification à la confirmation
   const handleReservationClick = useCallback(async () => {
     // BLINDAGE: Bloquer en mode Vue Visiteur
     if (isVisitorPreview) {
@@ -1466,22 +1467,19 @@ export const ChatWidget = () => {
       return;
     }
     
-    // Vérifier l'éligibilité avant d'ouvrir
-    const canReserve = await checkReservationEligibility();
-    
-    if (!canReserve) {
-      const reason = reservationEligibility?.reason || "Code invalide";
-      setReservationError(`${reason}. Réservation impossible.`);
-      // Afficher l'erreur pendant 5 secondes
-      setTimeout(() => setReservationError(''), 5000);
-      return;
-    }
-    
-    // Charger les cours et ouvrir
+    // v9.3.7: Ouvrir le panel pour tous les utilisateurs
+    // La vérification d'éligibilité se fait à la confirmation
     loadAvailableCourses();
     setShowReservationPanel(true);
     setSelectedCourse(null);
-  }, [showReservationPanel, checkReservationEligibility, reservationEligibility, isVisitorPreview]);
+    
+    // Vérifier l'éligibilité en arrière-plan pour afficher un message si nécessaire
+    if (!afroboostProfile?.code) {
+      setReservationError("Entrez un code promo valide pour réserver un cours.");
+    } else {
+      setReservationError('');
+    }
+  }, [showReservationPanel, isVisitorPreview, afroboostProfile]);
 
   // === HANDLER CONFIRMATION RÉSERVATION (extrait pour BookingPanel) ===
   const handleConfirmReservation = useCallback(async () => {
