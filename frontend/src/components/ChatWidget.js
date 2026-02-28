@@ -872,6 +872,27 @@ export const ChatWidget = () => {
     } catch { return false; }
   });
   
+  // === v9.2.8: PLATFORM SETTINGS - Charger pour conditionner l'affichage ===
+  const [platformSettings, setPlatformSettings] = useState({
+    partner_access_enabled: true,
+    maintenance_mode: false
+  });
+  
+  useEffect(() => {
+    const loadPlatformSettings = async () => {
+      try {
+        const res = await axios.get(`${API}/platform-settings`);
+        setPlatformSettings({
+          partner_access_enabled: res.data?.partner_access_enabled ?? true,
+          maintenance_mode: res.data?.maintenance_mode ?? false
+        });
+      } catch {
+        // Valeurs par défaut si erreur
+      }
+    };
+    loadPlatformSettings();
+  }, []);
+  
   // Toggle le mode Silence Auto (utilise SoundManager)
   const toggleSilenceAuto = () => {
     const newValue = !silenceAutoEnabled;
