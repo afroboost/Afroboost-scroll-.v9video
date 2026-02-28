@@ -516,7 +516,7 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
     setPausedStates(prev => ({ ...prev, [partnerId]: !prev[partnerId] }));
   }, []);
   
-  // v9.5.2: Scroll handler optimisé avec debounce
+  // v9.5.3: Scroll handler optimisé avec debounce
   const handleScroll = useCallback(() => {
     if (scrollTimeout.current) {
       clearTimeout(scrollTimeout.current);
@@ -527,12 +527,12 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
         const scrollTop = sliderRef.current.scrollTop;
         const cardHeight = sliderRef.current.clientHeight;
         const newIndex = Math.round(scrollTop / cardHeight);
-        if (newIndex !== activeIndex && newIndex >= 0 && newIndex < partners.length) {
+        if (newIndex !== activeIndex && newIndex >= 0 && newIndex < filteredPartners.length) {
           setActiveIndex(newIndex);
         }
       }
     }, 50);
-  }, [activeIndex, partners.length]);
+  }, [activeIndex, filteredPartners.length]);
   
   // Navigation vers vitrine
   const handleNavigate = useCallback((partner) => {
