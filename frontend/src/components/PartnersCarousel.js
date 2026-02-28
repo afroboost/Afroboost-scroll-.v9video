@@ -156,11 +156,11 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
 
   return (
     <div 
-      className="snap-start snap-always w-full flex-shrink-0 flex items-center justify-center"
+      className="snap-start snap-always w-full flex-shrink-0 flex items-center justify-center pt-14"
       style={{ 
-        height: 'calc(100vh - 120px)',
-        minHeight: '450px',
-        maxHeight: '700px',
+        height: 'calc(100vh - 80px)',
+        minHeight: '500px',
+        maxHeight: '800px',
         background: '#000000'
       }}
       data-testid={`partner-card-${partner.id || partner.email}`}
