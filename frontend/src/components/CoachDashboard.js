@@ -3713,12 +3713,16 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // v8.9.5: Tabs dynamiques avec "Mon Stripe" pour les coachs (pas Bassi)
   // v9.1.3: DASHBOARD JUMEAU - Tous les coaches ont FULL ACCESS (même interface que Bassi)
   // L'indicateur requiresCredits est supprimé - seul le filtrage coach_id sépare les données
-  // v9.2.9: Renommé "payments" en "page-vente" pour clarté
+  // v9.5.8: Masquer "Campagnes" pour les partenaires - réservé au Super Admin
   const baseTabs = [
-    { id: "reservations", label: t('reservations') }, { id: "concept", label: t('conceptVisual') },
-    { id: "courses", label: t('courses') }, { id: "offers", label: t('offers') },
-    { id: "page-vente", label: "🏪 Ma Page" }, { id: "codes", label: t('promoCodes') },
-    { id: "campaigns", label: "📢 Campagnes" },
+    { id: "reservations", label: t('reservations') }, 
+    { id: "concept", label: t('conceptVisual') },
+    { id: "courses", label: t('courses') }, 
+    { id: "offers", label: t('offers') },
+    { id: "page-vente", label: "🏪 Ma Page" }, 
+    { id: "codes", label: t('promoCodes') },
+    // v9.5.8: Campagnes masqué pour les partenaires
+    ...(isSuperAdmin ? [{ id: "campaigns", label: "📢 Campagnes" }] : []),
     { id: "conversations", label: unreadCount > 0 ? `💬 Conversations (${unreadCount})` : "💬 Conversations" }
   ];
   
