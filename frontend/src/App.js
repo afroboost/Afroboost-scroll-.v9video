@@ -3257,7 +3257,7 @@ function App() {
   };
 
   if (showSplash) return <SplashScreen logoUrl={concept.logoUrl} />;
-  if (showCoachLogin) return <CoachLoginModal t={t} onLogin={handleGoogleLogin} onCancel={() => setShowCoachLogin(false)} />;
+  if (showCoachLogin) return <CoachLoginModal t={t} onLogin={handleGoogleLogin} onCancel={() => { setShowCoachLogin(false); setLoginWelcomeMessage(null); }} welcomeMessage={loginWelcomeMessage} />;
   
   // Page "Devenir Coach"
   if (showBecomeCoach) return (
