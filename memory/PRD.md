@@ -1,5 +1,78 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.2 - LOGIQUE D'ACCÈS ET RÉPARATION FLUX ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.5.2 COMPLÈTE - "LOGIQUE D'ACCÈS ET FLUX VIDÉO RÉPARÉS"
+
+| Objectif | Statut |
+|----------|--------|
+| Routage intelligent post-login | ✅ |
+| Lazy loading des vidéos | ✅ |
+| Event listeners nettoyés | ✅ |
+| Espace noir optimisé | ✅ |
+
+### 1. ROUTAGE INTELLIGENT (handleGoogleLogin)
+
+```javascript
+// App.js L3370-3415
+// CAS A: Super Admin → Accès illimité
+if (roleRes.data?.is_super_admin) {
+  window.location.hash = '#coach-dashboard';
+}
+// CAS B: Partenaire Actif (has_credits=true)
+else if (partnerRes.data?.is_partner && partnerRes.data?.has_credits) {
+  window.location.hash = '#coach-dashboard';
+}
+// CAS C: Non-partenaire ou sans crédits
+else {
+  setValidationMessage('⚠️ Accès Dashboard réservé...');
+  setShowBecomeCoach(true);
+}
+```
+
+**API utilisée:** `/api/check-partner/{email}`
+- Retourne: `{ is_partner, email, name, has_credits }`
+
+### 2. LAZY LOADING DES VIDÉOS
+
+```javascript
+// PartnersCarousel.js L610
+isVisible={Math.abs(index - activeIndex) <= 1}
+
+// Vidéos ne chargent que si dans ±1 index du centre
+```
+
+### 3. EVENT LISTENERS CLEANUP
+
+```javascript
+// Click timer cleanup (L137-143)
+useEffect(() => {
+  return () => {
+    if (clickTimer.current) clearTimeout(clickTimer.current);
+  };
+}, []);
+
+// Scroll timeout cleanup (L473-479)
+useEffect(() => {
+  return () => {
+    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+  };
+}, []);
+```
+
+### 4. OPTIMISATION ESPACE
+
+- Container: `height: calc(100vh - 60px)`
+- Video: `aspect-ratio: 16/9; max-height: 70%`
+- Header: Position absolue avec gradient transparent
+
+### Tests v9.5.2 - Iteration 110
+- Backend: **100%** (7/7 tests) ✅
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Chat violet, Retour au Flux, Couleurs** ✅
+
+---
+
 ## v9.5.1 - ÉPURE TOTALE, LOGO ET FIX COULEURS ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.5.1 COMPLÈTE - "DESIGN ÉPURÉ ET PERSONNALISATION RÉPARÉE"
