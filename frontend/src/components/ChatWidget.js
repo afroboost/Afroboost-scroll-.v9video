@@ -2009,6 +2009,9 @@ export const ChatWidget = () => {
           playSoundIfEnabled(messageData.type === 'coach' ? 'coach' : 'message');
           const senderName = messageData.sender || (messageData.type === 'coach' ? 'Coach Bassi' : 'Afroboost');
           showNewMessageNotification(senderName, messageData.text);
+          // v9.4.0: Incrémenter le badge de notification
+          setUnreadPrivateCount(prev => prev + 1);
+          setHasNewMessage(true);
         }
       });
       
