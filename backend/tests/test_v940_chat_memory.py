@@ -28,7 +28,7 @@ class TestChatSessionsAPI:
     def test_smart_entry_creates_session(self):
         """POST /api/chat/smart-entry creates a session for new users"""
         payload = {
-            "firstName": "TestUser940",
+            "name": "TestUser940",  # API expects 'name' not 'firstName'
             "email": f"testuser940_{os.getpid()}@test.com",
             "whatsapp": "+33612345678"
         }
@@ -43,7 +43,7 @@ class TestChatSessionsAPI:
         """GET /api/chat/sessions/:id/messages returns array of messages"""
         # First create a session
         payload = {
-            "firstName": "TestMsgUser",
+            "name": "TestMsgUser",  # API expects 'name' not 'firstName'
             "email": f"testmsg940_{os.getpid()}@test.com",
             "whatsapp": "+33612345679"
         }
@@ -91,10 +91,12 @@ class TestGroupMessagesAPI:
 class TestPrivateConversationsAPI:
     """Tests for private message functionality (used by badge)"""
     
-    def test_get_private_conversations(self):
-        """GET /api/private/conversations returns array"""
-        res = requests.get(f"{BASE_URL}/api/private/conversations")
-        # May return 200 or 404
+    def test_get_private_conversations_with_participant(self):
+        """GET /api/private/conversations/:participant_id returns array"""
+        # Using a mock participant ID - endpoint requires participant_id
+        test_participant_id = "test_participant_123"
+        res = requests.get(f"{BASE_URL}/api/private/conversations/{test_participant_id}")
+        # May return 200 (empty array) or 404
         assert res.status_code in [200, 404]
         if res.status_code == 200:
             convos = res.json()
