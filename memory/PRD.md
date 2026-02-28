@@ -1,5 +1,45 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.8 - DASHBOARD MIROIR ET PROPULSION VERROUILLÉS ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.1.8 COMPLÈTE
+
+| Critère | Validation |
+|---------|------------|
+| Propulsion partenaire | ✅ **success=true → modal avec message "Paiement réussi"** |
+| Dashboard miroir | ✅ **CoachDashboard.js pour TOUS les partenaires** |
+| Harmonisation CSS | ✅ **Vitrines avec design premium Afroboost** |
+| Non-régression | **7 réservations ✅** |
+| Sessions Mars | **04.03, 11.03, 18.03, 25.03 ✅** |
+| Tests | **10/10 ✅** |
+
+### Propulsion Partenaire v9.1.8
+
+| Détection URL | Action |
+|---------------|--------|
+| `?success=true&session_id=xxx` | Modal connexion avec message de bienvenue |
+| Partenaire déjà connecté | Propulsion directe vers dashboard |
+| Partenaire non connecté | Modal "🎉 Paiement réussi ! Connectez-vous..." |
+
+### Dashboard Miroir v9.1.8
+
+| Rôle | Accès |
+|------|-------|
+| Super Admin (`contact.artboost@gmail.com`) | TOUS les onglets + "👑 Crédits Illimités" |
+| Partenaire Normal | MÊMES onglets + gestion de sa plateforme |
+
+### Rebranding "Partenaire" v9.1.8
+- Traduction FR: "Connexion Partenaire"
+- Traduction EN: "Partner Login"
+- Traduction DE: "Partner-Anmeldung"
+
+### Tests v9.1.8 - Iteration 80
+- Backend: **100% ✅**
+- Frontend: **100% ✅**
+- Playwright: **3/3 tests passés**
+
+---
+
 ## v9.1.7 - SUPER ADMIN OMNISCIENT ET LOGIQUE PRÉSERVÉE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.1.7 COMPLÈTE
