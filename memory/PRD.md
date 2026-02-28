@@ -1,5 +1,43 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.9 - MIROIR TOTAL, PAIEMENT & NETTOYAGE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.9 COMPLÈTE - "MIROIR TOTAL ET FORMULAIRES ACTIVÉS"
+
+| Objectif | Statut |
+|----------|--------|
+| Formulaire CODE PROMO (vitrine) | ✅ |
+| Header vidéo dynamique | ✅ |
+| Nettoyage Dashboard (1 seul bouton) | ✅ |
+| Séparation accès Admin | ✅ |
+| Anti-Régression (7 réservations Bassi) | ✅ |
+
+### Fonctionnalités v9.2.9
+
+| Fonctionnalité | Description |
+|----------------|-------------|
+| Header Vidéo Vitrine | Logo animé + nom du coach si pas de video_url |
+| CODE PROMO Vitrine | Champ optionnel avec bouton "Valider" dans le modal de réservation |
+| Onglet "Ma Page" | Remplace "Paiements", affiche QR Code et lien unique |
+| Configuration Paiements | Section collapsible dans "Ma Page" |
+
+### Modifications v9.2.9
+
+| Fichier | Modification |
+|---------|--------------|
+| CoachVitrine.js | Lignes 269-304: validatePromoCode avec coach_id |
+| CoachVitrine.js | Lignes 568-645: Header vidéo animé |
+| CoachVitrine.js | Lignes 916-956: Champ CODE PROMO |
+| CoachDashboard.js | Lignes 3600-3604: Onglet "page-vente" |
+| CoachDashboard.js | Lignes 5133-5194: Contenu "Ma Page" avec QR |
+
+### Tests v9.2.9 - Iteration 92
+- Backend: **100%** (11/11 tests) ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi** ✅
+
+---
+
 ## v9.2.8 - SÉCURITÉ MAXIMALE, ISOLATION & COMMANDES ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.8 COMPLÈTE - "COMMANDES BRANCHÉES ET SÉCURITÉ VERROUILLÉE"
