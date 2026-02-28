@@ -2160,6 +2160,18 @@ function App() {
     const handleHashChange = () => {
       const hash = window.location.hash;
       console.log('App.js - Hash changed:', hash);
+      
+      // v9.1.1: Détection #coach-dashboard
+      if (hash.includes('#coach-dashboard') || hash.includes('coach-dashboard')) {
+        const savedCoachUser = localStorage.getItem('afroboost_coach_user');
+        if (!savedCoachUser) {
+          setShowCoachLogin(true);
+        } else {
+          setCoachMode(true);
+        }
+        return;
+      }
+      
       if (hash.startsWith('#/v/')) {
         const slug = hash.replace('#/v/', '').split('/')[0].split('?')[0].trim();
         if (slug && slug.length > 0) {
