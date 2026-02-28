@@ -182,15 +182,16 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
       }}
       data-testid={`partner-card-${partner.id || partner.email}`}
     >
-      {/* Container 16:9 strict - Optimisé pour remplir l'espace */}
+      {/* v9.5.6: Container vidéo optimisé - Prend PLUS de place sur mobile */}
       <div 
-        className="relative w-full h-full flex items-center justify-center px-2"
+        className="relative w-full h-full flex items-center justify-center"
+        style={{ padding: '50px 8px 16px 8px' }}  // 50px top pour le header
       >
         <div 
           className="relative w-full"
           style={{
             aspectRatio: '16/9',
-            maxHeight: '70%',
+            maxHeight: '85%',  // v9.5.6: Augmenté de 70% à 85%
             maxWidth: '100%'
           }}
         >
