@@ -1,5 +1,39 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.0.2 - COMPTEURS ACTIVÉS ET IDENTITÉ MIROIR OK ✅ (28 Février 2026)
+
+### STATUT: VALIDÉ - SYSTÈME RENTABILITÉ ACTIF
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **7449 lignes** (limite!) |
+| Déduction crédits | ✅ FONCTIONNEL |
+| Blocage 402 | ✅ ACTIF |
+| Notification Bassi | ✅ IMPLÉMENTÉ |
+| Non-régression | **7 réservations ✅** |
+| Tests | **12/12 ✅** |
+
+### Fonctionnalités v9.0.2
+
+| Feature | Description |
+|---------|-------------|
+| deduct_credit() | Déduit 1 crédit, retourne solde restant |
+| check_credits() | Vérifie solde sans déduire |
+| POST /chat/participants | -1 crédit pour coaches (402 si vide) |
+| POST /campaigns/send-email | -1 crédit pour coaches (402 si vide) |
+| Notification Bassi | Email à chaque achat de pack coach |
+| Super Admin | Crédits illimités (-1), bypass déductions |
+
+### Tests v9.0.2 - Iteration 72
+- Backend: **12/12 ✅**
+- Coach 100→99 crédits (déduction vérifiée)
+- Non-régression: **100% INTACT**
+
+### Bug corrigé
+- POST /chat/participants: ObjectId non sérialisable → Ajout `_id.pop()`
+
+---
+
 ## v9.0.1 - SYSTÈME FRANCHISE DYNAMIQUE ACTIVÉ ✅ (28 Février 2026)
 
 ### STATUT: VALIDÉ - ARCHITECTURE WHITE LABEL
