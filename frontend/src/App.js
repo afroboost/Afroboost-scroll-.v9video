@@ -2104,28 +2104,34 @@ function App() {
     const path = window.location.pathname;
     const hash = window.location.hash;
     const searchParams = new URLSearchParams(window.location.search);
-    console.log('App.js - Current path:', path);
-    console.log('App.js - Current hash:', hash);
-    console.log('App.js - Full URL:', window.location.href);
     
-    // === v9.1.1: DÉTECTION HASH #coach-dashboard (redirection après achat) ===
-    if (hash.includes('#coach-dashboard') || hash.includes('coach-dashboard')) {
-      console.log('[APP] 🔄 Détection #coach-dashboard - Activation mode coach');
-      // Vérifier si welcome=true (nouvel achat)
-      if (searchParams.get('welcome') === 'true' || hash.includes('welcome=true')) {
-        console.log('[APP] 🎉 Nouveau coach - Affichage modal de bienvenue');
-      }
-      // Ouvrir le modal de connexion coach si pas déjà connecté
+    // === v9.1.2: DÉTECTION HASH #coach-dashboard (redirection après achat Stripe) ===
+    if (hash.includes('coach-dashboard') || window.location.href.includes('coach-dashboard')) {
+      console.log('[APP] 🔄 v9.1.2 - Détection #coach-dashboard');
       const savedCoachUser = localStorage.getItem('afroboost_coach_user');
-      if (!savedCoachUser) {
-        setShowCoachLogin(true);
+      
+      if (savedCoachUser) {
+        // Coach déjà connecté → Activer immédiatement le dashboard
+        try {
+          const user = JSON.parse(savedCoachUser);
+          setCoachUser(user);
+          setCoachMode(true);
+          console.log('[APP] ✅ Dashboard coach activé pour:', user?.email);
+          // Vérifier si c'est un nouveau coach (welcome=true)
+          if (searchParams.get('welcome') === 'true' || hash.includes('welcome=true')) {
+            console.log('[APP] 🎉 Bienvenue nouveau coach!');
+          }
+        } catch (e) {
+          setShowCoachLogin(true);
+        }
       } else {
-        setCoachMode(true);
+        // Pas connecté → Ouvrir modal de connexion
+        setShowCoachLogin(true);
       }
       return;
     }
     
-    // === HASH ROUTING (PRIORITAIRE) - Fonctionne à 100% côté client ===
+    // === HASH ROUTING pour Media Viewer ===
     // Format: https://afroboosteur.com/#/v/{slug}
     if (hash.startsWith('#/v/')) {
       const slug = hash.replace('#/v/', '').split('/')[0].split('?')[0].trim();
