@@ -3468,7 +3468,7 @@ function App() {
   );
   
   // === v9.2.8: PAGE DE MAINTENANCE - Blocage total sauf Super Admin ===
-  const isSuperAdmin = coachUser?.email?.toLowerCase() === 'contact.artboost@gmail.com';
+  const isSuperAdmin = isSuperAdminEmail(coachUser?.email);
   if (platformSettings.maintenance_mode && !isSuperAdmin && !coachMode) {
     return (
       <div 
