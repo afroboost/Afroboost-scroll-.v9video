@@ -707,33 +707,10 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                 </svg>
               </div>
               
-              {/* Nom du Coach avec glow violet */}
-              <h1 
-                className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center mb-4"
-                style={{
-                  color: 'white',
-                  textShadow: '0 0 30px rgba(217, 28, 210, 0.6), 0 0 60px rgba(139, 92, 246, 0.4)',
-                  letterSpacing: '-0.02em'
-                }}
-                data-testid="vitrine-coach-name"
-              >
-                Coach {displayName}
-              </h1>
+              {/* v9.4.6: Textes superposés supprimés - Vidéo épurée */}
+              {/* Le nom du coach est déjà en haut à droite (ligne 562), pas besoin de le répéter */}
               
-              {/* Badge partenaire */}
-              <div 
-                className="mb-8 px-4 py-1.5 rounded-full text-sm"
-                style={{
-                  background: 'rgba(217, 28, 210, 0.2)',
-                  border: '1px solid rgba(217, 28, 210, 0.4)',
-                  color: '#D91CD2',
-                  backdropFilter: 'blur(10px)'
-                }}
-              >
-                Partenaire Afroboost
-              </div>
-              
-              {/* Bouton Réserver avec glow */}
+              {/* Bouton Réserver avec couleurs dynamiques (v9.4.6) */}
               <button
                 onClick={() => {
                   // Scroll vers les cours
@@ -741,9 +718,9 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                 }}
                 className="px-8 py-4 rounded-xl text-lg font-semibold transition-all hover:scale-105"
                 style={{
-                  background: 'linear-gradient(135deg, #D91CD2 0%, #8B5CF6 100%)',
+                  background: `linear-gradient(135deg, var(--primary-color, #D91CD2) 0%, var(--secondary-color, #8B5CF6) 100%)`,
                   color: 'white',
-                  boxShadow: '0 0 30px rgba(217, 28, 210, 0.5), 0 0 60px rgba(139, 92, 246, 0.3)',
+                  boxShadow: `0 0 30px var(--glow-color, rgba(217, 28, 210, 0.5)), 0 0 60px var(--glow-color-strong, rgba(139, 92, 246, 0.3))`,
                   border: '1px solid rgba(255,255,255,0.2)'
                 }}
                 data-testid="vitrine-cta-btn"
