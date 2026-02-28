@@ -707,6 +707,8 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
                 onTogglePause={() => handleTogglePause(partner.id || partner.email)}
                 onNavigate={handleNavigate}
                 isVisible={Math.abs(index - activeIndex) <= 1}
+                maintenanceMode={maintenanceMode}
+                isSuperAdmin={isSuperAdmin}
               />
             </div>
           ))
