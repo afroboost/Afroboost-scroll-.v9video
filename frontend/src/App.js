@@ -1895,7 +1895,7 @@ const SuccessOverlay = ({ t, data, onClose, onClearTicket }) => {
         
         {/* Action buttons - outside capture zone */}
         <div className="mt-4 space-y-3">
-          {/* Primary row: Save + Share WhatsApp side by side */}
+          {/* v9.4.3: Primary action - Enregistrer le ticket (priorité) */}
           <div className="flex gap-2">
             <button 
               onClick={handleSaveTicket} 
@@ -1907,24 +1907,24 @@ const SuccessOverlay = ({ t, data, onClose, onClearTicket }) => {
               }}
               data-testid="save-ticket-btn"
             >
-              {isGenerating ? t('generatingImage') : t('saveTicket')}
-            </button>
-            <button 
-              onClick={handleShareWhatsApp} 
-              disabled={isGenerating}
-              className="flex-1 p-3 rounded-lg font-semibold text-white transition-all"
-              style={{ 
-                background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
-                boxShadow: '0 0 15px rgba(37, 211, 102, 0.4)'
-              }}
-              data-testid="share-whatsapp-btn"
-            >
-              📤 Partager sur WhatsApp
+              {isGenerating ? t('generatingImage') : '📥 ' + t('saveTicket')}
             </button>
           </div>
           
-          {/* Secondary action: Print */}
-          <button onClick={handlePrint} className="w-full p-2 glass rounded-lg text-white text-sm">{t('print')}</button>
+          {/* v9.4.3: Secondary actions - Optionnelles (sans auto-redirect WhatsApp) */}
+          <div className="flex gap-2">
+            <button 
+              onClick={handleShareWhatsApp} 
+              disabled={isGenerating}
+              className="flex-1 p-2 rounded-lg text-sm text-white/70 hover:text-white transition-all glass"
+              data-testid="share-whatsapp-btn"
+            >
+              📤 Partager
+            </button>
+            <button onClick={handlePrint} className="flex-1 p-2 glass rounded-lg text-white/70 hover:text-white text-sm">
+              🖨️ {t('print')}
+            </button>
+          </div>
           
           {/* Bouton Fermer et effacer - supprime le ticket du localStorage */}
           {onClearTicket && (
