@@ -577,11 +577,11 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
         className="absolute top-0 left-0 right-0 z-20"
         style={{ 
           background: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)',
-          paddingTop: '8px'  // v9.5.6: Réduit à 8px
+          paddingTop: '4px'  // v9.5.6: Encore réduit à 4px
         }}
       >
-        {/* Ligne principale: Logo + Recherche - Marge réduite */}
-        <div className="flex items-center justify-between px-3 py-1">
+        {/* Ligne principale: Logo + Recherche - Marge minimale */}
+        <div className="flex items-center justify-between px-3 py-0.5">
           <div className="w-8"></div>
           
           {/* Logo centré (ou barre de recherche si activée) */}
