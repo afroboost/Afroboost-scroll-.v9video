@@ -2104,28 +2104,42 @@ function App() {
     const path = window.location.pathname;
     const hash = window.location.hash;
     const searchParams = new URLSearchParams(window.location.search);
+    // Aussi parser les params dans le hash (ex: #coach-dashboard?session_id=xxx)
+    const hashParams = new URLSearchParams(hash.split('?')[1] || '');
     
-    // === v9.1.2: DÉTECTION HASH #coach-dashboard (redirection après achat Stripe) ===
+    // === v9.1.3: PROPULSION AUTOMATIQUE #coach-dashboard (zéro clic après Stripe) ===
     if (hash.includes('coach-dashboard') || window.location.href.includes('coach-dashboard')) {
-      console.log('[APP] 🔄 v9.1.2 - Détection #coach-dashboard');
+      console.log('[APP] 🚀 v9.1.3 - Propulsion automatique #coach-dashboard');
+      
+      // Récupérer session_id Stripe si présent
+      const sessionId = searchParams.get('session_id') || hashParams.get('session_id');
+      const isWelcome = searchParams.get('welcome') === 'true' || hash.includes('welcome=true');
+      
+      if (sessionId) {
+        console.log('[APP] 💳 Session Stripe détectée:', sessionId);
+      }
+      
       const savedCoachUser = localStorage.getItem('afroboost_coach_user');
       
       if (savedCoachUser) {
-        // Coach déjà connecté → Activer immédiatement le dashboard
+        // Coach déjà connecté → PROPULSION IMMÉDIATE vers le dashboard
         try {
           const user = JSON.parse(savedCoachUser);
           setCoachUser(user);
           setCoachMode(true);
-          console.log('[APP] ✅ Dashboard coach activé pour:', user?.email);
-          // Vérifier si c'est un nouveau coach (welcome=true)
-          if (searchParams.get('welcome') === 'true' || hash.includes('welcome=true')) {
-            console.log('[APP] 🎉 Bienvenue nouveau coach!');
+          // Nettoyer l'URL pour éviter les boucles
+          window.history.replaceState({}, '', window.location.pathname);
+          console.log('[APP] ✅ PROPULSION: Dashboard coach activé pour:', user?.email);
+          if (isWelcome) {
+            console.log('[APP] 🎉 Bienvenue nouveau coach! Session:', sessionId);
           }
         } catch (e) {
+          console.error('[APP] Erreur parsing user:', e);
           setShowCoachLogin(true);
         }
       } else {
-        // Pas connecté → Ouvrir modal de connexion
+        // Pas connecté → Ouvrir modal de connexion (sera propulsé après login)
+        console.log('[APP] 🔐 Non connecté - Affichage modal connexion');
         setShowCoachLogin(true);
       }
       return;
