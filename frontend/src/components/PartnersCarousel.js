@@ -13,8 +13,8 @@ import axios from "axios";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
-// Vidéo par défaut Afroboost (fallback sécurité)
-const DEFAULT_VIDEO_URL = "https://www.youtube.com/watch?v=GRoUFFQr3uc";
+// v9.5.3: Vidéo par défaut Afroboost - Afrobeat Dance Workout (vidéo populaire 2025)
+const DEFAULT_VIDEO_URL = "https://www.youtube.com/watch?v=9ZvW8wnWcxE";
 
 // Logo Afroboost SVG compact
 const AfroboostLogo = () => (
