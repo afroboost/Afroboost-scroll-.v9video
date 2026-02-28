@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="7" time="1.112" timestamp="2026-02-28T19:39:17.260798+00:00" hostname="agent-env-925916c3-f319-47cc-a1b2-25af8594dfe2"><testcase classname="backend.tests.test_v940_chat_memory.TestChatSessionsAPI" name="test_health_check" time="0.130" /><testcase classname="backend.tests.test_v940_chat_memory.TestChatSessionsAPI" name="test_smart_entry_creates_session" time="0.111"><failure message="assert 400 == 200&#10; +  where 400 = &lt;Response [400]&gt;.status_code">backend/tests/test_v940_chat_memory.py:37: in test_smart_entry_creates_session
+    assert res.status_code == 200
+E   assert 400 == 200
+E    +  where 400 = &lt;Response [400]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_v940_chat_memory.TestChatSessionsAPI" name="test_get_session_messages_returns_array" time="0.105"><failure message="assert 400 == 200&#10; +  where 400 = &lt;Response [400]&gt;.status_code">backend/tests/test_v940_chat_memory.py:51: in test_get_session_messages_returns_array
+    assert create_res.status_code == 200
+E   assert 400 == 200
+E    +  where 400 = &lt;Response [400]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_v940_chat_memory.TestSocketIOEndpoints" name="test_socket_io_accessible" time="0.102" /><testcase classname="backend.tests.test_v940_chat_memory.TestGroupMessagesAPI" name="test_get_group_messages" time="0.112" /><testcase classname="backend.tests.test_v940_chat_memory.TestPrivateConversationsAPI" name="test_get_private_conversations" time="0.100"><failure message="assert 405 in [200, 404]&#10; +  where 405 = &lt;Response [405]&gt;.status_code">backend/tests/test_v940_chat_memory.py:98: in test_get_private_conversations
+    assert res.status_code in [200, 404]
+E   assert 405 in [200, 404]
+E    +  where 405 = &lt;Response [405]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_v940_chat_memory.TestV940FeaturesCodeReview" name="test_api_endpoints_structure" time="0.374" /></testsuite></testsuites>
