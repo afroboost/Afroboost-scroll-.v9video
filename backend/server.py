@@ -367,6 +367,12 @@ try:
     os.makedirs(UPLOADS_DIR, exist_ok=True)
     fastapi_app.mount("/api/uploads/profiles", StaticFiles(directory=UPLOADS_DIR), name="profile_photos")
     logger.info(f"[UPLOADS] Dossier photos de profil monté: {UPLOADS_DIR}")
+    
+    # v9.3.1: Monter le dossier d'uploads des coaches (isolé par coach_id)
+    COACHES_UPLOADS_DIR = "/app/backend/uploads/coaches"
+    os.makedirs(COACHES_UPLOADS_DIR, exist_ok=True)
+    fastapi_app.mount("/api/uploads/coaches", StaticFiles(directory=COACHES_UPLOADS_DIR), name="coach_assets")
+    logger.info(f"[UPLOADS] Dossier assets coaches monté: {COACHES_UPLOADS_DIR}")
 except Exception as e:
     logger.warning(f"[UPLOADS] Impossible de monter le dossier: {e}")
 
