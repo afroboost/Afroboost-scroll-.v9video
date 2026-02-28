@@ -1,5 +1,52 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.9 - PROPULSION TOTALE & VISIBILITÉ CRÉDITS ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.1.9 COMPLÈTE
+
+| Critère | Validation |
+|---------|------------|
+| Propulsion zéro clic | ✅ **Dashboard direct si déjà authentifié** |
+| Badge crédits visible | ✅ **"💰 Solde : X Crédits" violet néon #D91CD2** |
+| Badge Super Admin | ✅ **"👑 Crédits Illimités"** |
+| Modularisation auth | ✅ **routes/auth_routes.py créé (232 lignes)** |
+| server.py allégé | ✅ **6257 lignes** (était 6436, -180 lignes) |
+| Non-régression | **7 réservations ✅** |
+| Sessions Mars | **04.03, 11.03, 18.03, 25.03 ✅** |
+| Tests | **9/9 pytest + 4 Playwright ✅** |
+
+### Propulsion Zéro Clic v9.1.9
+
+| URL | Utilisateur | Action |
+|-----|-------------|--------|
+| `?success=true&session_id=xxx` | Déjà authentifié | Dashboard IMMÉDIAT (pas de modal) |
+| `?success=true&session_id=xxx` | Non connecté | Modal "🎉 Paiement validé ! Bienvenue Partenaire" |
+
+### Badge Crédits v9.1.9
+
+| Rôle | Affichage | Couleur |
+|------|-----------|---------|
+| Partenaire (crédits >= 5) | "💰 Solde : X Crédits" | Violet néon #D91CD2 |
+| Partenaire (crédits < 5) | "💰 Solde : X Crédits" | Rouge #ef4444 |
+| Super Admin | "👑 Crédits Illimités" | Violet néon #D91CD2 |
+
+### Modularisation Backend v9.1.9
+
+| Fichier | Lignes | Routes |
+|---------|--------|--------|
+| routes/auth_routes.py | 232 | /auth/google/session, /auth/me, /auth/logout |
+| routes/coach_routes.py | existant | /coach/*, /partner/* |
+| routes/campaign_routes.py | existant | /campaigns/* |
+| routes/reservation_routes.py | existant | /reservations/* |
+| server.py | 6257 | Core API (objectif < 6000) |
+
+### Tests v9.1.9 - Iteration 82
+- Backend: **9/9 pytest ✅**
+- Frontend: **4/4 Playwright ✅**
+- Features: **100% ✅**
+
+---
+
 ## v9.1.8 - DASHBOARD MIROIR ET PROPULSION VERROUILLÉS ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.1.8 COMPLÈTE - MIROIR ABSOLU
