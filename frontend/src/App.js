@@ -37,8 +37,18 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 // Configuration Admin - Vercel Compatible
-const ADMIN_EMAIL = 'contact.artboost@gmail.com';
+// v9.5.6: Liste des Super Admins autorisés
+const SUPER_ADMIN_EMAILS = ['contact.artboost@gmail.com', 'afroboost.bassi@gmail.com'];
+const ADMIN_EMAIL = 'contact.artboost@gmail.com'; // Legacy
 const APP_VERSION = '2.0.0';
+
+// v9.5.6: Helper pour vérifier si un email est Super Admin
+const isSuperAdminEmail = (email) => {
+  if (!email) return false;
+  return SUPER_ADMIN_EMAILS.some(adminEmail => 
+    email.toLowerCase().trim() === adminEmail.toLowerCase()
+  );
+};
 
 // v9.2.4: DÉTECTION IMMÉDIATE PROPULSION STRIPE (avant tout rendu) - MÉMOIRE MORTE
 // Cette logique s'exécute AVANT React pour capturer l'intention de redirection
