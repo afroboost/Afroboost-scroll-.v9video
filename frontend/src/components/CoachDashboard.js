@@ -343,6 +343,52 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // === PANNEAU SUPER ADMIN ===
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   
+  // === v9.2.7: QUICK CONTROL - Interrupteurs minimalistes Super Admin ===
+  const [showQuickControl, setShowQuickControl] = useState(false);
+  const [platformSettings, setPlatformSettings] = useState({
+    partner_access_enabled: true,
+    maintenance_mode: false
+  });
+  const quickControlRef = useRef(null);
+  
+  // v9.2.7: Charger les settings plateforme au démarrage
+  useEffect(() => {
+    if (isSuperAdmin && safeCoachUser?.email) {
+      axios.get(`${API}/platform-settings`, { headers: { 'X-User-Email': safeCoachUser.email } })
+        .then(res => setPlatformSettings(res.data))
+        .catch(err => console.log('[SETTINGS] Error loading:', err));
+    }
+  }, [isSuperAdmin, safeCoachUser?.email]);
+  
+  // v9.2.7: Toggle setting avec feedback visuel
+  const togglePlatformSetting = async (key) => {
+    const newValue = !platformSettings[key];
+    setPlatformSettings(prev => ({ ...prev, [key]: newValue }));
+    
+    try {
+      await axios.put(`${API}/platform-settings`, 
+        { [key]: newValue },
+        { headers: { 'X-User-Email': safeCoachUser?.email } }
+      );
+      console.log(`[SETTINGS] ${key} toggled to ${newValue}`);
+    } catch (err) {
+      // Rollback on error
+      setPlatformSettings(prev => ({ ...prev, [key]: !newValue }));
+      console.error('[SETTINGS] Toggle error:', err);
+    }
+  };
+  
+  // v9.2.7: Fermer Quick Control si clic extérieur
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (quickControlRef.current && !quickControlRef.current.contains(e.target)) {
+        setShowQuickControl(false);
+      }
+    };
+    if (showQuickControl) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showQuickControl]);
+  
   // === STRIPE CONNECT v8.9.3 (uniquement pour les coachs, pas Bassi) ===
   const [stripeConnectStatus, setStripeConnectStatus] = useState(null);
   const [stripeConnectLoading, setStripeConnectLoading] = useState(false);
