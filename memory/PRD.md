@@ -1,5 +1,46 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.6 - PARCOURS RÉEL & VITRINE MIROIR ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.6 COMPLÈTE - "PARCOURS PARTENAIRE RÉPARÉ ET VITRINE MIROIR ACTIVÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| Connexion via Chat (Identité Unique) | ✅ |
+| Redirection Post-Achat (Zéro Accueil) | ✅ |
+| Vitrine & Dashboard Miroir | ✅ |
+| Anti-Régression (7 réservations Bassi) | ✅ |
+
+### Modifications v9.2.6
+
+| Fichier | Modification |
+|---------|--------------|
+| backend/server.py | Ligne 2069: `COACH_DASHBOARD_URL = "https://afroboost.com/#partner-dashboard"` |
+| ChatWidget.js | Lignes 3384-3418: Bouton "Accéder à mon Dashboard" pour partenaires inscrits |
+
+### Fonctionnalités v9.2.6
+
+| Fonctionnalité | Description |
+|----------------|-------------|
+| Bouton Dashboard Chat | Menu utilisateur du chat affiche "Accéder à mon Dashboard" si `isRegisteredCoach \|\| isCoachMode` |
+| Redirection Stripe | `success_url` pointe vers `https://afroboost.com/#partner-dashboard?success=true&auth=success` |
+| Auto-Login Modal | Si accès à `#partner-dashboard` sans être connecté → modal Google Login auto-ouvert |
+| Design Miroir Vitrine | `/coach/:username` utilise couleurs Afroboost (#D91CD2) et animations identiques |
+
+### Tests v9.2.6 - Iteration 89
+- Backend: **100%** ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi (04/03/2026)** ✅
+
+### Vérifications Clés v9.2.6
+- Page d'accueil: 4 dates de mars (04.03, 11.03, 18.03, 25.03) à 18:30
+- Chat widget: Bouton "Devenir Partenaire" ouvre inscription avec 3 packs
+- Hash detection: `#partner-dashboard` ouvre modal connexion Google si non connecté
+- API: 7 réservations Bassi visibles
+- Vitrine: Couleurs #D91CD2 et design Afroboost
+
+---
+
 ## v9.2.5 - RÉPARATION VISUELLE FORCÉE & BRANCHEMENT RÉEL ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.5 COMPLÈTE
