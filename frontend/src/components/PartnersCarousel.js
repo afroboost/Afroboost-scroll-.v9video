@@ -323,20 +323,22 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
             <SoundIcon muted={isMuted} />
           </button>
           
-          {/* Bouton Réserver COMPACT - Bas droite */}
-          <button
-            onClick={handleReserve}
-            className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105"
-            style={{
-              background: 'var(--primary-color, #D91CD2)',
-              color: 'white',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
-            }}
-            data-testid={`reserve-btn-${partner.id || partner.email}`}
-          >
-            <CalendarIcon />
-            <span>Réserver</span>
-          </button>
+          {/* Bouton Réserver COMPACT - Bas droite - v9.5.7: Masqué en maintenance */}
+          {!isBlocked && (
+            <button
+              onClick={handleReserve}
+              className="absolute bottom-3 right-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105"
+              style={{
+                background: 'var(--primary-color, #D91CD2)',
+                color: 'white',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+              }}
+              data-testid={`reserve-btn-${partner.id || partner.email}`}
+            >
+              <CalendarIcon />
+              <span>Réserver</span>
+            </button>
+          )}
           
           {/* === BLOC BAS GAUCHE: Photo + Like + Nom + Bio === */}
           <div 
