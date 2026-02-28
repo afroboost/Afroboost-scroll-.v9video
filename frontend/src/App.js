@@ -2824,19 +2824,21 @@ function App() {
     console.log("✅ Favicon unique mis à jour:", newFaviconUrl);
   }, []);
 
+  // v9.3.8: Favicon par défaut Afroboost
+  const DEFAULT_FAVICON_URL = 'https://i.ibb.co/4Z7q3Tvw/file-000000005c1471f4bc77c9174753b16b.png';
+
   // Update favicon when faviconUrl changes (priority)
   useEffect(() => {
     if (concept.faviconUrl && concept.faviconUrl.trim() !== '') {
       updateAllFavicons(concept.faviconUrl);
-    }
-  }, [concept.faviconUrl, updateAllFavicons]);
-
-  // Update favicon when logoUrl changes (fallback if no faviconUrl)
-  useEffect(() => {
-    if (concept.logoUrl && concept.logoUrl.trim() !== '' && (!concept.faviconUrl || concept.faviconUrl.trim() === '')) {
+    } else if (concept.logoUrl && concept.logoUrl.trim() !== '') {
+      // Fallback vers logoUrl si pas de faviconUrl
       updateAllFavicons(concept.logoUrl);
+    } else {
+      // Fallback vers le favicon Afroboost par défaut
+      updateAllFavicons(DEFAULT_FAVICON_URL);
     }
-  }, [concept.logoUrl, concept.faviconUrl, updateAllFavicons]);
+  }, [concept.faviconUrl, concept.logoUrl, updateAllFavicons]);
 
   // Scroll vers la section par défaut au chargement (si configuré par le coach)
   useEffect(() => {
