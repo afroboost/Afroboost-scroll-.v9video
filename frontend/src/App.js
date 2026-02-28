@@ -2246,14 +2246,14 @@ function App() {
           console.log('[APP] ✅ PROPULSION PARTENAIRE: Dashboard activé pour:', user?.email);
         } catch (e) {
           console.error('[APP] Erreur parsing user:', e);
+          setLoginWelcomeMessage("🎉 Paiement réussi ! Connectez-vous pour accéder à votre espace.");
           setShowCoachLogin(true);
-          setValidationMessage("🎉 Paiement réussi ! Connectez-vous pour accéder à votre espace.");
         }
       } else {
         // Pas connecté → Ouvrir modal de connexion avec message de bienvenue
         console.log('[APP] 🔐 Paiement réussi mais non connecté - Affichage modal connexion');
+        setLoginWelcomeMessage("🎉 Paiement réussi ! Connectez-vous pour accéder à votre espace partenaire.");
         setShowCoachLogin(true);
-        setValidationMessage("🎉 Paiement réussi ! Connectez-vous pour accéder à votre espace partenaire.");
         cleanUrl();
       }
     }
