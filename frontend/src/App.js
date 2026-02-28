@@ -3734,14 +3734,16 @@ function App() {
         />
       )}
 
-      {/* v9.5.2: Flux Reels pleine hauteur - Mobile first */}
-      <PartnersCarousel 
-        onPartnerClick={(partner) => {
-          const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
-          window.location.href = `/coach/${username}`;
-        }}
-        onSearch={() => setShowCoachSearch(true)}
-      />
+      {/* v9.5.4: Flux Reels PLEIN ÉCRAN - Mobile first (suppression des éléments en trop) */}
+      <div className="fixed inset-0 z-10" style={{ background: '#000000' }}>
+        <PartnersCarousel 
+          onPartnerClick={(partner) => {
+            const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
+            window.location.href = `/coach/${username}`;
+          }}
+          onSearch={() => setShowCoachSearch(true)}
+        />
+      </div>
       
       {/* Contenu principal avec marges */}
       <div className="max-w-4xl mx-auto px-4">
