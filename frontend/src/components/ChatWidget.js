@@ -800,8 +800,16 @@ export const ChatWidget = () => {
   const [messageCount, setMessageCount] = useState(0); // Compteur de messages pour prompt notif
   const [pushEnabled, setPushEnabled] = useState(false);
   const [isCoachMode, setIsCoachMode] = useState(() => {
-    // Vérifier si c'est le coach IMMÉDIATEMENT
+    // v9.1.5: Vérifier si c'est un coach connecté (pas seulement Bassi)
     try {
+      // 1. Vérifier d'abord le flag de session coach global
+      const coachModeFlag = localStorage.getItem('afroboost_coach_mode');
+      const coachUser = localStorage.getItem('afroboost_coach_user');
+      if (coachModeFlag === 'true' && coachUser) {
+        return true;
+      }
+      
+      // 2. Fallback: vérifier l'identité du chat
       const savedIdentity = localStorage.getItem(AFROBOOST_IDENTITY_KEY);
       const savedClient = localStorage.getItem(CHAT_CLIENT_KEY);
       if (savedIdentity || savedClient) {
