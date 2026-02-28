@@ -838,7 +838,9 @@ export const ChatWidget = () => {
       const savedClient = localStorage.getItem(CHAT_CLIENT_KEY);
       if (savedIdentity || savedClient) {
         const data = JSON.parse(savedIdentity || savedClient);
-        return data?.email?.toLowerCase() === 'contact.artboost@gmail.com';
+        const email = data?.email?.toLowerCase();
+        // v9.5.6: Liste des Super Admins
+        return email === 'contact.artboost@gmail.com' || email === 'afroboost.bassi@gmail.com';
       }
     } catch (e) {}
     return false;
