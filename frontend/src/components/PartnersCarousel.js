@@ -182,20 +182,20 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
       }}
       data-testid={`partner-card-${partner.id || partner.email}`}
     >
-      {/* v9.5.6: Container vidéo optimisé - Prend PLUS de place sur mobile */}
+      {/* v9.5.6: Container vidéo optimisé - Prend MAXIMUM de place sur mobile */}
       <div 
         className="relative w-full h-full flex items-center justify-center"
-        style={{ padding: '50px 8px 16px 8px' }}  // 50px top pour le header
+        style={{ padding: '50px 8px 60px 8px' }}  // 50px top pour le header, 60px bottom pour overlay
       >
         <div 
           className="relative w-full"
           style={{
-            aspectRatio: '16/9',
-            maxHeight: '85%',  // v9.5.6: Augmenté de 70% à 85%
+            aspectRatio: '9/16',  // v9.5.6: Format 9:16 pour max de place en mode portrait
+            maxHeight: '95%',  // v9.5.6: Augmenté à 95%
             maxWidth: '100%'
           }}
         >
-          {/* === VIDÉO/IMAGE - Format 16:9 strict avec LAZY LOADING === */}
+          {/* === VIDÉO/IMAGE - Format 9:16 avec LAZY LOADING === */}
           <div 
             className="absolute inset-0 overflow-hidden cursor-pointer"
             style={{ borderRadius: '16px' }}
