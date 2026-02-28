@@ -1198,13 +1198,117 @@ const CampaignManager = ({
           )}
         </div>
         
-        {/* Message */}
+        {/* === v9.4.1: DOUBLE CASE - OBJECTIF & MESSAGE === */}
+        {/* Case 1: Objectif/Prompt de campagne */}
+        <div className="mb-4 p-4 rounded-xl glass border border-yellow-500/30">
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-white text-sm font-medium flex items-center gap-2">
+              🎯 Objectif de la campagne
+              <span className="text-xs text-yellow-400 font-normal">(pour l'IA)</span>
+            </label>
+          </div>
+          <textarea 
+            value={campaignGoal} 
+            onChange={e => setCampaignGoal(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg neon-input text-sm" 
+            rows={2}
+            placeholder="Ex: Ton motivant pour le cours de dimanche. / Relance clients inactifs avec promo -20%."
+            data-testid="campaign-goal-input"
+          />
+          <p className="text-xs text-white/50 mt-1">
+            Décrivez l'objectif de votre message. L'IA utilisera ce prompt pour générer des suggestions.
+          </p>
+        </div>
+        
+        {/* Case 2: Message avec bouton IA */}
         <div className="mb-4">
-          <label className="block mb-2 text-white text-sm">Message</label>
-          <textarea required value={newCampaign.message} onChange={e => setNewCampaign({...newCampaign, message: e.target.value})}
-            className="w-full px-4 py-3 rounded-lg neon-input" rows={4}
-            placeholder="Salut {prénom} ! 🎉&#10;&#10;Profite de notre offre spéciale..." />
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <label className="text-white text-sm font-medium">📝 Message final</label>
+            <button
+              type="button"
+              onClick={generateAiSuggestions}
+              disabled={aiSuggestionsLoading}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+              style={{
+                background: aiSuggestionsLoading ? 'rgba(147, 51, 234, 0.2)' : 'linear-gradient(135deg, #9333ea, #6366f1)',
+                color: '#fff',
+                opacity: aiSuggestionsLoading ? 0.7 : 1
+              }}
+              data-testid="ai-suggest-btn"
+            >
+              {aiSuggestionsLoading ? (
+                <>⏳ Génération...</>
+              ) : (
+                <>🤖 Suggérer avec l'IA</>
+              )}
+            </button>
+          </div>
+          
+          <textarea 
+            required 
+            value={newCampaign.message} 
+            onChange={e => setNewCampaign({...newCampaign, message: e.target.value})}
+            className="w-full px-4 py-3 rounded-lg neon-input" 
+            rows={4}
+            placeholder="Salut {prénom} ! 🎉&#10;&#10;Profite de notre offre spéciale..."
+            data-testid="campaign-message-input"
+          />
           <p className="text-xs text-purple-400 mt-1">Variables disponibles: {'{prénom}'} - sera remplacé par le nom du contact</p>
+          
+          {/* === v9.4.1: Panneau des suggestions IA === */}
+          {showAiSuggestions && (
+            <div className="mt-3 p-4 rounded-lg bg-purple-900/30 border border-purple-500/40">
+              <div className="flex items-center justify-between mb-3">
+                <h5 className="text-white text-sm font-medium flex items-center gap-2">
+                  ✨ Suggestions IA
+                  {aiSuggestions.length > 0 && (
+                    <span className="text-xs text-purple-400">({aiSuggestions.length} variantes)</span>
+                  )}
+                </h5>
+                <button
+                  type="button"
+                  onClick={() => setShowAiSuggestions(false)}
+                  className="text-white/50 hover:text-white text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              {aiSuggestionsLoading ? (
+                <div className="flex items-center justify-center py-6">
+                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-500 border-t-transparent"></div>
+                  <span className="ml-3 text-white/70 text-sm">L'IA génère des suggestions...</span>
+                </div>
+              ) : aiSuggestions.length > 0 ? (
+                <div className="space-y-3">
+                  {aiSuggestions.map((suggestion, idx) => (
+                    <div 
+                      key={idx}
+                      className="p-3 rounded-lg bg-black/40 border border-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer"
+                      onClick={() => insertSuggestion(suggestion.text)}
+                      data-testid={`ai-suggestion-${idx}`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                          suggestion.type === 'Promo' ? 'bg-green-500/30 text-green-400' :
+                          suggestion.type === 'Relance' ? 'bg-orange-500/30 text-orange-400' :
+                          'bg-blue-500/30 text-blue-400'
+                        }`}>
+                          {suggestion.type === 'Promo' ? '🔥' : suggestion.type === 'Relance' ? '👋' : '📢'} {suggestion.type}
+                        </span>
+                        <span className="text-xs text-white/40">Cliquez pour insérer</span>
+                      </div>
+                      <p className="text-white/80 text-sm whitespace-pre-wrap">{suggestion.text}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-white/50 text-sm text-center py-4">
+                  Aucune suggestion générée. Cliquez sur "Suggérer avec l'IA".
+                </p>
+              )}
+            </div>
+          )}
         </div>
         
         {/* === MÉDIA & CTA === */}
