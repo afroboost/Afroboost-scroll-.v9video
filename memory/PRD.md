@@ -1,5 +1,42 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.6 - SYSTÈME PARTENAIRE ET CONTRÔLE TOTAL ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.1.6 COMPLÈTE
+
+| Critère | Validation |
+|---------|------------|
+| Rebranding "Partenaire" | ✅ **ChatWidget, Vitrine, Dashboard** |
+| Super Admin bypass | ✅ **Voit TOUT (contacts, campagnes, réservations)** |
+| Crédits illimités | ✅ **"👑 Crédits Illimités" pour Bassi** |
+| Non-régression | **7 réservations ✅** |
+| server.py | **6436 lignes** (< 6500) |
+| Tests | **11/11 ✅** |
+
+### Accomplissements v9.1.6
+
+| Feature | Description |
+|---------|-------------|
+| Rebranding ChatWidget | "Devenir Coach Partenaire" → "Devenir Partenaire" |
+| Rebranding Vitrine | "Coach Partenaire Afroboost" → "Partenaire Afroboost" |
+| Rebranding Dashboard | "Mon Espace Afroboost" → "Mon Espace Partenaire" |
+| Badge Super Admin | "⭐ Super Admin" → "👑 Crédits Illimités" |
+| Bypass coach_id | Super Admin voit TOUTES les données (réservations, contacts, campagnes) |
+
+### Tests v9.1.6 - Iteration 78
+- Backend: **11/11 ✅**
+- Frontend: **100% ✅**
+- Cours Mars: **INTACTS** (04.03, 11.03, 18.03, 25.03)
+- Sunday Vibes: **INTACTS** (01.03, 08.03, 15.03, 22.03)
+
+### Bypass Super Admin vérifié
+- `is_super_admin()` identifie `contact.artboost@gmail.com`
+- `get_coach_filter()` retourne `{}` pour Super Admin
+- `check_credits()` retourne `{unlimited: true}` pour Super Admin
+- Toutes les routes filtrées (réservations, contacts, campagnes) bypassed
+
+---
+
 ## v9.1.5 - BRANCHEMENT RÉEL ET VITRINE MIROIR ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.1.5 COMPLÈTE
