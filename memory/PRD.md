@@ -1,5 +1,65 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.1 - ÉPURE TOTALE, LOGO ET FIX COULEURS ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.5.1 COMPLÈTE - "DESIGN ÉPURÉ ET PERSONNALISATION RÉPARÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| Logo Afroboost au centre + Recherche | ✅ |
+| Bouton Réserver compact (50%) | ✅ |
+| 1 clic = pause, 2 clics = vitrine | ✅ |
+| Fix couleurs + bouton sauvegarde | ✅ |
+
+### 1. HEADER MOBILE-FIRST
+
+```jsx
+<div data-testid="afroboost-logo">
+  <AfroboostLogo />
+  <span>Afroboost</span>
+</div>
+<button data-testid="search-btn"><SearchIcon /></button>
+```
+
+**Layout:**
+- Logo Afroboost SVG au centre (gradient rose/violet)
+- Icône Recherche (loupe) en haut à droite
+- Background dégradé noir transparent
+
+### 2. INTERACTIONS VIDEO
+
+| Action | Comportement | Code |
+|--------|--------------|------|
+| 1 clic | Play/Pause (indicateur Play visible) | handleVideoClick avec 300ms |
+| 2 clics (<300ms) | Navigation → /coach/{username} | duplicate prevention |
+
+**Bouton "Réserver" compact:**
+```jsx
+<button className="px-3 py-1.5 text-xs" data-testid="reserve-btn-{id}">
+  <CalendarIcon /> Réserver
+</button>
+```
+
+### 3. FIX PERSONNALISATION COULEURS
+
+**Nouveau bouton sauvegarde manuelle:**
+```jsx
+<button data-testid="save-colors-btn" onClick={saveConcept}>
+  💾 Sauvegarder
+</button>
+```
+
+**Indicateur auto-save:**
+- `⏳ Sauvegarde...` (en cours)
+- `✓ Sauvegardé` (succès)
+- `⚠️ Erreur` (échec)
+
+### Tests v9.5.1 - Iteration 109
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Chat violet, Retour au Flux, Mars dates** ✅
+
+---
+
 ## v9.5.0 - AUTONOMIE PARTENAIRE ET SOLDE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.5.0 COMPLÈTE - "AUTONOMIE PARTENAIRE ET SOLDE OPÉRATIONNELS"
