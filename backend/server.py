@@ -2294,17 +2294,17 @@ async def create_coach_checkout(request: Request):
 @api_router.get("/concept", response_model=Concept)
 async def get_concept(request: Request):
     user_email = request.headers.get('X-User-Email', '').lower().strip()
-    is_super_admin = user_email == "contact.artboost@gmail.com"
+    is_admin = is_super_admin(user_email)  # v9.5.6
     
     # Super Admin: concept global, Coach: concept personnel
-    concept_id = "concept" if is_super_admin else f"concept_{user_email}"
+    concept_id = "concept" if is_admin else f"concept_{user_email}"
     
     concept = await db.concept.find_one({"id": concept_id}, {"_id": 0})
     if not concept:
         # Créer un concept par défaut pour ce coach
         default_concept = Concept().model_dump()
         default_concept["id"] = concept_id
-        default_concept["coach_id"] = user_email if not is_super_admin else None
+        default_concept["coach_id"] = user_email if not is_admin else None
         await db.concept.insert_one(default_concept)
         return default_concept
     return concept
@@ -2312,14 +2312,14 @@ async def get_concept(request: Request):
 @api_router.put("/concept")
 async def update_concept(concept: ConceptUpdate, request: Request):
     user_email = request.headers.get('X-User-Email', '').lower().strip()
-    is_super_admin = user_email == "contact.artboost@gmail.com"
+    is_admin = is_super_admin(user_email)  # v9.5.6
     
     # Super Admin: concept global, Coach: concept personnel
-    concept_id = "concept" if is_super_admin else f"concept_{user_email}"
+    concept_id = "concept" if is_admin else f"concept_{user_email}"
     
     try:
         updates = {k: v for k, v in concept.model_dump().items() if v is not None}
-        updates["coach_id"] = user_email if not is_super_admin else None
+        updates["coach_id"] = user_email if not is_admin else None
         result = await db.concept.update_one({"id": concept_id}, {"$set": updates}, upsert=True)
         updated = await db.concept.find_one({"id": concept_id}, {"_id": 0})
         return updated
