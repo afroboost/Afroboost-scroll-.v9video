@@ -873,19 +873,20 @@ const CampaignManager = ({
             {/* Test Area */}
             <div className="p-3 rounded-lg bg-purple-900/20 border border-purple-500/20">
               <p className="text-xs text-white/70 mb-2"><strong>🧪 Tester l'IA</strong></p>
-              <div className="flex gap-2">
+              {/* v9.3.8: Fix mobile avec flex-wrap */}
+              <div className="flex flex-wrap gap-2">
                 <input 
                   type="text"
                   value={aiTestMessage}
                   onChange={e => setAiTestMessage(e.target.value)}
-                  className="flex-1 px-3 py-2 rounded-lg neon-input text-sm"
+                  className="flex-1 min-w-0 px-3 py-2 rounded-lg neon-input text-sm"
                   placeholder="Ex: Quels sont les horaires des cours ?"
                 />
                 <button 
                   type="button"
                   onClick={handleTestAI}
                   disabled={aiTestLoading}
-                  className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm disabled:opacity-50 flex-shrink-0"
                 >
                   {aiTestLoading ? '⏳' : '🤖 Tester'}
                 </button>
