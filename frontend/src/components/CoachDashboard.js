@@ -351,21 +351,24 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   // Helper: crédits insuffisants (pour info, mais plus de grisage v9.1.3)
   const hasInsufficientCredits = !isSuperAdmin && coachCredits !== null && coachCredits !== -1 && coachCredits <= 0;
 
-  // Charger profil coach (crédits + username + platform_name) au démarrage
+  // v9.2.4: Charger profil coach avec protection try-catch complète
   useEffect(() => {
-    if (coachUser?.email) {
-      axios.get(`${BACKEND_URL}/api/coach/profile`, {
-        headers: { 'X-User-Email': coachUser.email }
-      }).then(res => {
-        setCoachCredits(res.data?.credits ?? 0);
-        // v8.9.9: Récupérer username pour vitrine
-        const username = res.data?.name?.toLowerCase().replace(/\s+/g, '-') || res.data?.id || coachUser.email.split('@')[0];
-        setCoachUsername(isSuperAdmin ? 'bassi' : username);
-        // v9.1.3: Récupérer platform_name pour marque blanche
-        setCoachPlatformName(res.data?.platform_name || null);
-      }).catch((err) => {
-        // v9.2.2: Amélioration gestion erreur - dashboard s'affiche même si profil inexistant
-        console.warn('[COACH] Profil non trouvé ou erreur, utilisation des valeurs par défaut:', err?.response?.status);
+    const loadProfile = async () => {
+      try {
+        if (safeCoachUser?.email) {
+          const res = await axios.get(`${BACKEND_URL}/api/coach/profile`, {
+            headers: { 'X-User-Email': safeCoachUser.email }
+          });
+          setCoachCredits(res.data?.credits ?? 0);
+          // v8.9.9: Récupérer username pour vitrine
+          const username = res.data?.name?.toLowerCase().replace(/\s+/g, '-') || res.data?.id || safeCoachUser.email.split('@')[0];
+          setCoachUsername(isSuperAdmin ? 'bassi' : username);
+          // v9.1.3: Récupérer platform_name pour marque blanche
+          setCoachPlatformName(res.data?.platform_name || null);
+        }
+      } catch (err) {
+        // v9.2.4: FORCE AFFICHAGE - Dashboard s'affiche TOUJOURS même si profil inexistant
+        console.warn('[COACH] v9.2.4 Profil non trouvé, utilisation des valeurs par défaut:', err?.response?.status || err?.message);
         // Pour Super Admin: crédits illimités
         if (isSuperAdmin) {
           setCoachCredits(-1);
@@ -374,12 +377,13 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
         } else {
           // Pour les partenaires: valeurs par défaut (pas de blocage)
           setCoachCredits(0);
-          setCoachUsername(coachUser.name?.toLowerCase().replace(/\s+/g, '-') || coachUser.email.split('@')[0]);
+          setCoachUsername(safeCoachUser?.name?.toLowerCase().replace(/\s+/g, '-') || safeCoachUser?.email?.split('@')[0] || 'partenaire');
           setCoachPlatformName(null);
         }
-      });
-    }
-  }, [coachUser?.email, coachUser?.name, isSuperAdmin]);
+      }
+    };
+    loadProfile();
+  }, [safeCoachUser?.email, safeCoachUser?.name, isSuperAdmin]);
 
   // Vérifier le statut Stripe Connect au chargement (pour les coachs seulement)
   useEffect(() => {
