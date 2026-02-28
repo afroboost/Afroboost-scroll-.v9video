@@ -665,6 +665,115 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
           </div>
         </div>
       </div>
+      
+      {/* v9.2.8: Modal de réservation */}
+      {showBookingModal && selectedBooking && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.85)' }}
+          onClick={() => setShowBookingModal(false)}
+        >
+          <div 
+            className="rounded-xl p-6 w-full max-w-md"
+            style={{
+              background: 'linear-gradient(180deg, rgba(20,10,30,0.98) 0%, rgba(10,5,20,0.99) 100%)',
+              border: '1px solid rgba(217, 28, 210, 0.4)',
+              boxShadow: '0 0 40px rgba(217, 28, 210, 0.2)'
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-white">📅 Réservation</h3>
+              <button 
+                onClick={() => setShowBookingModal(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10"
+              >
+                ✕
+              </button>
+            </div>
+            
+            {bookingSuccess ? (
+              <div className="text-center py-8">
+                <div className="text-5xl mb-4">✅</div>
+                <h4 className="text-xl font-bold text-white mb-2">Réservation confirmée !</h4>
+                <p className="text-white/60">Vous recevrez une confirmation par email.</p>
+              </div>
+            ) : (
+              <>
+                {/* Détails cours */}
+                <div 
+                  className="rounded-lg p-4 mb-6"
+                  style={{ background: 'rgba(217, 28, 210, 0.1)', border: '1px solid rgba(217, 28, 210, 0.2)' }}
+                >
+                  <p className="text-white font-semibold">{selectedBooking.course.name || selectedBooking.course.title}</p>
+                  <p className="text-purple-400 text-sm mt-1">
+                    {selectedBooking.date.toLocaleDateString('fr-CH', { weekday: 'long', day: '2-digit', month: 'long' })}
+                    {' • '}{selectedBooking.course.time}
+                  </p>
+                </div>
+                
+                {/* Formulaire */}
+                <form onSubmit={handleBookingSubmit} className="space-y-4">
+                  <div>
+                    <label className="text-white/60 text-xs mb-1 block">Nom complet</label>
+                    <input
+                      type="text"
+                      required
+                      value={bookingForm.name}
+                      onChange={e => setBookingForm(prev => ({ ...prev, name: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-lg text-white"
+                      style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+                      placeholder="Votre nom"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-white/60 text-xs mb-1 block">Email</label>
+                    <input
+                      type="email"
+                      required
+                      value={bookingForm.email}
+                      onChange={e => setBookingForm(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-lg text-white"
+                      style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+                      placeholder="email@example.com"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-white/60 text-xs mb-1 block">WhatsApp</label>
+                    <input
+                      type="tel"
+                      required
+                      value={bookingForm.whatsapp}
+                      onChange={e => setBookingForm(prev => ({ ...prev, whatsapp: e.target.value }))}
+                      className="w-full px-4 py-3 rounded-lg text-white"
+                      style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}
+                      placeholder="+41 79 XXX XX XX"
+                    />
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    disabled={bookingLoading}
+                    className="w-full py-4 rounded-xl text-white font-semibold transition-all hover:scale-[1.02]"
+                    style={{
+                      background: bookingLoading 
+                        ? 'rgba(139, 92, 246, 0.5)' 
+                        : 'linear-gradient(135deg, #8b5cf6 0%, #d91cd2 100%)',
+                      boxShadow: '0 0 20px rgba(217, 28, 210, 0.3)'
+                    }}
+                    data-testid="confirm-booking-btn"
+                  >
+                    {bookingLoading ? 'Réservation en cours...' : '✓ Confirmer la réservation'}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
