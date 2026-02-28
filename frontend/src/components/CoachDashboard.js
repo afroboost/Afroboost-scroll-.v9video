@@ -447,6 +447,55 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
     loadProfile();
   }, [safeCoachUser?.email, safeCoachUser?.name, isSuperAdmin]);
 
+  // === v9.5.8: FONCTION DÉDUCTION CRÉDITS ===
+  // Déduit 1 crédit et affiche message si solde épuisé
+  const consumeCredit = async (action = "action") => {
+    // Super Admin ne consomme jamais de crédits
+    if (isSuperAdmin) {
+      console.log('[CREDITS] Super Admin - action gratuite');
+      return { success: true, bypassed: true };
+    }
+    
+    // Vérifier le solde local d'abord
+    if (coachCredits <= 0) {
+      setValidationMessage('⚠️ Solde épuisé. Achetez un pack pour continuer.');
+      setTimeout(() => setValidationMessage(''), 5000);
+      return { success: false, error: "Crédits insuffisants" };
+    }
+    
+    try {
+      const res = await axios.post(`${BACKEND_URL}/api/credits/deduct`, 
+        { action },
+        { headers: { 'X-User-Email': safeCoachUser?.email } }
+      );
+      
+      // Mettre à jour le solde local
+      setCoachCredits(res.data?.credits_remaining ?? coachCredits - 1);
+      console.log(`[CREDITS] ${action} - 1 crédit déduit, reste: ${res.data?.credits_remaining}`);
+      
+      return { success: true, credits_remaining: res.data?.credits_remaining };
+    } catch (err) {
+      console.error('[CREDITS] Erreur déduction:', err);
+      if (err?.response?.status === 402) {
+        setValidationMessage('⚠️ Solde épuisé. Achetez un pack pour continuer.');
+        setTimeout(() => setValidationMessage(''), 5000);
+        setCoachCredits(0);
+      }
+      return { success: false, error: err?.response?.data?.detail || "Erreur" };
+    }
+  };
+
+  // === v9.5.8: BLOQUEUR D'ACTION SI CRÉDITS ÉPUISÉS ===
+  const checkCreditsBeforeAction = () => {
+    if (isSuperAdmin) return true;
+    if (coachCredits <= 0) {
+      setValidationMessage('⚠️ Solde épuisé. Achetez un pack pour continuer.');
+      setTimeout(() => setValidationMessage(''), 5000);
+      return false;
+    }
+    return true;
+  };
+
   // Vérifier le statut Stripe Connect au chargement (pour les coachs seulement)
   useEffect(() => {
     if (coachUser?.email && !isSuperAdmin) {
