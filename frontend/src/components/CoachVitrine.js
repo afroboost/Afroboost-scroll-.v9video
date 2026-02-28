@@ -79,9 +79,16 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
             </button>
           </div>
 
-          {/* Profil Coach */}
+          {/* Profil Coach v9.0.1 */}
           <div className="glass rounded-2xl p-6 mb-6 text-center" style={{ border: '1px solid rgba(217, 28, 210, 0.3)' }}>
-            {coach.photo_url ? (
+            {coach.logo_url ? (
+              <img 
+                src={coach.logo_url} 
+                alt={coach.platform_name || coach.name}
+                className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                style={{ border: '3px solid #D91CD2' }}
+              />
+            ) : coach.photo_url ? (
               <img 
                 src={coach.photo_url} 
                 alt={coach.name}
@@ -93,10 +100,10 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                 className="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl"
                 style={{ background: 'rgba(217, 28, 210, 0.2)', border: '3px solid #D91CD2' }}
               >
-                {coach.name?.charAt(0)?.toUpperCase() || '?'}
+                {(coach.platform_name || coach.name)?.charAt(0)?.toUpperCase() || '?'}
               </div>
             )}
-            <h1 className="text-2xl font-bold text-white mb-2">{coach.name}</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">{coach.platform_name || coach.name}</h1>
             {coach.bio && <p className="text-white/70">{coach.bio}</p>}
           </div>
 
