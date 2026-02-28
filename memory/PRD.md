@@ -1,5 +1,46 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.8 - SÉCURITÉ MAXIMALE, ISOLATION & COMMANDES ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.8 COMPLÈTE - "COMMANDES BRANCHÉES ET SÉCURITÉ VERROUILLÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| Quick Controls activés | ✅ |
+| Interrupteur Accès Partenaires | ✅ |
+| Interrupteur Mode Maintenance | ✅ |
+| Page maintenance premium | ✅ |
+| Horaires cliquables vitrine | ✅ |
+| Anti-Régression (7 réservations Bassi) | ✅ |
+
+### Fonctionnalités v9.2.8
+
+| Fonctionnalité | Description |
+|----------------|-------------|
+| Page Maintenance | Design premium avec logo animé, barre de progression, contact email |
+| Toggle Accès Partenaires | Si OFF → bouton "Devenir Partenaire" masqué dans le chat |
+| Toggle Mode Maintenance | Si ON → page maintenance pour tous sauf Super Admin |
+| Dates Cliquables Vitrine | Chaque date de cours ouvre un modal de réservation |
+| Modal Réservation | Formulaire Nom/Email/WhatsApp avec confirmation visuelle |
+
+### API Platform Settings
+
+```
+GET /api/platform-settings
+Response: { partner_access_enabled, maintenance_mode, is_super_admin }
+
+PUT /api/platform-settings (Super Admin only)
+Headers: X-User-Email: contact.artboost@gmail.com
+Body: { partner_access_enabled?: boolean, maintenance_mode?: boolean }
+```
+
+### Tests v9.2.8 - Iteration 91
+- Backend: **100%** (9/9 tests) ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi** ✅
+
+---
+
 ## v9.2.7 - INTERRUPTEURS MINIMALISTES & FIX PARCOURS ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.7 COMPLÈTE - "INTERRUPTEURS MINIMALISTES ET PARCOURS RÉPARÉ"
