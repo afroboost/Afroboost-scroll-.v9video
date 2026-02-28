@@ -1,7 +1,8 @@
 # promo_routes.py - Routes de codes promo v9.2.0
 # Extrait de server.py pour modularisation
+# v9.3.0: Ajout isolation par coach_id
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 from datetime import datetime, timezone
@@ -9,6 +10,9 @@ import uuid
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Super Admin email - pas de filtre
+SUPER_ADMIN_EMAIL = "contact.artboost@gmail.com"
 
 # Router avec préfixe /discount-codes
 promo_router = APIRouter(prefix="/discount-codes", tags=["Promo Codes"])
