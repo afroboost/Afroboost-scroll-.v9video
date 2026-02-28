@@ -4210,19 +4210,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
               )}
             </button>
             <button onClick={onBack} className="px-4 py-2 rounded-lg glass text-white text-sm" data-testid="coach-back">{t('back')}</button>
-            <button 
-              onClick={handleSecureLogout} 
-              className="px-4 py-2 rounded-lg text-white text-sm"
-              style={{ 
-                background: 'rgba(239, 68, 68, 0.3)', 
-                border: '1px solid rgba(239, 68, 68, 0.5)',
-                zIndex: 9999,
-                position: 'relative'
-              }}
-              data-testid="coach-logout"
-            >
-              🚪 {t('logout')}
-            </button>
+            {/* v9.5.8: Bouton déconnexion supprimé ici - existe en position fixed en haut à droite */}
           </div>
         </div>
 
