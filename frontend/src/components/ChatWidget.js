@@ -1316,9 +1316,24 @@ export const ChatWidget = () => {
   }, [afroboostProfile?.code, afroboostProfile?.email, checkReservationEligibility]);
 
   // === v8.9.9: Vérifier si l'utilisateur est un coach inscrit ===
+  // v9.1.5: Amélioré pour détecter aussi les coachs via localStorage
   useEffect(() => {
     const checkCoachStatus = async () => {
       try {
+        // v9.1.5: D'abord vérifier le localStorage de session coach
+        const coachModeFlag = localStorage.getItem('afroboost_coach_mode');
+        const coachUserStr = localStorage.getItem('afroboost_coach_user');
+        if (coachModeFlag === 'true' && coachUserStr) {
+          try {
+            const coachUser = JSON.parse(coachUserStr);
+            if (coachUser?.email) {
+              setIsRegisteredCoach(true);
+              setIsCoachMode(true);
+              return;
+            }
+          } catch {}
+        }
+        
         // Récupérer l'email depuis le profil ou l'identité
         const savedIdentity = localStorage.getItem(AFROBOOST_IDENTITY_KEY);
         const savedClient = localStorage.getItem(CHAT_CLIENT_KEY);
