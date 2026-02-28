@@ -3750,12 +3750,11 @@ function App() {
         />
       )}
 
-      {/* v9.5.6: Flux Reels - Hauteur fixe permettant le scroll vers le bas */}
+      {/* v9.5.6: Flux Reels - Mobile first, pleine largeur, hauteur viewport */}
       <div 
         className="relative w-full" 
         style={{ 
-          height: 'calc(100vh - 60px)', 
-          marginTop: '10px',
+          height: '100vh', 
           background: '#000000' 
         }}
       >
@@ -3768,18 +3767,9 @@ function App() {
         />
       </div>
       
-      {/* Contenu principal avec marges */}
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Barre de Recherche + Navigation par onglets (Tout, Cours, Shop) + Icône Coach alignée v8.9.4 */}
-        <NavigationBar 
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          showSearch={true}
-          showFilters={true}
-          onCoachClick={() => setShowCoachSearch(true)}
-        />
+      {/* v9.5.6: Contenu scrollable SOUS le flux Reels */}
+      <div className="max-w-4xl mx-auto px-4 pt-8" style={{ background: '#000000' }}>
+        {/* v9.5.6: NavigationBar simplifiée - sans la barre de recherche (déjà dans le header Reels) */}
 
         {/* Message si aucun résultat */}
         {filteredServices.length === 0 && filteredProducts.length === 0 && visibleCourses.length === 0 && searchQuery.trim() && (
