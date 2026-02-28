@@ -269,3 +269,77 @@ async def coach_login(login: CoachLogin):
         "success": False, 
         "message": "L'authentification par mot de passe a été désactivée. Veuillez utiliser 'Se connecter avec Google'."
     }
+
+
+# === v9.5.6: ROUTE RÔLE UTILISATEUR ===
+@auth_router.get("/role")
+async def get_user_role(request: Request):
+    """
+    Retourne le rôle de l'utilisateur basé sur son email.
+    Utilisé pour déterminer si l'utilisateur est Super Admin ou Coach.
+    """
+    user_email = request.headers.get('X-User-Email', '').lower().strip()
+    
+    if not user_email:
+        return {
+            "role": "user",
+            "is_super_admin": False,
+            "email": None
+        }
+    
+    is_admin = is_super_admin_email(user_email)
+    
+    return {
+        "role": "super_admin" if is_admin else "coach",
+        "is_super_admin": is_admin,
+        "email": user_email
+    }
+
+
+# === v9.5.6: CHECK PARTNER STATUS ===
+@auth_router.post("/check-partner-status")
+async def check_partner_status(request: Request):
+    """
+    Vérifie le statut partenaire d'un utilisateur connecté.
+    Retourne is_partner et has_credits.
+    """
+    try:
+        body = await request.json()
+        email = body.get("email", "").lower().strip()
+    except:
+        email = request.headers.get('X-User-Email', '').lower().strip()
+    
+    if not email:
+        return {
+            "is_partner": False,
+            "has_credits": False,
+            "error": "Email non fourni"
+        }
+    
+    # Super Admin a toujours accès
+    if is_super_admin_email(email):
+        return {
+            "is_partner": True,
+            "has_credits": True,
+            "is_super_admin": True,
+            "credits": -1,
+            "unlimited": True
+        }
+    
+    # Vérifier le profil coach
+    coach = await _db.coaches.find_one({"email": email})
+    
+    if not coach:
+        return {
+            "is_partner": False,
+            "has_credits": False,
+            "credits": 0
+        }
+    
+    credits = coach.get("credits", 0)
+    
+    return {
+        "is_partner": True,
+        "has_credits": credits > 0,
+        "credits": credits
+    }
