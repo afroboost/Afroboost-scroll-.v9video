@@ -1445,42 +1445,7 @@ async def validate_discount_code(data: dict):
 @api_router.post("/discount-codes/{code_id}/use")
 async def use_discount_code(code_id: str):
     return {"success": True, "note": "Decompte gere par create_reservation"}
-@api_router.post("/check-reservation-eligibility")
-async def check_reservation_eligibility(data: dict):
-    """Vérifie si un utilisateur peut réserver avec son code."""
-    code_str = data.get("code", "").strip().upper()
-    user_email = data.get("email", "").strip().lower()
-    
-    if not code_str:
-        return {"canReserve": False, "reason": "Aucun code fourni"}
-    
-    discount = await db.discount_codes.find_one({
-        "code": {"$regex": f"^{code_str}$", "$options": "i"}, "active": True
-    }, {"_id": 0})
-    
-    if not discount:
-        return {"canReserve": False, "reason": "Code invalide ou désactivé"}
-    
-    # Vérifier assignation email
-    assigned = discount.get("assignedEmail")
-    if assigned and assigned.lower() != user_email:
-        return {"canReserve": False, "reason": "Code non associé à cet email"}
-    
-    # Vérifier utilisations
-    max_uses = discount.get("maxUses", 0)
-    used = discount.get("used", 0)
-    if max_uses > 0 and used >= max_uses:
-        return {"canReserve": False, "reason": "Code épuisé", "used": used, "maxUses": max_uses}
-    
-    return {
-        "canReserve": True,
-        "code": discount.get("code"),
-        "type": discount.get("type"),
-        "value": discount.get("value"),
-        "used": used,
-        "maxUses": max_uses,
-        "remaining": max_uses - used if max_uses > 0 else "illimité"
-    }
+
 # === SANITIZE DATA (Nettoyage des données fantômes) ===
 
 @api_router.post("/sanitize-data")
