@@ -1,5 +1,38 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.3.0 - ÉTANCHÉITÉ TOTALE & MIROIR FONCTIONNEL ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.3.0 COMPLÈTE - "ÉTANCHÉITÉ ASSURÉE ET VITRINE RÉPARÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| Isolation médias/contacts par coach_id | ✅ |
+| Bouton Chat intelligent (persistance) | ✅ |
+| Vitrine miroir avec paiements | ✅ |
+| Nettoyage Dashboard | ✅ |
+| Anti-Régression (7 réservations Bassi) | ✅ |
+
+### Isolation par coach_id v9.3.0
+
+| Collection | ID Super Admin | ID Partenaire |
+|------------|----------------|---------------|
+| concept | `concept` | `concept_{email}` |
+| payment_links | `payment_links` | `payment_links_{email}` |
+| discount_codes | Tous | Seulement les siens |
+
+### Nouvelles APIs v9.3.0
+
+| Endpoint | Description |
+|----------|-------------|
+| GET /api/payment-links/{email} | Liens de paiement publics d'un coach |
+
+### Tests v9.3.0 - Iteration 93
+- Backend: **100%** (17/17 tests) ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi** ✅
+
+---
+
 ## v9.2.9 - MIROIR TOTAL, PAIEMENT & NETTOYAGE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.9 COMPLÈTE - "MIROIR TOTAL ET FORMULAIRES ACTIVÉS"
