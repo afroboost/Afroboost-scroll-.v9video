@@ -1,5 +1,58 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.4.8 - SCROLL VERTICAL REELS & UI MINIMALISTE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.4.8 COMPLÈTE - "FLUX VERTICAL MINIMALISTE OPÉRATIONNEL"
+
+| Objectif | Statut |
+|----------|--------|
+| Scroll vertical snap (Reels-style) | ✅ |
+| Format 16:9 strict | ✅ |
+| UI overlay minimaliste | ✅ |
+| Couleurs CSS variables | ✅ |
+| Fond noir #000000 | ✅ |
+
+### 1. SCROLL VERTICAL REELS-STYLE
+
+**Composant refactoré:** `PartnersCarousel.js`
+
+```css
+/* Classes Tailwind utilisées */
+snap-y snap-mandatory overflow-y-auto
+height: 70vh;
+scroll-behavior: smooth;
+```
+
+**Comportement:**
+- Chaque scroll "aimante" la vidéo suivante au centre
+- Compteur dynamique "N / Total" en bas
+- Indicateurs verticaux à droite (4px largeur)
+
+### 2. UI OVERLAY MINIMALISTE
+
+| Élément | Position | Style |
+|---------|----------|-------|
+| Photo profil | Bas gauche | Bulle 11x11, bordure --primary-color |
+| Nom partenaire | À côté photo | Texte blanc avec shadow |
+| Like (coeur) | Droite milieu | Blanc ou --primary-color si liké |
+| Bouton son | Haut droite | Arrondi, backdrop blur |
+
+**CSS Variables utilisées:**
+- `--primary-color`: Bordure photo, Like actif, indicateur actif
+- `--glow-color`: Box-shadow photo profil
+- `--secondary-color`: Dégradé initiale
+
+### 3. NAVIGATION
+
+- Clic n'importe où sur vidéo → `/coach/{username}`
+- Format username: `partner.email || partner.id || partner.name.slug`
+
+### Tests v9.4.8 - Iteration 106
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Chat violet, Vitrine Bassi** ✅
+
+---
+
 ## v9.4.7 - CAROUSEL VIDÉO ET FLUX PARTENAIRE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.4.7 COMPLÈTE - "VITRINE DYNAMIQUE ET LOGIN PARTENAIRE PRÊTS"
