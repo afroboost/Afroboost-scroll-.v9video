@@ -722,6 +722,22 @@ const CampaignManager = ({
             <span className={`text-xs px-2 py-0.5 rounded-full ${aiConfig.enabled ? 'bg-green-600' : 'bg-gray-600'}`}>
               {aiConfig.enabled ? '✓ Actif' : 'Inactif'}
             </span>
+            {/* v9.3.8: Indicateur de sauvegarde automatique */}
+            {aiConfigSaveStatus && (
+              <span 
+                className="text-xs px-2 py-0.5 rounded-full"
+                style={{
+                  background: aiConfigSaveStatus === 'saved' ? 'rgba(34, 197, 94, 0.2)' : 
+                             aiConfigSaveStatus === 'error' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(147, 51, 234, 0.2)',
+                  color: aiConfigSaveStatus === 'saved' ? '#22c55e' : 
+                         aiConfigSaveStatus === 'error' ? '#ef4444' : '#a855f7'
+                }}
+              >
+                {aiConfigSaveStatus === 'saving' && '⏳'}
+                {aiConfigSaveStatus === 'saved' && '✓ Sauvegardé'}
+                {aiConfigSaveStatus === 'error' && '⚠️ Erreur'}
+              </span>
+            )}
           </h3>
           <button 
             type="button"
