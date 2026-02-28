@@ -480,9 +480,11 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   const [tab, setTab] = useState(() => {
     try {
       const savedTab = localStorage.getItem(COACH_TAB_KEY);
-      if (savedTab && ['reservations', 'concept', 'courses', 'offers', 'payments', 'codes', 'campaigns', 'articles', 'media', 'conversations'].includes(savedTab)) {
-        console.log('[COACH] ✅ Onglet restauré:', savedTab);
-        return savedTab;
+      // v9.2.9: Migration "payments" → "page-vente" et ajout du nouvel onglet
+      if (savedTab && ['reservations', 'concept', 'courses', 'offers', 'payments', 'page-vente', 'codes', 'campaigns', 'articles', 'media', 'conversations'].includes(savedTab)) {
+        const migratedTab = savedTab === 'payments' ? 'page-vente' : savedTab;
+        console.log('[COACH] ✅ Onglet restauré:', migratedTab);
+        return migratedTab;
       }
     } catch (e) {}
     return "reservations";
