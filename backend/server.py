@@ -1381,8 +1381,21 @@ async def check_if_partner(email: str):
     """
     Vérifie si un utilisateur est un partenaire inscrit (a un profil coach)
     Utilisé par le frontend pour afficher le bon bouton dans le chat
+    v9.5.6: Super Admin a toujours accès
     """
     email = email.lower().strip()
+    
+    # v9.5.6: Super Admin a toujours accès illimité
+    if is_super_admin(email):
+        return {
+            "is_partner": True,
+            "email": email,
+            "name": "Super Admin",
+            "has_credits": True,
+            "credits": -1,
+            "unlimited": True,
+            "is_super_admin": True
+        }
     
     # Vérifier si l'email a un profil coach
     coach = await db.coaches.find_one({"email": email}, {"_id": 0, "email": 1, "name": 1, "credits": 1})
