@@ -1,5 +1,43 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.3 - DASHBOARD MIROIR ET PROPULSION ACTIFS ✅ (28 Février 2026)
+
+### STATUT: PROPULSION ZÉRO-CLIC ACTIVE
+
+| Critère | Validation |
+|---------|------------|
+| Propulsion | ✅ **ZÉRO-CLIC** après Stripe |
+| Dashboard jumeau | ✅ **FULL ACCESS** pour tous |
+| Marque blanche | ✅ **platform_name** supporté |
+| Non-régression | **7 réservations ✅** |
+| Tests | **13/13 ✅** |
+
+### Accomplissements v9.1.3
+
+| Feature | Description |
+|---------|-------------|
+| Propulsion automatique | #coach-dashboard → modal immédiat (sans clic) |
+| Stripe session | session_id parsé dans le hash pour retour Stripe |
+| Dashboard jumeau | requiresCredits SUPPRIMÉ - accès complet |
+| Marque blanche header | platform_name ou "Mon Espace Afroboost" |
+
+### Tests v9.1.3 - Iteration 75
+- Backend: **9/9 ✅**
+- Frontend: **4/4 ✅**
+- Propulsion: **ZÉRO-CLIC ✅**
+- Cours Mars: **INTACTS**
+
+### Fonctionnalités vérifiées
+- Propulsion #coach-dashboard: **PASSED**
+- Stripe session detection: **PASSED**
+- Dashboard full access: **PASSED**
+- Marque blanche header: **PASSED**
+- 7 réservations Bassi: **PASSED**
+- Session Cardio (04.03, 11.03, 18.03, 25.03): **PASSED**
+- Sunday Vibes (01.03, 08.03, 15.03, 22.03): **PASSED**
+
+---
+
 ## v9.1.2 - DASHBOARD MIROIR ET REDIRECTION VERROUILLÉS ✅ (28 Février 2026)
 
 ### STATUT: REFACTORING PHASE 2 RÉUSSI
