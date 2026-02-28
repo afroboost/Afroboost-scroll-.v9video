@@ -3110,6 +3110,125 @@ async def delete_lead(lead_id: str):
         raise HTTPException(status_code=404, detail="Lead not found")
     return {"success": True}
 
+# === v9.4.1: ENDPOINT SUGGESTIONS IA POUR CAMPAGNES ===
+@api_router.post("/ai/campaign-suggestions")
+async def generate_campaign_suggestions(data: dict):
+    """
+    Génère 3 variantes de messages de campagne basées sur l'objectif fourni.
+    Types: Promo (🔥), Relance (👋), Info (📢)
+    """
+    import time
+    start_time = time.time()
+    
+    campaign_goal = data.get("campaign_goal", "")
+    campaign_name = data.get("campaign_name", "Campagne")
+    recipient_count = data.get("recipient_count", 1)
+    
+    if not campaign_goal:
+        raise HTTPException(status_code=400, detail="Objectif de campagne requis")
+    
+    # Récupérer la config IA
+    ai_config = await db.ai_config.find_one({"id": "ai_config"}, {"_id": 0})
+    if not ai_config:
+        ai_config = {}
+    
+    # Système prompt pour la génération de suggestions
+    system_prompt = f"""Tu es un expert en marketing et copywriting pour une application de fitness/danse appelée Afroboost.
+    
+Tu dois générer EXACTEMENT 3 variantes de messages WhatsApp/SMS basées sur l'objectif suivant:
+"{campaign_goal}"
+
+RÈGLES STRICTES:
+1. Chaque message doit être COURT (max 200 caractères)
+2. Chaque message doit contenir la variable {{prénom}} au début
+3. Utilise des emojis pertinents (1-2 max)
+4. Sois direct et engageant
+5. Inclus un call-to-action clair
+
+FORMAT DE RÉPONSE (JSON strict):
+{{
+  "suggestions": [
+    {{"type": "Promo", "text": "🔥 Salut {{prénom}}! [message promotionnel avec offre]"}},
+    {{"type": "Relance", "text": "👋 Hey {{prénom}}! [message de relance engageant]"}},
+    {{"type": "Info", "text": "📢 {{prénom}}, [information importante]"}}
+  ]
+}}
+
+Contexte:
+- Campagne: {campaign_name}
+- Nombre de destinataires: {recipient_count}
+- Application: Cours de danse Afrobeat, casques silencieux
+
+{ai_config.get('campaignPrompt', '')}
+"""
+    
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        
+        emergent_key = os.environ.get("EMERGENT_LLM_KEY")
+        if not emergent_key:
+            # Fallback: générer des suggestions statiques
+            return {
+                "success": True,
+                "suggestions": [
+                    {"type": "Promo", "text": f"🔥 Salut {{prénom}}! {campaign_goal} Profites-en vite!"},
+                    {"type": "Relance", "text": f"👋 Hey {{prénom}}! On ne t'a pas vu depuis un moment. {campaign_goal}"},
+                    {"type": "Info", "text": f"📢 {{prénom}}, nouvelle info: {campaign_goal}. À bientôt!"}
+                ],
+                "source": "fallback"
+            }
+        
+        chat = LlmChat(
+            api_key=emergent_key,
+            session_id=f"campaign_suggest_{int(time.time())}",
+            system_message=system_prompt
+        ).with_model(ai_config.get("provider", "openai"), ai_config.get("model", "gpt-4o-mini"))
+        
+        user_message = UserMessage(text=f"Génère 3 variantes de messages pour cette campagne: {campaign_goal}")
+        ai_response = await chat.send_message(user_message)
+        
+        # Parser la réponse JSON
+        import json
+        import re
+        
+        response_text = ai_response.text if hasattr(ai_response, 'text') else str(ai_response)
+        
+        # Extraire le JSON de la réponse
+        json_match = re.search(r'\{[\s\S]*"suggestions"[\s\S]*\}', response_text)
+        if json_match:
+            parsed = json.loads(json_match.group())
+            suggestions = parsed.get("suggestions", [])
+        else:
+            # Fallback si pas de JSON valide
+            suggestions = [
+                {"type": "Promo", "text": f"🔥 Salut {{prénom}}! {campaign_goal} Profites-en maintenant!"},
+                {"type": "Relance", "text": f"👋 Hey {{prénom}}! {campaign_goal} On t'attend!"},
+                {"type": "Info", "text": f"📢 {{prénom}}, {campaign_goal}. À très vite!"}
+            ]
+        
+        response_time = time.time() - start_time
+        
+        return {
+            "success": True,
+            "suggestions": suggestions[:3],  # Maximum 3
+            "response_time": round(response_time, 2),
+            "source": "ai"
+        }
+        
+    except Exception as e:
+        logger.error(f"[AI SUGGESTIONS] Error: {str(e)}")
+        # Fallback en cas d'erreur
+        return {
+            "success": True,
+            "suggestions": [
+                {"type": "Promo", "text": f"🔥 Salut {{prénom}}! {campaign_goal} Réserve maintenant!"},
+                {"type": "Relance", "text": f"👋 Hey {{prénom}}! {campaign_goal} On t'attend!"},
+                {"type": "Info", "text": f"📢 {{prénom}}, {campaign_goal}. À bientôt!"}
+            ],
+            "source": "fallback",
+            "error": str(e)
+        }
+
 # --- Chat IA Widget ---
 @api_router.post("/chat")
 async def chat_with_ai(data: ChatMessage):
