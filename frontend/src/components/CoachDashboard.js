@@ -5592,32 +5592,33 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
 
         {/* ========== ONGLET CONVERSATIONS v9.2.0 - Extrait vers CRMSection.js ========== */}
         {tab === "conversations" && (
-          <CRMSection
-            // Notification state
-            showPermissionBanner={showPermissionBanner}
-            setShowPermissionBanner={setShowPermissionBanner}
-            notificationPermission={notificationPermission}
-            requestNotificationAccess={requestNotificationAccess}
-            toastNotifications={toastNotifications}
-            handleToastClick={handleToastClick}
-            dismissToast={dismissToast}
-            handleTestNotification={handleTestNotification}
-            notifyOnAiResponse={notifyOnAiResponse}
-            toggleNotifyOnAiResponse={toggleNotifyOnAiResponse}
-            // Link generation
-            newLinkTitle={newLinkTitle}
-            setNewLinkTitle={setNewLinkTitle}
-            newLinkCustomPrompt={newLinkCustomPrompt}
-            setNewLinkCustomPrompt={setNewLinkCustomPrompt}
-            generateShareableLink={generateShareableLink}
-            // Community
-            newCommunityName={newCommunityName}
-            setNewCommunityName={setNewCommunityName}
-            createCommunityChat={createCommunityChat}
-            // Chat links
-            chatLinks={chatLinks}
-            copiedLinkId={copiedLinkId}
-            copyLinkToClipboard={copyLinkToClipboard}
+          <SectionErrorBoundary sectionName="Conversations">
+            <CRMSection
+              // Notification state
+              showPermissionBanner={showPermissionBanner}
+              setShowPermissionBanner={setShowPermissionBanner}
+              notificationPermission={notificationPermission}
+              requestNotificationAccess={requestNotificationAccess}
+              toastNotifications={toastNotifications}
+              handleToastClick={handleToastClick}
+              dismissToast={dismissToast}
+              handleTestNotification={handleTestNotification}
+              notifyOnAiResponse={notifyOnAiResponse}
+              toggleNotifyOnAiResponse={toggleNotifyOnAiResponse}
+              // Link generation
+              newLinkTitle={newLinkTitle}
+              setNewLinkTitle={setNewLinkTitle}
+              newLinkCustomPrompt={newLinkCustomPrompt}
+              setNewLinkCustomPrompt={setNewLinkCustomPrompt}
+              generateShareableLink={generateShareableLink}
+              // Community
+              newCommunityName={newCommunityName}
+              setNewCommunityName={setNewCommunityName}
+              createCommunityChat={createCommunityChat}
+              // Chat links
+              chatLinks={chatLinks}
+              copiedLinkId={copiedLinkId}
+              copyLinkToClipboard={copyLinkToClipboard}
             deleteChatLink={deleteChatLink}
             // Conversations
             enrichedConversations={enrichedConversations}
