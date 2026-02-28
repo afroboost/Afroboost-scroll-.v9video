@@ -579,12 +579,13 @@ const CampaignManager = ({
           Les emails sont envoyés depuis <strong>notifications@afroboosteur.com</strong> via Resend.
         </p>
 
-        <div className="flex items-center gap-2">
+        {/* v9.3.8: Fix mobile - flex-wrap pour que le bouton Tester s'adapte */}
+        <div className="flex flex-wrap items-center gap-2">
           <input 
             type="email"
             value={testEmailAddress}
             onChange={e => setTestEmailAddress(e.target.value)}
-            className="flex-1 px-3 py-2 rounded-lg neon-input text-sm"
+            className="flex-1 min-w-0 px-3 py-2 rounded-lg neon-input text-sm"
             placeholder="Email de test..."
             data-testid="test-email-input"
           />
@@ -592,7 +593,7 @@ const CampaignManager = ({
             type="button"
             onClick={(e) => handleTestEmail(e)}
             disabled={testEmailStatus === 'sending'}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex-shrink-0 ${
               testEmailStatus === 'success' ? 'bg-green-600' :
               testEmailStatus === 'error' ? 'bg-red-600' :
               testEmailStatus === 'sending' ? 'bg-yellow-600' :
