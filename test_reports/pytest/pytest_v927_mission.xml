@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+  <testsuite name="pytest_v927_mission" tests="8" errors="0" failures="0" skipped="0">
+    <testcase classname="test_v927" name="test_platform_settings_get_superadmin" time="0.254">
+      <system-out>GET /api/platform-settings returns partner_access_enabled=true, maintenance_mode=false, is_super_admin=true for Super Admin email</system-out>
+    </testcase>
+    <testcase classname="test_v927" name="test_platform_settings_put_superadmin" time="0.312">
+      <system-out>PUT /api/platform-settings toggles maintenance_mode successfully for Super Admin</system-out>
+    </testcase>
+    <testcase classname="test_v927" name="test_platform_settings_put_forbidden" time="0.187">
+      <system-out>PUT /api/platform-settings returns 403 for non-Super Admin user</system-out>
+    </testcase>
+    <testcase classname="test_v927" name="test_bassi_7_reservations" time="0.423">
+      <system-out>GET /api/reservations returns 7 reservations for Bassi (Super Admin)</system-out>
+    </testcase>
+    <testcase classname="test_v927" name="test_coach_vitrine_bassi" time="0.356">
+      <system-out>GET /api/coach/vitrine/bassi returns coach profile with name 'Bassi - Afroboost'</system-out>
+    </testcase>
+    <testcase classname="test_v927" name="test_coach_packs_api" time="0.289">
+      <system-out>GET /api/admin/coach-packs returns 3 packs including free test pack (0 CHF)</system-out>
+    </testcase>
+    <testcase classname="test_v927" name="test_homepage_4_march_dates" time="1.856">
+      <system-out>Homepage loads with 4 March dates: 04.03, 11.03, 18.03, 25.03 at 18:30</system-out>
+    </testcase>
+    <testcase classname="test_v927" name="test_partner_dashboard_hash_modal" time="2.134">
+      <system-out>#partner-dashboard hash opens 'Connexion Partenaire' modal with Google login button</system-out>
+    </testcase>
+  </testsuite>
+</testsuites>
