@@ -3709,16 +3709,9 @@ function App() {
         />
       )}
 
-      <div className="max-w-4xl mx-auto pt-4">
-        {/* v9.4.8: Header minimaliste pour laisser place au Reels */}
-        <div className="text-center mb-4 px-4">
-          <h1 className="font-bold text-white" style={{ 
-            fontSize: '28px', 
-            textShadow: '0 2px 4px rgba(0,0,0,0.8)' 
-          }} data-testid="app-title">{concept.appName || t('appTitle')}</h1>
-        </div>
-
-        {/* v9.4.8: Scroll vertical style Reels - Full width */}
+      {/* v9.4.9: Pas de titre au-dessus du flux - Interface épurée */}
+      <div className="max-w-4xl mx-auto">
+        {/* v9.4.9: Scroll vertical style Reels - Full width, pas de header */}
         <PartnersCarousel 
           onPartnerClick={(partner) => {
             const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
