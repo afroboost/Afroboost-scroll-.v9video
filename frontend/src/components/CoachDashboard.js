@@ -3738,24 +3738,17 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
         </div>
 
         <div className="flex gap-2 mb-6 flex-wrap items-center">
-          {tabs.map(tb => {
-            // v8.9.7: Griser les tabs si crédits insuffisants (sauf Super Admin)
-            const isDisabled = tb.requiresCredits && hasInsufficientCredits;
-            return (
-              <button 
-                key={tb.id} 
-                onClick={() => !isDisabled && setTab(tb.id)} 
-                disabled={isDisabled}
-                className={`coach-tab px-3 py-2 rounded-lg text-xs sm:text-sm ${tab === tb.id ? 'active' : ''} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                style={{ color: 'white' }} 
-                data-testid={`coach-tab-${tb.id}`}
-                title={isDisabled ? '⚠️ Crédits insuffisants - Rechargez votre compte' : ''}
-              >
-                {tb.label}
-                {isDisabled && <span className="ml-1 text-xs">🔒</span>}
-              </button>
-            );
-          })}
+          {tabs.map(tb => (
+            <button 
+              key={tb.id} 
+              onClick={() => setTab(tb.id)} 
+              className={`coach-tab px-3 py-2 rounded-lg text-xs sm:text-sm ${tab === tb.id ? 'active' : ''}`}
+              style={{ color: 'white' }} 
+              data-testid={`coach-tab-${tb.id}`}
+            >
+              {tb.label}
+            </button>
+          ))}
           
           {/* Bouton Vue Visiteur - Toggle mode apercu */}
           <button
