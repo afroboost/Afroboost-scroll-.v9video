@@ -11,7 +11,7 @@ from datetime import datetime
 import os
 
 # Configuration
-BACKEND_URL = "https://saas-coach-hub.preview.emergentagent.com"
+BACKEND_URL = "https://coach-marketplace-8.preview.emergentagent.com"
 BASE_API_URL = f"{BACKEND_URL}/api"
 
 def log_test(test_name, status, details=""):
