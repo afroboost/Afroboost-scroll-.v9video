@@ -639,6 +639,9 @@ class Concept(BaseModel):
     # Personnalisation des couleurs
     primaryColor: str = "#D91CD2"  # Couleur principale (glow)
     secondaryColor: str = "#8b5cf6"  # Couleur secondaire
+    # v9.4.4: Couleurs avancées
+    backgroundColor: str = "#000000"  # Couleur de fond du site
+    glowColor: str = ""  # Couleur du glow (auto si vide = primaryColor)
 
 class ConceptUpdate(BaseModel):
     appName: Optional[str] = None  # Nom de l'application
