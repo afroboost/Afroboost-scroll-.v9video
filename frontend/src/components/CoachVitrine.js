@@ -623,7 +623,11 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {courses.map(course => (
-                  <CourseCardVitrine key={course.id} course={course} />
+                  <CourseCardVitrine 
+                    key={course.id} 
+                    course={course} 
+                    onBookClick={handleBookClick}
+                  />
                 ))}
               </div>
             </div>
