@@ -2224,7 +2224,7 @@ function App() {
       console.log('[APP] 🚀 v9.1.8 - PROPULSION PARTENAIRE détectée');
       console.log('[APP] 💳 Session Stripe:', sessionId);
       
-      // Nettoyer l'URL
+      // Nettoyer l'URL et forcer le hash dashboard
       const cleanUrl = () => {
         const url = new URL(window.location.href);
         url.searchParams.delete('success');
@@ -2243,16 +2243,20 @@ function App() {
           setCoachUser(user);
           setCoachMode(true);
           cleanUrl();
+          // Message de validation visible temporairement
+          setValidationMessage("🎉 Paiement validé ! Bienvenue Partenaire");
+          setTimeout(() => setValidationMessage(""), 5000);
           console.log('[APP] ✅ PROPULSION PARTENAIRE: Dashboard activé pour:', user?.email);
         } catch (e) {
           console.error('[APP] Erreur parsing user:', e);
-          setLoginWelcomeMessage("🎉 Paiement réussi ! Connectez-vous pour accéder à votre espace.");
+          setLoginWelcomeMessage("🎉 Paiement validé ! Bienvenue Partenaire. Connectez-vous pour accéder à votre espace.");
           setShowCoachLogin(true);
+          cleanUrl();
         }
       } else {
         // Pas connecté → Ouvrir modal de connexion avec message de bienvenue
         console.log('[APP] 🔐 Paiement réussi mais non connecté - Affichage modal connexion');
-        setLoginWelcomeMessage("🎉 Paiement réussi ! Connectez-vous pour accéder à votre espace partenaire.");
+        setLoginWelcomeMessage("🎉 Paiement validé ! Bienvenue Partenaire. Connectez-vous pour accéder à votre espace.");
         setShowCoachLogin(true);
         cleanUrl();
       }
