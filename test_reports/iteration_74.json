@@ -1,0 +1,75 @@
+{
+  "summary": "Mission v9.1.2 - Dashboard Miroir & Fix Redirection: ALL TESTS PASSED. campaign_routes.py migration validated (134 lines). server.py reduced from 6877 to 6719 lines (-158 lines). Non-regression: 7+ reservations, Mars courses intact, #coach-dashboard redirect working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v912_mission.py",
+    "/app/test_reports/pytest/pytest_v912_mission.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ REFACTORING VALIDATED: server.py reduced from 6877 to 6719 lines (-158 lines)",
+    "✅ campaign_routes.py contains 134 lines of migrated routes from server.py",
+    "✅ coach_routes.py intact at 341 lines",
+    "✅ NON-REGRESSION CRITICAL: Super Admin sees 7+ reservations - PASSED",
+    "✅ API /api/campaigns via campaign_routes.py - returns list - PASSED",
+    "✅ API /api/campaigns/logs - success: true - PASSED",
+    "✅ API /api/coach/profile - is_super_admin: true for Bassi - PASSED",
+    "✅ API /api/coach/check-credits - unlimited: true, credits: -1 for Super Admin - PASSED",
+    "✅ API /api/auth/role - role: super_admin for Bassi - PASSED",
+    "✅ Homepage courses intact: Session Cardio + Sunday Vibes (Mars 2026) - PASSED",
+    "✅ #coach-dashboard redirect: Opens 'Connexion Coach' modal immediately - PASSED",
+    "✅ Hash change listener works: Dynamic navigation triggers login modal"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v912_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100% (10/10 tests passed)",
+    "frontend": "100% (4/4 tests passed)"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.1.2 completed successfully. Refactoring validated with server.py at 6719 lines (down from 6877), campaign_routes.py at 134 lines, coach_routes.py at 341 lines. All campaign routes (/campaigns, /campaigns/logs, /campaigns/{id}) are working via campaign_routes.py. The #coach-dashboard hash routing opens the Coach Login modal with Google OAuth immediately for non-authenticated users.",
+  "verified_features_v912": {
+    "REFACTORING_SERVER_PY": "PASSED - 6719 lines (reduced from 6877)",
+    "CAMPAIGN_ROUTES_MODULE": "PASSED - 134 lines of migrated routes working",
+    "COACH_ROUTES_MODULE": "INTACT - 341 lines",
+    "NON_REGRESSION_7_RESERVATIONS": "PASSED - Super Admin sees 7+ reservations",
+    "CAMPAIGNS_LIST_API": "PASSED - Returns empty list (OK)",
+    "CAMPAIGNS_LOGS_API": "PASSED - Returns success: true",
+    "COACH_PROFILE_IS_SUPER_ADMIN": "PASSED - Returns is_super_admin: true",
+    "CHECK_CREDITS_UNLIMITED": "PASSED - Returns unlimited: true, credits: -1",
+    "AUTH_ROLE_SUPER_ADMIN": "PASSED - Returns role: super_admin",
+    "COURSES_MARS_INTACT": "PASSED - Session Cardio and Sunday Vibes visible with March dates",
+    "COACH_DASHBOARD_REDIRECT": "PASSED - Opens Connexion Coach modal with Google OAuth",
+    "HASH_CHANGE_LISTENER": "PASSED - Dynamic navigation triggers modal"
+  },
+  "api_verification_results": {
+    "reservations_total": "7+",
+    "campaigns_list": "empty array (OK)",
+    "campaigns_logs_success": true,
+    "coach_profile_is_super_admin": true,
+    "check_credits_unlimited": true,
+    "auth_role": "super_admin",
+    "courses_count": 2,
+    "courses_names": ["Afroboost Silent – Session Cardio", "Afroboost Silent – Sunday Vibes"]
+  },
+  "file_line_counts": {
+    "server_py": 6719,
+    "campaign_routes_py": 134,
+    "coach_routes_py": 341,
+    "total_backend_routes": 7194
+  }
+}
