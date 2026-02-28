@@ -482,7 +482,7 @@ const PartnersCarousel = ({ onPartnerClick, onSearch }) => {
   
   if (loading) {
     return (
-      <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 120px)', minHeight: '450px', background: '#000000' }}>
+      <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 80px)', minHeight: '500px', background: '#000000' }}>
         <div className="text-center">
           <div className="animate-spin w-10 h-10 border-3 rounded-full mx-auto mb-3" style={{ borderColor: 'var(--primary-color, #D91CD2)', borderTopColor: 'transparent' }}></div>
           <p className="text-white/50 text-sm">Chargement...</p>
