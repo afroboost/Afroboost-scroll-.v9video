@@ -1576,8 +1576,8 @@ export const ChatWidget = () => {
     }
   }, [selectedCourse, afroboostProfile, leadData, participantId, setMessages]);
 
-  // Email du coach autorisé
-  const COACH_EMAIL = 'contact.artboost@gmail.com';
+  // v9.5.6: Liste des emails coach/admin autorisés
+  const COACH_EMAILS = ['contact.artboost@gmail.com', 'afroboost.bassi@gmail.com'];
   
   // Sauvegarder subscriber_data quand un code promo est validé
   const saveSubscriberData = useCallback((code, name, type = 'abonné') => {
