@@ -1,5 +1,48 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.1.1 - DASHBOARD MIROIR ET REDIRECTION OK ✅ (28 Février 2026)
+
+### STATUT: REFACTORING RÉUSSI - 572 LIGNES MIGRÉES
+
+| Critère | Validation |
+|---------|------------|
+| server.py | **6877 lignes** (de 7449) |
+| coach_routes.py | **341 lignes** |
+| Total backend | 7218 lignes |
+| Non-régression | **7 réservations ✅** |
+| Tests | **14/14 ✅** |
+
+### Accomplissements v9.1.1
+
+| Feature | Description |
+|---------|-------------|
+| Refactoring server.py | -572 lignes → 6877 lignes |
+| coach_routes.py | Routes coach/admin migrées |
+| #coach-dashboard | Ouvre modal connexion si non connecté |
+| Hash listener | Détection dynamique des changements |
+
+### Routes migrées vers coach_routes.py
+- `GET/POST /admin/coach-packs/*`
+- `GET/POST/DELETE /admin/coaches/*`
+- `GET /coach/profile`
+- `GET /coach/check-credits`
+- `POST /coach/register`
+- `POST /coach/deduct-credit`
+- `POST /coach/add-credits`
+- `GET /auth/role`
+- `GET /coaches/search`
+- `GET /coach/vitrine/{username}`
+- `POST /coach/stripe-connect/onboard`
+- `GET /coach/stripe-connect/status`
+- `POST /admin/migrate-bassi-data`
+
+### Tests v9.1.1 - Iteration 73
+- Backend: **11/11 ✅**
+- Frontend: **3/3 ✅**
+- Cours Mars: **INTACTS**
+
+---
+
 ## v9.1.0 - SERVEUR ALLÉGÉ ET STABLE ✅ (28 Février 2026)
 
 ### STATUT: STRUCTURE MODULAIRE PRÉPARÉE
