@@ -1,5 +1,47 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.4.0 - MÉMOIRE DU CHAT ET BADGES DE NOTIFICATION ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.4.0 COMPLÈTE - "CHAT PERSISTANT ET NOTIFICATIONS OPÉRATIONNELS"
+
+| Objectif | Statut |
+|----------|--------|
+| Cache Persistant (localStorage) | ✅ |
+| Badge Notifications | ✅ |
+| Auto-reload à l'ouverture | ✅ |
+| Tests Backend 24/24 | ✅ |
+
+### Cache Persistant v9.4.0
+
+**Clés de stockage :**
+- `afroboost_last_msgs` (sessionStorage) - Session actuelle
+- `afroboost_last_msgs_persist` (localStorage) - Persistant entre sessions
+
+**Logique :**
+- `getCachedMessages()`: sessionStorage (priorité) → localStorage (fallback)
+- `saveCachedMessages()`: Écrit dans les DEUX stockages
+- Maximum: 20 derniers messages cachés
+
+### Badge Notifications v9.4.0
+
+**Incrémentation :**
+- `message_received` socket event → +1 si widget fermé
+- `group_message` socket event → +1 si pas focus
+
+**Reset :**
+- À l'ouverture du widget → `setUnreadPrivateCount(0)`
+
+**Affichage :**
+- Badge rouge avec compteur sur le bouton WhatsApp
+- `data-testid="unread-mp-badge"`
+
+### Tests v9.4.0 - Iteration 99
+- Backend existants: **100%** (17/17 tests) ✅
+- Backend nouveaux: **100%** (7/7 tests) ✅
+- Frontend: **100%** ✅
+
+---
+
 ## v9.3.9 - ZÉRO ERREUR ET IDENTITÉ VISUELLE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.3.9 COMPLÈTE - "SYSTÈME 100% STABLE ET IDENTITÉ FIXÉE"
