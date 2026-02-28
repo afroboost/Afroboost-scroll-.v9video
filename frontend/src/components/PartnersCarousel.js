@@ -73,26 +73,26 @@ const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isL
 
   return (
     <div 
-      className="snap-start snap-always w-full flex-shrink-0 flex items-center justify-center cursor-pointer"
+      className="snap-start snap-always w-full flex-shrink-0 flex items-center justify-center cursor-pointer px-4"
       style={{ 
-        height: 'calc(100vh - 200px)',
-        minHeight: '400px',
-        maxHeight: '600px',
+        height: '70vh',
+        minHeight: '350px',
+        maxHeight: '550px',
         background: '#000000'
       }}
       onClick={() => onClick(partner)}
       data-testid={`partner-card-${partner.id || partner.email}`}
     >
-      {/* Container 16:9 centré */}
+      {/* Container 16:9 centré - prend toute la largeur disponible */}
       <div 
-        className="relative w-full max-w-lg mx-auto"
+        className="relative w-full"
         style={{
           aspectRatio: '16/9',
-          maxHeight: '100%'
+          maxWidth: '100%'
         }}
       >
-        {/* Vidéo/Image - Plein écran 16:9 */}
-        <div className="absolute inset-0 overflow-hidden rounded-lg">
+        {/* Vidéo/Image - Format 16:9 strict */}
+        <div className="absolute inset-0 overflow-hidden rounded-xl">
           {youtubeId ? (
             <iframe
               className="absolute inset-0 w-full h-full"
@@ -131,20 +131,20 @@ const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isL
               onError={() => setHasError(true)}
             />
           ) : (
-            /* Placeholder animé */
+            /* Placeholder animé élégant */
             <div 
               className="absolute inset-0"
               style={{
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(217, 28, 210, 0.3) 100%)'
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(217, 28, 210, 0.4) 100%)'
               }}
             >
               <div 
                 className="absolute inset-0 flex items-center justify-center"
                 style={{
-                  background: 'radial-gradient(circle at 50% 50%, rgba(217, 28, 210, 0.4) 0%, transparent 70%)'
+                  background: 'radial-gradient(circle at 50% 50%, rgba(217, 28, 210, 0.3) 0%, transparent 70%)'
                 }}
               >
-                <span className="text-6xl opacity-50">🎬</span>
+                <span className="text-6xl opacity-60">🎬</span>
               </div>
             </div>
           )}
@@ -158,9 +158,9 @@ const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isL
         
         {/* Overlay gradient discret en bas */}
         <div 
-          className="absolute inset-0 pointer-events-none rounded-lg"
+          className="absolute inset-0 pointer-events-none rounded-xl"
           style={{
-            background: 'linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 40%)'
+            background: 'linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 50%)'
           }}
         />
         
@@ -173,10 +173,11 @@ const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isL
               e.stopPropagation();
               onToggleMute();
             }}
-            className="absolute top-3 right-3 p-2 rounded-full transition-all hover:scale-110"
+            className="absolute top-3 right-3 p-2.5 rounded-full transition-all hover:scale-110"
             style={{
-              background: 'rgba(0,0,0,0.5)',
-              backdropFilter: 'blur(4px)'
+              background: 'rgba(0,0,0,0.6)',
+              backdropFilter: 'blur(4px)',
+              color: 'white'
             }}
             data-testid={`mute-btn-${partner.id || partner.email}`}
           >
@@ -193,7 +194,7 @@ const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isL
           className="absolute right-3 top-1/2 -translate-y-1/2 p-2 transition-all hover:scale-125 active:scale-95"
           style={{
             color: isLiked ? 'var(--primary-color, #D91CD2)' : 'white',
-            filter: isLiked ? 'drop-shadow(0 0 8px var(--primary-color, #D91CD2))' : 'none'
+            filter: isLiked ? 'drop-shadow(0 0 10px var(--primary-color, #D91CD2))' : 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))'
           }}
           data-testid={`like-btn-${partner.id || partner.email}`}
         >
@@ -201,25 +202,25 @@ const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isL
         </button>
         
         {/* Profil + Nom - Bas gauche */}
-        <div className="absolute bottom-3 left-3 flex items-center gap-2">
-          {/* Photo de profil - Petite bulle */}
+        <div className="absolute bottom-3 left-3 flex items-center gap-2.5">
+          {/* Photo de profil - Petite bulle avec bordure couleur primaire */}
           {partner.photo_url || partner.logo_url ? (
             <img 
               src={partner.photo_url || partner.logo_url} 
               alt={displayName}
-              className="w-10 h-10 rounded-full object-cover"
+              className="w-11 h-11 rounded-full object-cover"
               style={{ 
-                border: '2px solid var(--primary-color, #D91CD2)',
-                boxShadow: '0 0 10px var(--glow-color, rgba(217, 28, 210, 0.5))'
+                border: '2.5px solid var(--primary-color, #D91CD2)',
+                boxShadow: '0 0 12px var(--glow-color, rgba(217, 28, 210, 0.5))'
               }}
             />
           ) : (
             <div 
-              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-base font-bold"
               style={{ 
                 background: 'linear-gradient(135deg, var(--primary-color, #D91CD2) 0%, var(--secondary-color, #8b5cf6) 100%)',
                 color: 'white',
-                boxShadow: '0 0 10px var(--glow-color, rgba(217, 28, 210, 0.5))'
+                boxShadow: '0 0 12px var(--glow-color, rgba(217, 28, 210, 0.5))'
               }}
             >
               {initial}
@@ -228,9 +229,9 @@ const PartnerVideoCard = ({ partner, onClick, onToggleMute, isMuted, onLike, isL
           
           {/* Nom du partenaire - Texte fin */}
           <span 
-            className="text-white text-sm font-medium"
+            className="text-white text-base font-medium"
             style={{
-              textShadow: '0 1px 3px rgba(0,0,0,0.8)'
+              textShadow: '0 2px 4px rgba(0,0,0,0.9)'
             }}
           >
             {displayName}
