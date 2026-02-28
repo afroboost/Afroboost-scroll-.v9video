@@ -33,6 +33,9 @@ try:
 except ImportError:
     RESEND_AVAILABLE = False
 
+# v9.1.1: Import routes modulaires
+from routes.coach_routes import coach_router, init_db as init_coach_db
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
