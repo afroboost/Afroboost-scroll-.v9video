@@ -1,5 +1,71 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.0 - AUTONOMIE PARTENAIRE ET SOLDE ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.5.0 COMPLÈTE - "AUTONOMIE PARTENAIRE ET SOLDE OPÉRATIONNELS"
+
+| Objectif | Statut |
+|----------|--------|
+| Uploader lien vidéo simplifié | ✅ |
+| Affichage solde de crédits | ✅ |
+| Bouton "Acheter des crédits" si solde = 0 | ✅ |
+| Anti-régression Reels + Retour au Flux | ✅ |
+
+### 1. CHAMP VIDÉO SIMPLIFIÉ (Dashboard > Concept)
+
+**Nouveau design avec bordure rose:**
+```jsx
+<div className="border border-pink-500/30 rounded-lg p-4 bg-pink-900/10">
+  <h3>🎬 Lien de votre vidéo (YouTube ou MP4 direct)</h3>
+  <p>Cette vidéo s'affichera dans le flux vertical pour tous les membres.</p>
+  <input data-testid="concept-video-url" placeholder="https://youtube.com/watch?v=... ou https://mon-site.com/video.mp4" />
+</div>
+```
+
+**Badges de validation:**
+| Format | Badge |
+|--------|-------|
+| YouTube | ✓ YouTube |
+| Vimeo | ✓ Vimeo |
+| .mp4/.webm/.mov | ✓ Vidéo |
+| .jpg/.png/.webp | ✓ Image |
+| Autre | ✗ Format inconnu |
+
+### 2. AFFICHAGE SOLDE DE CRÉDITS
+
+**Header Dashboard:**
+```jsx
+<span data-testid="coach-credits-badge">
+  💰 Mon Solde : {coachCredits} Crédit(s)
+</span>
+{coachCredits <= 0 && (
+  <button data-testid="buy-credits-btn">
+    🛒 Acheter des crédits
+  </button>
+)}
+```
+
+**Style:**
+- Solde > 4: Bordure rose (#D91CD2)
+- Solde 1-4: Bordure rouge (#ef4444)
+- Solde = 0: Bordure rouge + bouton achat
+
+### 3. ANTI-RÉGRESSION CONFIRMÉE
+
+| Élément | Status |
+|---------|--------|
+| Flux Reels minimaliste | ✅ |
+| Photo + Like collé + Nom + Bio | ✅ |
+| Bouton "Retour au Flux" | ✅ |
+| Dates mars (04, 11, 18, 25) | ✅ |
+| 7 réservations Bassi | ✅ |
+
+### Tests v9.5.0 - Iteration 108
+- Frontend: **100%** (Playwright + Code review) ✅
+- Anti-régression: **Reels, Retour au Flux, Mars dates** ✅
+
+---
+
 ## v9.4.9 - MASTER FUSION - ÉPURE REELS, NAVIGATION & SÉCURITÉ VIDÉO ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.4.9 COMPLÈTE - "MASTER FUSION OPÉRATIONNEL"
