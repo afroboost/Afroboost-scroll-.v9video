@@ -4071,9 +4071,22 @@ async def get_chat_participant(participant_id: str):
         raise HTTPException(status_code=404, detail="Participant non trouvé")
     return participant
 @api_router.post("/chat/participants")
-async def create_chat_participant(participant: ChatParticipantCreate):
-    """Cree un nouveau participant"""
+async def create_chat_participant(participant: ChatParticipantCreate, request: Request):
+    """Crée un nouveau participant - v9.0.2: Déduit 1 crédit pour les coaches"""
+    coach_email = request.headers.get("X-User-Email", "").lower().strip()
+    # v9.0.2: Vérifier et déduire les crédits pour les coaches (pas Super Admin)
+    if coach_email and not is_super_admin(coach_email):
+        credit_check = await check_credits(coach_email)
+        if not credit_check.get("has_credits"):
+            raise HTTPException(status_code=402, detail="Crédits insuffisants. Achetez un pack pour continuer.")
+        await deduct_credit(coach_email, "création contact")
     participant_obj = ChatParticipant(**participant.model_dump())
+    # Ajouter coach_id si coach authentifié
+    if coach_email:
+        participant_data = participant_obj.model_dump()
+        participant_data["coach_id"] = coach_email if not is_super_admin(coach_email) else DEFAULT_COACH_ID
+        await db.chat_participants.insert_one(participant_data)
+        return participant_data
     await db.chat_participants.insert_one(participant_obj.model_dump())
     return participant_obj.model_dump()
 
