@@ -1,5 +1,39 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.2.2 - VISIBILITÉ PARTENAIRE & FIX REDIRECTION ✅ (28 Février 2026)
+
+### STATUT: MISSION v9.2.2 COMPLÈTE
+
+| Problème | Solution |
+|----------|----------|
+| Dashboard invisible pour partenaires | Gestion d'erreur profil + valeurs par défaut |
+| Accès réservé à Bassi | Ouverture à TOUS les emails dans auth_routes.py |
+| Propulsion nécessitait session_id | success=true suffit maintenant |
+| Pas de profil coach auto | Création automatique à la connexion Google |
+
+### Modifications v9.2.2
+
+| Fichier | Modification |
+|---------|--------------|
+| CoachDashboard.js | Lignes 348-380: Gestion erreur profil avec valeurs par défaut |
+| auth_routes.py | Lignes 68-128: Accès pour tous + création auto profil coach |
+| App.js | Lignes 2208-2263: Propulsion v9.2.2 sans session_id |
+
+### Comportement par rôle v9.2.2
+
+| Rôle | Badge | Dashboard Title | Bouton Admin | Stripe Connect |
+|------|-------|-----------------|--------------|----------------|
+| Super Admin (Bassi) | 👑 Crédits Illimités | Afroboost | ✅ Visible | ❌ Masqué |
+| Partenaire | 💰 Solde : X Crédits | Mon Espace Partenaire | ❌ Masqué | ✅ Visible |
+| Partenaire (0 crédit) | 💰 Solde : 0 Crédit (ROUGE) | Mon Espace Partenaire | ❌ Masqué | ✅ Visible |
+
+### Tests v9.2.2 - Iteration 85
+- Backend: **100% (15/15 tests)** ✅
+- Frontend: **100%** ✅
+- Non-régression: **7 réservations Bassi (04/03/2026)** ✅
+
+---
+
 ## v9.2.1 - RÉPARATION VISIBILITÉ & CONNEXION ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.2.1 COMPLÈTE - BUG FIX
