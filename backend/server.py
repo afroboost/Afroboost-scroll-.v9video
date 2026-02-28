@@ -6678,13 +6678,50 @@ async def get_coaches(request: Request):
         caller_email = request.headers.get("X-User-Email", "").lower().strip()
         if not is_super_admin(caller_email):
             raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
-        
         coaches = await db.coaches.find({}, {"_id": 0}).to_list(100)
         return coaches
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"[COACHES] Erreur récupération: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/admin/coaches/{coach_id}/toggle")
+async def toggle_coach_status(coach_id: str, request: Request):
+    """Active/Désactive un coach (Super Admin) v9.0.1"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Super Admin requis")
+        coach = await db.coaches.find_one({"id": coach_id})
+        if not coach:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        new_status = not coach.get("is_active", True)
+        await db.coaches.update_one({"id": coach_id}, {"$set": {"is_active": new_status, "updated_at": datetime.now(timezone.utc).isoformat()}})
+        logger.info(f"[ADMIN] Coach {coach_id} {'activé' if new_status else 'désactivé'}")
+        return {"success": True, "is_active": new_status}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[ADMIN] Erreur toggle coach: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.delete("/admin/coaches/{coach_id}")
+async def delete_coach(coach_id: str, request: Request):
+    """Supprime un coach (Super Admin) v9.0.1"""
+    try:
+        caller_email = request.headers.get("X-User-Email", "").lower().strip()
+        if not is_super_admin(caller_email):
+            raise HTTPException(status_code=403, detail="Super Admin requis")
+        result = await db.coaches.delete_one({"id": coach_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Coach non trouvé")
+        logger.info(f"[ADMIN] Coach {coach_id} supprimé")
+        return {"success": True, "deleted_id": coach_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[ADMIN] Erreur suppression coach: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/coach/profile")
