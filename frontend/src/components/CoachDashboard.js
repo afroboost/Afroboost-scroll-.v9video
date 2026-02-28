@@ -3630,24 +3630,30 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 <span className="text-white/60 text-sm">
                   Connecté en tant que <span className="text-purple-400">{coachUser.email}</span>
                 </span>
-                {/* === AFFICHAGE CRÉDITS v8.9.7 === */}
+                {/* === AFFICHAGE CRÉDITS v9.1.9 - Solde visible violet néon === */}
                 {!isSuperAdmin && coachCredits !== null && (
                   <span 
-                    className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
+                    className="ml-2 px-3 py-1 rounded-full text-sm font-bold"
                     style={{
-                      background: coachCredits <= 0 ? 'rgba(239,68,68,0.2)' : coachCredits <= 5 ? 'rgba(234,179,8,0.2)' : 'rgba(34,197,94,0.2)',
-                      color: coachCredits <= 0 ? '#ef4444' : coachCredits <= 5 ? '#eab308' : '#22c55e',
-                      border: `1px solid ${coachCredits <= 0 ? 'rgba(239,68,68,0.5)' : coachCredits <= 5 ? 'rgba(234,179,8,0.5)' : 'rgba(34,197,94,0.5)'}`
+                      background: coachCredits <= 0 ? 'rgba(239,68,68,0.25)' : coachCredits < 5 ? 'rgba(239,68,68,0.2)' : 'rgba(217,28,210,0.2)',
+                      color: coachCredits < 5 ? '#ef4444' : '#D91CD2',
+                      border: `2px solid ${coachCredits < 5 ? 'rgba(239,68,68,0.6)' : 'rgba(217,28,210,0.6)'}`,
+                      boxShadow: coachCredits < 5 ? '0 0 10px rgba(239,68,68,0.3)' : '0 0 10px rgba(217,28,210,0.3)'
                     }}
                     data-testid="coach-credits-badge"
                   >
-                    {coachCredits <= 0 ? '⚠️ 0 crédit' : `${coachCredits} crédit${coachCredits > 1 ? 's' : ''}`}
+                    💰 Solde : {coachCredits <= 0 ? '0' : coachCredits} Crédit{coachCredits > 1 ? 's' : ''}
                   </span>
                 )}
                 {isSuperAdmin && (
                   <span 
-                    className="ml-2 px-2 py-0.5 rounded-full text-xs font-semibold"
-                    style={{ background: 'rgba(217,28,210,0.2)', color: '#d91cd2', border: '1px solid rgba(217,28,210,0.5)' }}
+                    className="ml-2 px-3 py-1 rounded-full text-sm font-bold"
+                    style={{ 
+                      background: 'linear-gradient(135deg, rgba(217,28,210,0.3), rgba(139,92,246,0.3))', 
+                      color: '#D91CD2', 
+                      border: '2px solid rgba(217,28,210,0.6)',
+                      boxShadow: '0 0 15px rgba(217,28,210,0.4)'
+                    }}
                     data-testid="super-admin-badge"
                   >
                     👑 Crédits Illimités

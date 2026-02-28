@@ -2205,7 +2205,7 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // === v9.1.8: PROPULSION PARTENAIRE - Détection paiement Stripe réussi ===
+  // === v9.1.9: PROPULSION ZÉRO CLIC - Détection paiement Stripe réussi ===
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const hash = window.location.hash;
@@ -2221,7 +2221,7 @@ function App() {
     const isPartnerPayment = isSuccess && sessionId && !localStorage.getItem('pendingReservation');
     
     if (isPartnerPayment) {
-      console.log('[APP] 🚀 v9.1.8 - PROPULSION PARTENAIRE détectée');
+      console.log('[APP] 🚀 v9.1.9 - PROPULSION ZÉRO CLIC détectée');
       console.log('[APP] 💳 Session Stripe:', sessionId);
       
       // Nettoyer l'URL et forcer le hash dashboard
@@ -2237,29 +2237,28 @@ function App() {
       const savedCoachUser = localStorage.getItem('afroboost_coach_user');
       
       if (savedCoachUser) {
-        // Partenaire déjà connecté → PROPULSION IMMÉDIATE vers le dashboard
+        // v9.1.9: Partenaire déjà connecté → PROPULSION IMMÉDIATE SANS MODAL
         try {
           const user = JSON.parse(savedCoachUser);
           setCoachUser(user);
           setCoachMode(true);
           cleanUrl();
-          // Message de validation visible temporairement
-          setValidationMessage("🎉 Paiement validé ! Bienvenue Partenaire");
+          // Message de validation visible temporairement (pas de modal!)
+          setValidationMessage("🎉 Paiement validé ! Bienvenue dans votre espace Partenaire");
           setTimeout(() => setValidationMessage(""), 5000);
-          console.log('[APP] ✅ PROPULSION PARTENAIRE: Dashboard activé pour:', user?.email);
+          console.log('[APP] ✅ v9.1.9 PROPULSION ZÉRO CLIC: Dashboard activé SANS modal pour:', user?.email);
+          // NE PAS ouvrir le modal de connexion si déjà authentifié
+          return;
         } catch (e) {
           console.error('[APP] Erreur parsing user:', e);
-          setLoginWelcomeMessage("🎉 Paiement validé ! Bienvenue Partenaire. Connectez-vous pour accéder à votre espace.");
-          setShowCoachLogin(true);
-          cleanUrl();
         }
-      } else {
-        // Pas connecté → Ouvrir modal de connexion avec message de bienvenue
-        console.log('[APP] 🔐 Paiement réussi mais non connecté - Affichage modal connexion');
-        setLoginWelcomeMessage("🎉 Paiement validé ! Bienvenue Partenaire. Connectez-vous pour accéder à votre espace.");
-        setShowCoachLogin(true);
-        cleanUrl();
       }
+      
+      // Uniquement si pas connecté → Ouvrir modal de connexion avec message de bienvenue
+      console.log('[APP] 🔐 Paiement réussi mais non connecté - Affichage modal connexion');
+      setLoginWelcomeMessage("🎉 Paiement validé ! Bienvenue Partenaire. Connectez-vous pour accéder à votre espace.");
+      setShowCoachLogin(true);
+      cleanUrl();
     }
   }, []);
 
