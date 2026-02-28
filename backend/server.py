@@ -6385,13 +6385,13 @@ async def scheduler_emit_group_message(request: Request):
 
 # === v9.2.7: PARAMÈTRES GLOBAUX PLATEFORME (Super Admin Only) ===
 
-SUPER_ADMIN_EMAIL_PLATFORM = "contact.artboost@gmail.com"
+# v9.5.6: Utilise la fonction is_super_admin() pour la vérification
 
 @api_router.get("/platform-settings")
 async def get_platform_settings(request: Request):
     """Récupérer les paramètres globaux de la plateforme"""
     user_email = request.headers.get('X-User-Email', '').lower()
-    is_super_admin = user_email == SUPER_ADMIN_EMAIL_PLATFORM.lower()
+    is_admin = is_super_admin(user_email)  # v9.5.6
     
     # Récupérer ou créer les settings
     settings = await db.platform_settings.find_one({"_id": "global"})
@@ -6401,14 +6401,14 @@ async def get_platform_settings(request: Request):
             "partner_access_enabled": True,  # Accès partenaires activé par défaut
             "maintenance_mode": False,       # Mode maintenance désactivé par défaut
             "updated_at": datetime.now(timezone.utc).isoformat(),
-            "updated_by": SUPER_ADMIN_EMAIL_PLATFORM
+            "updated_by": user_email
         }
         await db.platform_settings.insert_one(settings)
     
     return {
         "partner_access_enabled": settings.get("partner_access_enabled", True),
         "maintenance_mode": settings.get("maintenance_mode", False),
-        "is_super_admin": is_super_admin,
+        "is_super_admin": is_admin,
         "updated_at": settings.get("updated_at"),
         "updated_by": settings.get("updated_by")
     }
@@ -6418,8 +6418,8 @@ async def update_platform_settings(request: Request):
     """Mettre à jour les paramètres globaux (Super Admin uniquement)"""
     user_email = request.headers.get('X-User-Email', '').lower()
     
-    # Vérification Super Admin
-    if user_email != SUPER_ADMIN_EMAIL_PLATFORM.lower():
+    # Vérification Super Admin v9.5.6
+    if not is_super_admin(user_email):
         raise HTTPException(status_code=403, detail="Accès réservé au Super Admin")
     
     try:
