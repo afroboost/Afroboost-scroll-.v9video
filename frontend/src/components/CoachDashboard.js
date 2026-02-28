@@ -3709,8 +3709,8 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 <span className="text-white/60 text-sm">
                   Connecté en tant que <span className="text-purple-400">{coachUser.email}</span>
                 </span>
-                {/* === AFFICHAGE CRÉDITS v9.1.9 - Solde visible violet néon === */}
-                {!isSuperAdmin && coachCredits !== null && (
+                {/* === AFFICHAGE CRÉDITS v9.2.3 - Solde TOUJOURS visible === */}
+                {!isSuperAdmin && (
                   <span 
                     className="ml-2 px-3 py-1 rounded-full text-sm font-bold"
                     style={{
