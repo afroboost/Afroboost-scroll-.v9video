@@ -1954,6 +1954,7 @@ function App() {
     return null;
   });
   const [validationCode, setValidationCode] = useState(null); // For /validate/:code URL
+  const [loginWelcomeMessage, setLoginWelcomeMessage] = useState(null); // v9.1.8: Message de bienvenue après paiement
   
   // === SYSTÈME MULTI-COACH v8.9 ===
   const [showBecomeCoach, setShowBecomeCoach] = useState(false);
