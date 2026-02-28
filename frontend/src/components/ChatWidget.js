@@ -1848,6 +1848,55 @@ export const ChatWidget = () => {
       saveCachedMessages(messages);
     }
   }, [messages]);
+  
+  // === v9.4.0: RECHARGEMENT HISTORIQUE À L'OUVERTURE DU WIDGET ===
+  useEffect(() => {
+    const reloadOnOpen = async () => {
+      if (!isOpen) {
+        // Widget fermé - reset le badge quand on ferme
+        return;
+      }
+      
+      // Widget ouvert - recharger l'historique et reset le badge
+      setHasNewMessage(false);
+      setUnreadCount(0);
+      
+      // Charger depuis cache d'abord pour affichage instantané
+      const cachedMsgs = getCachedMessages();
+      if (cachedMsgs.length > 0 && messages.length === 0) {
+        setMessages(cachedMsgs);
+        console.log('[v9.4.0] Messages restaurés depuis cache:', cachedMsgs.length);
+      }
+      
+      // Puis charger depuis API en arrière-plan
+      const savedSession = sessionData || (() => {
+        try {
+          return JSON.parse(localStorage.getItem(CHAT_SESSION_KEY));
+        } catch { return null; }
+      })();
+      
+      if (savedSession?.id) {
+        try {
+          const response = await axios.get(`${API}/chat/sessions/${savedSession.id}/messages`);
+          if (response.data && response.data.length > 0) {
+            const restoredMessages = response.data.map(msg => ({
+              id: msg.id,
+              type: msg.sender_type === 'user' ? 'user' : msg.sender_type === 'coach' ? 'coach' : 'ai',
+              text: msg.content,
+              sender: msg.sender_name
+            }));
+            setMessages(restoredMessages);
+            saveCachedMessages(restoredMessages);
+            console.log('[v9.4.0] Historique rechargé à l\'ouverture:', restoredMessages.length, 'messages');
+          }
+        } catch (err) {
+          console.warn('[v9.4.0] Rechargement historique échoué:', err.message);
+        }
+      }
+    };
+    
+    reloadOnOpen();
+  }, [isOpen]); // Se déclenche uniquement quand isOpen change
 
   // Extraire le token de lien depuis l'URL si présent
   const getLinkTokenFromUrl = () => {
