@@ -990,6 +990,68 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
                     </div>
                   )}
                   
+                  {/* v9.3.0: Boutons de paiement */}
+                  {(paymentConfig.stripe || paymentConfig.twint || paymentConfig.paypal) && calculateFinalPrice() > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs text-white/50 text-center">Méthodes de paiement disponibles :</p>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {paymentConfig.stripe && (
+                          <a
+                            href={paymentConfig.stripe}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105"
+                            style={{ 
+                              background: 'linear-gradient(135deg, #635BFF, #8B5CF6)',
+                              color: 'white',
+                              fontSize: '13px'
+                            }}
+                            data-testid="stripe-payment-btn"
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+                            </svg>
+                            Payer avec Stripe
+                          </a>
+                        )}
+                        {paymentConfig.twint && (
+                          <a
+                            href={paymentConfig.twint}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105"
+                            style={{ 
+                              background: 'linear-gradient(135deg, #000000, #333333)',
+                              color: 'white',
+                              fontSize: '13px'
+                            }}
+                            data-testid="twint-payment-btn"
+                          >
+                            <span className="text-lg">📱</span>
+                            TWINT
+                          </a>
+                        )}
+                        {paymentConfig.paypal && (
+                          <a
+                            href={paymentConfig.paypal}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105"
+                            style={{ 
+                              background: 'linear-gradient(135deg, #0070BA, #003087)',
+                              color: 'white',
+                              fontSize: '13px'
+                            }}
+                            data-testid="paypal-payment-btn"
+                          >
+                            <span className="text-lg">💳</span>
+                            PayPal
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
                   <button
                     type="submit"
                     disabled={bookingLoading}
