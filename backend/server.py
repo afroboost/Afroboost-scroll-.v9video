@@ -694,11 +694,13 @@ class Coach(BaseModel):
     phone: Optional[str] = None
     photo_url: Optional[str] = None
     bio: Optional[str] = None
+    platform_name: Optional[str] = None  # v9.0.1 Nom personnalisé de la plateforme
+    logo_url: Optional[str] = None  # v9.0.1 Logo personnalisé
     role: str = "coach"  # "coach" ou "super_admin"
     credits: int = 0  # Solde de crédits actuel
-    stripe_customer_id: Optional[str] = None  # ID client Stripe
-    stripe_connect_id: Optional[str] = None  # ID Stripe Connect pour recevoir les paiements
-    pack_id: Optional[str] = None  # ID du pack actuel
+    stripe_customer_id: Optional[str] = None
+    stripe_connect_id: Optional[str] = None
+    pack_id: Optional[str] = None
     is_active: bool = True
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     updated_at: Optional[str] = None
