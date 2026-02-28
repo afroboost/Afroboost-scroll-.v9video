@@ -90,6 +90,7 @@ const CampaignManager = ({
   setAiTestMessage,
   aiTestResponse,
   aiTestLoading,
+  aiConfigSaveStatus, // v9.3.8: Indicateur auto-save
   
   // === PREVIEW MÉDIA ===
   resolvedThumbnail,
