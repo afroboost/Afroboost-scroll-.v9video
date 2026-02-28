@@ -1734,23 +1734,41 @@ async def mark_campaign_sent(campaign_id: str, data: dict):
     return {"success": True}
 
 # --- Payment Links ---
-@api_router.get("/payment-links", response_model=PaymentLinks)
-async def get_payment_links():
-    links = await db.payment_links.find_one({"id": "payment_links"}, {"_id": 0})
+# v9.3.0: Isolation par coach_id
+@api_router.get("/payment-links")
+async def get_payment_links(request: Request):
+    user_email = request.headers.get('X-User-Email', '').lower().strip()
+    is_super_admin = user_email == "contact.artboost@gmail.com"
+    
+    # ID de lien selon le coach
+    link_id = "payment_links" if is_super_admin else f"payment_links_{user_email}"
+    
+    links = await db.payment_links.find_one({"id": link_id}, {"_id": 0})
     if not links:
         default_links = PaymentLinks().model_dump()
+        default_links["id"] = link_id
+        default_links["coach_id"] = user_email if not is_super_admin else None
         await db.payment_links.insert_one(default_links)
         return default_links
     return links
 
 @api_router.put("/payment-links")
-async def update_payment_links(links: PaymentLinksUpdate):
+async def update_payment_links(links: PaymentLinksUpdate, request: Request):
+    user_email = request.headers.get('X-User-Email', '').lower().strip()
+    is_super_admin = user_email == "contact.artboost@gmail.com"
+    
+    # ID de lien selon le coach
+    link_id = "payment_links" if is_super_admin else f"payment_links_{user_email}"
+    
+    link_data = links.model_dump()
+    link_data["coach_id"] = user_email if not is_super_admin else None
+    
     await db.payment_links.update_one(
-        {"id": "payment_links"}, 
-        {"$set": links.model_dump()}, 
+        {"id": link_id}, 
+        {"$set": link_data}, 
         upsert=True
     )
-    return await db.payment_links.find_one({"id": "payment_links"}, {"_id": 0})
+    return await db.payment_links.find_one({"id": link_id}, {"_id": 0})
 
 # --- Stripe Checkout avec TWINT ---
 
