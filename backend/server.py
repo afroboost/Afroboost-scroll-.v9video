@@ -6224,6 +6224,10 @@ fastapi_app.include_router(campaign_router, prefix="/api")
 # v9.1.4: Include reservation routes
 fastapi_app.include_router(reservation_router, prefix="/api")
 
+# v9.1.9: Include auth routes (modularisation)
+fastapi_app.include_router(auth_router, prefix="/api")
+fastapi_app.include_router(legacy_auth_router, prefix="/api")
+
 fastapi_app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
