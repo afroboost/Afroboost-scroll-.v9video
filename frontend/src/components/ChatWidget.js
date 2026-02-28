@@ -3862,6 +3862,8 @@ export const ChatWidget = () => {
                     </button>
                     
                     {/* Bouton Devenir Partenaire v9.1.6 - Dynamique selon statut */}
+                    {/* v9.2.8: Masqué si partner_access_enabled = false (sauf si déjà partenaire) */}
+                    {(platformSettings.partner_access_enabled || isRegisteredCoach || isCoachMode) && (
                     <button
                       type="button"
                       onClick={() => {
@@ -3890,6 +3892,7 @@ export const ChatWidget = () => {
                     >
                       {(isRegisteredCoach || isCoachMode) ? '🏠 Mon Espace Partenaire' : 'Devenir Partenaire'}
                     </button>
+                    )}
                     
                     <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.4)', marginTop: '8px' }}>
                       Vos données sont protégées et utilisées uniquement pour vous contacter.
