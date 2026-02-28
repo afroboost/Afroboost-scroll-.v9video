@@ -3873,6 +3873,110 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             )}
           </div>
           <div className="flex gap-3 items-center">
+            {/* === v9.2.7: QUICK CONTROL - Icône minimaliste Super Admin === */}
+            {isSuperAdmin && (
+              <div className="relative" ref={quickControlRef}>
+                <button 
+                  onClick={() => setShowQuickControl(!showQuickControl)}
+                  title="Quick Control"
+                  className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200"
+                  style={{ 
+                    background: showQuickControl 
+                      ? 'linear-gradient(135deg, rgba(217,28,210,0.4), rgba(139,92,246,0.4))' 
+                      : 'rgba(255,255,255,0.08)',
+                    border: showQuickControl ? '1px solid rgba(217,28,210,0.6)' : '1px solid rgba(255,255,255,0.1)'
+                  }}
+                  data-testid="quick-control-btn"
+                >
+                  {/* Icône 3 points verticaux style premium */}
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+                    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                    <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+                  </svg>
+                </button>
+                
+                {/* Menu Quick Control */}
+                {showQuickControl && (
+                  <div 
+                    className="absolute right-0 mt-2 w-64 rounded-xl overflow-hidden z-50"
+                    style={{ 
+                      background: 'linear-gradient(180deg, rgba(20,10,30,0.98) 0%, rgba(10,5,20,0.99) 100%)',
+                      border: '1px solid rgba(217,28,210,0.3)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(217,28,210,0.2)'
+                    }}
+                    data-testid="quick-control-menu"
+                  >
+                    <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                      <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Quick Control</span>
+                    </div>
+                    
+                    {/* Toggle: Accès Partenaires */}
+                    <div className="px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{platformSettings.partner_access_enabled ? '🟢' : '🔴'}</span>
+                        <div>
+                          <p className="text-sm text-white font-medium">Accès Partenaires</p>
+                          <p className="text-xs text-white/40">Inscription & connexion</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => togglePlatformSetting('partner_access_enabled')}
+                        className="w-11 h-6 rounded-full relative transition-all duration-300"
+                        style={{ 
+                          background: platformSettings.partner_access_enabled 
+                            ? 'linear-gradient(90deg, #22c55e, #16a34a)' 
+                            : 'rgba(255,255,255,0.15)'
+                        }}
+                        data-testid="toggle-partner-access"
+                      >
+                        <span 
+                          className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-md transition-all duration-300"
+                          style={{ left: platformSettings.partner_access_enabled ? '24px' : '4px' }}
+                        />
+                      </button>
+                    </div>
+                    
+                    {/* Toggle: Mode Maintenance */}
+                    <div className="px-4 py-3 flex items-center justify-between hover:bg-white/5 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{platformSettings.maintenance_mode ? '🔴' : '🟢'}</span>
+                        <div>
+                          <p className="text-sm text-white font-medium">Mode Maintenance</p>
+                          <p className="text-xs text-white/40">Bloquer tout accès</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => togglePlatformSetting('maintenance_mode')}
+                        className="w-11 h-6 rounded-full relative transition-all duration-300"
+                        style={{ 
+                          background: platformSettings.maintenance_mode 
+                            ? 'linear-gradient(90deg, #ef4444, #dc2626)' 
+                            : 'rgba(255,255,255,0.15)'
+                        }}
+                        data-testid="toggle-maintenance"
+                      >
+                        <span 
+                          className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-md transition-all duration-300"
+                          style={{ left: platformSettings.maintenance_mode ? '24px' : '4px' }}
+                        />
+                      </button>
+                    </div>
+                    
+                    {/* Separator */}
+                    <div className="border-t mx-3" style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+                    
+                    {/* Info */}
+                    <div className="px-4 py-2">
+                      <p className="text-[10px] text-white/30 text-center">
+                        Contrôles instantanés • Super Admin
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            
             {/* === BOUTON SUPER ADMIN (visible uniquement pour Bassi) === */}
             {isSuperAdmin && (
               <button 
