@@ -2699,11 +2699,18 @@ function App() {
         // Appliquer les couleurs personnalisées
         if (cachedConcept.primaryColor) {
           document.documentElement.style.setProperty('--primary-color', cachedConcept.primaryColor);
-          document.documentElement.style.setProperty('--glow-color', `${cachedConcept.primaryColor}66`);
-          document.documentElement.style.setProperty('--glow-color-strong', `${cachedConcept.primaryColor}99`);
+          // Glow: utiliser glowColor si défini, sinon primaryColor
+          const glowBase = cachedConcept.glowColor || cachedConcept.primaryColor;
+          document.documentElement.style.setProperty('--glow-color', `${glowBase}66`);
+          document.documentElement.style.setProperty('--glow-color-strong', `${glowBase}99`);
         }
         if (cachedConcept.secondaryColor) {
           document.documentElement.style.setProperty('--secondary-color', cachedConcept.secondaryColor);
+        }
+        // v9.4.4: Appliquer la couleur de fond
+        if (cachedConcept.backgroundColor) {
+          document.documentElement.style.setProperty('--background-color', cachedConcept.backgroundColor);
+          document.body.style.backgroundColor = cachedConcept.backgroundColor;
         }
       } else if (requestMap.concept !== undefined) {
         const conceptData = responses[requestMap.concept].data;
@@ -2712,11 +2719,18 @@ function App() {
         // Appliquer les couleurs personnalisées
         if (conceptData.primaryColor) {
           document.documentElement.style.setProperty('--primary-color', conceptData.primaryColor);
-          document.documentElement.style.setProperty('--glow-color', `${conceptData.primaryColor}66`);
-          document.documentElement.style.setProperty('--glow-color-strong', `${conceptData.primaryColor}99`);
+          // Glow: utiliser glowColor si défini, sinon primaryColor
+          const glowBase = conceptData.glowColor || conceptData.primaryColor;
+          document.documentElement.style.setProperty('--glow-color', `${glowBase}66`);
+          document.documentElement.style.setProperty('--glow-color-strong', `${glowBase}99`);
         }
         if (conceptData.secondaryColor) {
           document.documentElement.style.setProperty('--secondary-color', conceptData.secondaryColor);
+        }
+        // v9.4.4: Appliquer la couleur de fond
+        if (conceptData.backgroundColor) {
+          document.documentElement.style.setProperty('--background-color', conceptData.backgroundColor);
+          document.body.style.backgroundColor = conceptData.backgroundColor;
         }
       }
 
