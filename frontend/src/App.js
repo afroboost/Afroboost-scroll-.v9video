@@ -519,8 +519,9 @@ const FolderIcon = () => (
 // Splash Screen - Pure Black with configurable logo and PWA fallback
 const SplashScreen = ({ logoUrl }) => {
   const [imgError, setImgError] = useState(false);
-  // Use PWA logo as fallback if no logoUrl or image fails to load
-  const fallbackLogo = '/logo512.png';
+  // v9.3.8: Use Afroboost default logo as fallback
+  const DEFAULT_LOGO = 'https://i.ibb.co/4Z7q3Tvw/file-000000005c1471f4bc77c9174753b16b.png';
+  const fallbackLogo = DEFAULT_LOGO;
   const showLogo = logoUrl && !imgError;
   const showFallback = !logoUrl || imgError;
   
