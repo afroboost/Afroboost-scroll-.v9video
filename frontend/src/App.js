@@ -3280,7 +3280,7 @@ function App() {
     console.log('[APP] 🚪 Déconnexion coach effectuée');
   };
 
-  // Fonction de connexion Google OAuth - v9.1.5: PROPULSION AUTO vers dashboard
+  // Fonction de connexion Google OAuth - v9.2.4: PROPULSION FORCÉE avec mémoire morte
   const handleGoogleLogin = async (userData) => {
     // Persister la session coach
     localStorage.setItem('afroboost_coach_mode', 'true');
@@ -3291,10 +3291,25 @@ function App() {
     setShowCoachLogin(false);
     console.log('[APP] ✅ Connexion coach réussie:', userData?.email);
     
-    // v9.1.5: PROPULSION AUTOMATIQUE vers le dashboard après login
-    // Force la navigation vers #coach-dashboard pour éviter de rester sur l'accueil
-    window.location.hash = '#coach-dashboard';
-    console.log('[APP] 🚀 v9.1.5 PROPULSION: Redirection automatique vers dashboard');
+    // v9.2.4: MÉMOIRE MORTE - Vérifier si redirection post-paiement était demandée
+    const shouldRedirectToDash = localStorage.getItem('redirect_to_dash');
+    const redirectMessage = localStorage.getItem('afroboost_redirect_message');
+    
+    // Nettoyer les flags de redirection
+    localStorage.removeItem('redirect_to_dash');
+    localStorage.removeItem('afroboost_redirect_intent');
+    localStorage.removeItem('afroboost_redirect_message');
+    
+    // Afficher le message de bienvenue si présent
+    if (redirectMessage) {
+      setValidationMessage(redirectMessage);
+      setTimeout(() => setValidationMessage(""), 5000);
+    }
+    
+    // v9.2.4: PROPULSION FORCÉE vers le dashboard après login
+    // Utilise #partner-dashboard comme alias de #coach-dashboard
+    window.location.hash = shouldRedirectToDash ? '#partner-dashboard' : '#coach-dashboard';
+    console.log('[APP] 🚀 v9.2.4 PROPULSION FORCÉE:', shouldRedirectToDash ? 'Post-paiement' : 'Login standard');
     
     // Vérifier le rôle de l'utilisateur (Super Admin ou Coach)
     try {
