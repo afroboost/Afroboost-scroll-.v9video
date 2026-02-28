@@ -3724,11 +3724,11 @@ function App() {
         </div>
 
         {/* Hero Media - YouTube, Vimeo, Image, Video - Only show if URL is valid */}
-        {/* v9.4.7: Carousel des vidéos partenaires */}
+        {/* v9.4.8: Scroll vertical style Reels */}
         <PartnersCarousel 
           onPartnerClick={(partner) => {
             const username = partner.email || partner.id || partner.name?.toLowerCase().replace(/\s+/g, '-');
-            window.location.hash = `#coach/${username}`;
+            window.location.href = `/coach/${username}`;
           }} 
         />
 
