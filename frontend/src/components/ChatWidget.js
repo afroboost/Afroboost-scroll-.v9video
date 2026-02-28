@@ -1860,6 +1860,7 @@ export const ChatWidget = () => {
       // Widget ouvert - recharger l'historique et reset le badge
       setHasNewMessage(false);
       setUnreadCount(0);
+      setUnreadPrivateCount(0); // v9.4.0: Reset le badge quand le widget est ouvert
       
       // Charger depuis cache d'abord pour affichage instantané
       const cachedMsgs = getCachedMessages();
