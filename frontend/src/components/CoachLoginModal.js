@@ -23,7 +23,7 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const CoachLoginModal = ({ t, onLogin, onCancel }) => {
+const CoachLoginModal = ({ t, onLogin, onCancel, welcomeMessage }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
