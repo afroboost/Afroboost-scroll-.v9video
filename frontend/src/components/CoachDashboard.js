@@ -306,7 +306,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
   
   // === v9.1.3: MARQUE BLANCHE - platform_name ===
   const [coachPlatformName, setCoachPlatformName] = useState(null);
-  const dashboardTitle = coachPlatformName || (isSuperAdmin ? 'Afroboost' : 'Mon Espace Afroboost');
+  const dashboardTitle = coachPlatformName || (isSuperAdmin ? 'Afroboost' : 'Mon Espace Partenaire');
   
   // Helper: crédits insuffisants (pour info, mais plus de grisage v9.1.3)
   const hasInsufficientCredits = !isSuperAdmin && coachCredits !== null && coachCredits !== -1 && coachCredits <= 0;
