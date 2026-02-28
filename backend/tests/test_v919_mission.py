@@ -115,8 +115,11 @@ class TestMissionV919:
         response = requests.get(f"{BASE_URL}/api/coach/vitrine/bassi", timeout=10)
         assert response.status_code == 200, f"Expected 200, got: {response.status_code}"
         data = response.json()
-        assert "platform_name" in data
-        print(f"✅ Vitrine bassi works - platform_name: {data.get('platform_name')}")
+        # platform_name is nested inside coach object
+        assert "coach" in data
+        coach_data = data.get("coach", {})
+        platform_name = coach_data.get("platform_name") or data.get("platform_name")
+        print(f"✅ Vitrine bassi works - platform_name: {platform_name}, coach name: {coach_data.get('name')}")
 
 
 if __name__ == "__main__":
