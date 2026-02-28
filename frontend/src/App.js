@@ -2260,6 +2260,12 @@ function App() {
         return;
       }
       
+      // v9.4.7: Détection #become-coach pour afficher la page d'inscription partenaire
+      if (hash.includes('#become-coach') || hash.includes('become-coach')) {
+        setShowBecomeCoach(true);
+        return;
+      }
+      
       if (hash.startsWith('#/v/')) {
         const slug = hash.replace('#/v/', '').split('/')[0].split('?')[0].trim();
         if (slug && slug.length > 0) {
