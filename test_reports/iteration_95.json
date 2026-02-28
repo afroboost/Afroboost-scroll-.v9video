@@ -1,0 +1,100 @@
+{
+  "summary": "Mission v9.3.2 - ÉTANCHÉITÉ TOTALE, MIROIR RÉEL & FIX BOUTON - All features verified. Backend 12/12 tests passed, Frontend UI fully functional.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/pytest/pytest_v932_mission.xml",
+    "/app/backend/tests/test_v932_mission.py"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ reservation_routes.py line 66: Filtrage par coach_id - Super Admin voit tout, autres coachs voient seulement leurs données",
+    "✅ server.py lines 3566-3568: Filtrage chat_participants par coach_id (référence obsolète - filtrage présent dans routes)",
+    "✅ CoachVitrine.js lines 603-658: Header vidéo dynamique supportant YouTube, Vimeo, MP4 et images",
+    "✅ CoachVitrine.js lines 996-1036: Code Promo (optionnel) avec bouton 'Valider' dans le modal de réservation",
+    "✅ CoachVitrine.js lines 1066-1125: Boutons de paiement (Stripe/Twint/PayPal) affichés quand configurés",
+    "✅ ChatWidget.js lines 844-886: Vérification périodique du statut partenaire côté serveur (30s interval)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v932_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "super_admin_email": "contact.artboost@gmail.com",
+    "test_partner_email": "nouveau.partenaire@test.com",
+    "registered_coach_email": "bassicustomshoes@gmail.com",
+    "api_url": "https://partner-platform-6.preview.emergentagent.com"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.3.2 verified successfully. Key verifications: (1) Homepage shows 8 March date buttons (4 for Session Cardio: 04.03, 11.03, 18.03, 25.03 + 4 for Sunday Vibes). (2) ANTI-RÉGRESSION BASSI: 7 réservations confirmées. (3) ÉTANCHÉITÉ RESERVATIONS: Nouveau partenaire voit 0 réservation. (4) ANTI-RÉGRESSION CONTACTS: Bassi voit 8 contacts. (5) ÉTANCHÉITÉ CONTACTS: Nouveau partenaire voit 0 contact. (6) API /check-partner retourne is_partner=true pour bassicustomshoes@gmail.com (Henri BASSI). (7) Vitrine coach affiche header animé si pas de vidéo, sinon supporte YouTube/Vimeo/MP4/images. (8) Modal réservation affiche Code Promo avec bouton Valider. (9) Boutons paiement affichés quand liens configurés (message 'paiement confirmé par coach' sinon). (10) Chat widget WhatsApp accessible avec bouton 'Son'.",
+  "verified_features_v932": {
+    "HOMEPAGE_MARCH_DATES": "VERIFIED - 8 date buttons: Session Cardio (04.03, 11.03, 18.03, 25.03) + Sunday Vibes (01.03, 08.03, 15.03, 22.03)",
+    "BASSI_RESERVATIONS_ANTI_REGRESSION": "VERIFIED - 7 reservations (ANTI-RÉGRESSION PASSED)",
+    "NEW_PARTNER_RESERVATIONS_ISOLATION": "VERIFIED - 0 reservations (ÉTANCHÉITÉ PASSED)",
+    "BASSI_CONTACTS_ANTI_REGRESSION": "VERIFIED - 8 contacts (ANTI-RÉGRESSION PASSED)",
+    "NEW_PARTNER_CONTACTS_ISOLATION": "VERIFIED - 0 contacts (ÉTANCHÉITÉ PASSED)",
+    "CHECK_PARTNER_API_REGISTERED_COACH": "VERIFIED - bassicustomshoes@gmail.com returns is_partner=true, name=Henri BASSI",
+    "CHECK_PARTNER_API_UNKNOWN_EMAIL": "VERIFIED - unknown@test.com returns is_partner=false",
+    "VITRINE_HERO_HEADER": "VERIFIED - Supports YouTube/Vimeo/MP4/Image, shows animated placeholder if not configured",
+    "VITRINE_CODE_PROMO_FORM": "VERIFIED - 'Code Promo (optionnel)' field with 'Valider' button in booking modal",
+    "VITRINE_PAYMENT_BUTTONS": "VERIFIED - Shows Stripe/Twint/PayPal when configured, fallback message otherwise",
+    "CHAT_WIDGET_PERSISTENT": "VERIFIED - WhatsApp-style floating button accessible",
+    "CHAT_PARTNER_VERIFICATION_PERIODIC": "VERIFIED - 30s interval re-verification in ChatWidget.js useEffect"
+  },
+  "api_verification": {
+    "bassi_reservations": {
+      "url": "GET /api/reservations",
+      "header": "X-User-Email: contact.artboost@gmail.com",
+      "result": "pagination.total = 7"
+    },
+    "new_partner_reservations": {
+      "url": "GET /api/reservations",
+      "header": "X-User-Email: nouveau.partenaire@test.com",
+      "result": "pagination.total = 0"
+    },
+    "bassi_contacts": {
+      "url": "GET /api/chat/participants",
+      "header": "X-User-Email: contact.artboost@gmail.com",
+      "result": "count = 8"
+    },
+    "new_partner_contacts": {
+      "url": "GET /api/chat/participants",
+      "header": "X-User-Email: nouveau.partenaire@test.com",
+      "result": "count = 0"
+    },
+    "check_partner_registered": {
+      "url": "GET /api/check-partner/bassicustomshoes@gmail.com",
+      "result": "{is_partner: true, email: 'bassicustomshoes@gmail.com', name: 'Henri BASSI', has_credits: true}"
+    },
+    "check_partner_unknown": {
+      "url": "GET /api/check-partner/unknown.user.test123@nowhere.com",
+      "result": "{is_partner: false}"
+    }
+  },
+  "playwright_screenshots": [
+    ".screenshots/v932_homepage.png - Homepage with March dates and ARTE video",
+    ".screenshots/v932_vitrine.png - CoachVitrine Henri BASSI with animated header",
+    ".screenshots/v932_vitrine_offers.png - Vitrine offers section",
+    ".screenshots/v932_vitrine_courses.png - Courses & Sessions section",
+    ".screenshots/v932_booking_modal.png - Booking modal with Code Promo field and Valider button",
+    ".screenshots/v932_chat_button.png - WhatsApp floating chat button"
+  ],
+  "pytest_results": {
+    "total_tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "test_file": "/app/backend/tests/test_v932_mission.py"
+  }
+}
