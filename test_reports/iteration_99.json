@@ -1,0 +1,82 @@
+{
+  "summary": "Mission v9.4.0 - CHAT MEMORY PERSISTENCE AND BADGE NOTIFICATIONS - All backend tests passed (17/17 + 7/7 new tests). Frontend code verified and minor fix applied for badge reset.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/pytest/pytest_v940_mission.xml",
+    "/app/test_reports/pytest/pytest_v940_chat_memory.xml",
+    "/app/backend/tests/test_v940_chat_memory.py"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ ChatWidget.js lines 612-655: getCachedMessages() and saveCachedMessages() correctly implement dual localStorage + sessionStorage cache",
+    "✅ ChatWidget.js line 627: localStorage key is MESSAGE_CACHE_KEY + '_persist' for persistent storage",
+    "✅ ChatWidget.js line 648-650: saveCachedMessages() writes to BOTH sessionStorage AND localStorage",
+    "✅ ChatWidget.js lines 1855-1899: useEffect reloads messages from cache then API when widget opens (isOpen changes)",
+    "✅ ChatWidget.js lines 2007-2015: message_received socket event increments unreadPrivateCount when widget closed",
+    "✅ ChatWidget.js lines 2031-2036: group_message socket event increments unreadPrivateCount when not focused",
+    "✅ ChatWidget.js lines 3264-3288: Badge displayed with data-testid='unread-mp-badge' showing count up to 99+",
+    "🔧 FIXED: ChatWidget.js line 1863: Added setUnreadPrivateCount(0) to reset badge when widget opens"
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/ChatWidget.js",
+    "/app/backend/tests/test_v940_chat_memory.py"
+  ],
+  "success_rate": {
+    "backend": "100% (17/17 existing + 7/7 new tests)",
+    "frontend": "100% (code review + Playwright verification)"
+  },
+  "test_credentials": {
+    "api_url": "https://coach-platform-46.preview.emergentagent.com"
+  },
+  "seed_data_creation": "TestUser940, TestMsgUser - created during pytest for chat session verification",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.4.0 verified. Key implementations: (1) CHAT MEMORY: Dual cache with localStorage (persistent) + sessionStorage (session). saveCachedMessages() stores last 20 messages in both. getCachedMessages() reads from session first, then persistent. Console log '[CACHE v9.4.0] 💾 Messages mis en cache (session+persist)' confirms working. (2) BADGE NOTIFICATIONS: unreadPrivateCount incremented on message_received and group_message socket events when widget closed. Badge displays on WhatsApp button with data-testid='unread-mp-badge'. (3) FIXED ISSUE: Added setUnreadPrivateCount(0) at line 1863 to reset badge when widget opens. (4) AUTO RELOAD: useEffect at lines 1852-1899 reloads history from cache then API when isOpen changes to true.",
+  "verified_features_v940": {
+    "CACHE_PERSISTANCE": {
+      "localStorage_key": "afroboost_last_msgs_persist",
+      "sessionStorage_key": "afroboost_last_msgs",
+      "getCachedMessages": "VERIFIED - lines 614-641, prioritizes sessionStorage then localStorage",
+      "saveCachedMessages": "VERIFIED - lines 643-655, writes to both storages",
+      "max_cached_messages": 20
+    },
+    "BADGE_NOTIFICATIONS": {
+      "unreadPrivateCount_state": "VERIFIED - line 1350",
+      "increment_on_message_received": "VERIFIED - line 2013",
+      "increment_on_group_message": "VERIFIED - line 2034",
+      "reset_on_widget_open": "FIXED - line 1863 (added setUnreadPrivateCount(0))",
+      "badge_display": "VERIFIED - lines 3264-3288, data-testid='unread-mp-badge'"
+    },
+    "AUTO_RELOAD_ON_OPEN": {
+      "useEffect_trigger": "VERIFIED - lines 1852-1899, depends on [isOpen]",
+      "cache_first": "VERIFIED - getCachedMessages() called at line 1865",
+      "api_background_reload": "VERIFIED - axios.get at line 1880"
+    }
+  },
+  "pytest_results": {
+    "existing_tests": {
+      "total": 17,
+      "passed": 17,
+      "file": "/app/backend/tests/test_v938_mission.py"
+    },
+    "new_tests_v940": {
+      "total": 7,
+      "passed": 7,
+      "file": "/app/backend/tests/test_v940_chat_memory.py"
+    }
+  },
+  "fix_applied": {
+    "file": "/app/frontend/src/components/ChatWidget.js",
+    "line": 1863,
+    "change": "Added setUnreadPrivateCount(0) to reset badge counter when widget opens",
+    "reason": "Original implementation only reset unreadCount and hasNewMessage, but not unreadPrivateCount"
+  }
+}
