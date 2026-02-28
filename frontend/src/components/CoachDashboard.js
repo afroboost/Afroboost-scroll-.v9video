@@ -5503,6 +5503,10 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
             // === UTILS ===
             showCampaignToast={showCampaignToast}
             API={API}
+            
+            // === v9.0.2: CRÉDITS ===
+            hasInsufficientCredits={hasInsufficientCredits}
+            coachCredits={coachCredits}
           />
         )}
         {/* [CAMPAGNE_END] - Section extraite vers CampaignManager.js (~1490 lignes économisées) */}
