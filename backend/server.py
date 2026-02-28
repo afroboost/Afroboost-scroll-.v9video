@@ -1770,6 +1770,27 @@ async def update_payment_links(links: PaymentLinksUpdate, request: Request):
     )
     return await db.payment_links.find_one({"id": link_id}, {"_id": 0})
 
+# v9.3.0: Endpoint public pour récupérer les payment links d'un coach (vitrine)
+@api_router.get("/payment-links/{coach_email}")
+async def get_coach_payment_links(coach_email: str):
+    """Récupère les liens de paiement d'un coach spécifique (pour la vitrine publique)"""
+    coach_email = coach_email.lower().strip()
+    is_bassi = coach_email == "contact.artboost@gmail.com"
+    
+    link_id = "payment_links" if is_bassi else f"payment_links_{coach_email}"
+    
+    links = await db.payment_links.find_one({"id": link_id}, {"_id": 0})
+    if not links:
+        return {"stripe": "", "paypal": "", "twint": "", "coachWhatsapp": ""}
+    
+    # Retourner seulement les liens publics
+    return {
+        "stripe": links.get("stripe", ""),
+        "paypal": links.get("paypal", ""),
+        "twint": links.get("twint", ""),
+        "coachWhatsapp": links.get("coachWhatsapp", "")
+    }
+
 # --- Stripe Checkout avec TWINT ---
 
 class CreateCheckoutRequest(BaseModel):
