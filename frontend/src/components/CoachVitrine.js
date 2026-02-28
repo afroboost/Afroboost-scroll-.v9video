@@ -761,43 +761,18 @@ const CoachVitrine = ({ username, onClose, onBack }) => {
             `}</style>
           </div>
 
-          {/* Photo et nom du coach en haut à droite (header sticky) */}
-                    background: 'linear-gradient(135deg, #D91CD2, #8B5CF6)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                  }}
-                >
-                  {displayName}
-                </h2>
-                <p className="text-white/50 text-sm mt-2 relative z-10">Partenaire Afroboost</p>
-                
-                {/* Animation CSS */}
-                <style>{`
-                  @keyframes pulse {
-                    0%, 100% { transform: scale(1); opacity: 0.9; }
-                    50% { transform: scale(1.05); opacity: 1; }
-                  }
-                `}</style>
-              </div>
-            )}
-            
-            {/* Overlay gradient */}
+          {/* Section Cours - ID pour le scroll */}
+          <div id="vitrine-courses-section">
+            {/* Profil Coach - Design miroir Afroboost */}
             <div 
-              className="absolute bottom-0 left-0 right-0 h-20"
-              style={{ background: 'linear-gradient(transparent, rgba(10,5,15,0.9))' }}
-            />
-          </div>
-
-          {/* Profil Coach - Design miroir Afroboost */}
-          <div 
-            className="rounded-2xl p-8 mb-8 text-center relative overflow-hidden"
-            style={{ 
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(217, 28, 210, 0.1) 100%)',
-              border: '1px solid rgba(217, 28, 210, 0.3)',
-              boxShadow: '0 0 40px rgba(217, 28, 210, 0.15)'
-            }}
-          >
-            {/* Glow effect */}
+              className="rounded-2xl p-8 mb-8 text-center relative overflow-hidden"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(217, 28, 210, 0.1) 100%)',
+                border: '1px solid rgba(217, 28, 210, 0.3)',
+                boxShadow: '0 0 40px rgba(217, 28, 210, 0.15)'
+              }}
+            >
+              {/* Glow effect */}
             <div 
               className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-3xl"
               style={{ background: 'rgba(217, 28, 210, 0.1)' }}
