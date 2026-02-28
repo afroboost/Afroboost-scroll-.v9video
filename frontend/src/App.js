@@ -39,7 +39,7 @@ const API = `${BACKEND_URL}/api`;
 const ADMIN_EMAIL = 'contact.artboost@gmail.com';
 const APP_VERSION = '2.0.0';
 
-// v9.2.3: DÉTECTION IMMÉDIATE PROPULSION STRIPE (avant tout rendu)
+// v9.2.4: DÉTECTION IMMÉDIATE PROPULSION STRIPE (avant tout rendu) - MÉMOIRE MORTE
 // Cette logique s'exécute AVANT React pour capturer l'intention de redirection
 const detectStripeSuccess = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -51,8 +51,9 @@ const detectStripeSuccess = () => {
                     hash.includes('welcome=true');
   
   if (isSuccess) {
-    console.log('[APP] 🚀 v9.2.3 PROPULSION: Intent détecté AVANT rendu');
-    // Mémoriser l'intention dans localStorage
+    console.log('[APP] 🚀 v9.2.4 PROPULSION MÉMOIRE MORTE: Intent détecté AVANT rendu');
+    // v9.2.4: MÉMOIRE MORTE - Flag persistant pour redirection post-login
+    localStorage.setItem('redirect_to_dash', 'true');
     localStorage.setItem('afroboost_redirect_intent', 'dashboard');
     localStorage.setItem('afroboost_redirect_message', '🎉 Paiement validé ! Bienvenue Partenaire');
     
@@ -62,7 +63,7 @@ const detectStripeSuccess = () => {
     url.searchParams.delete('status');
     url.searchParams.delete('session_id');
     url.searchParams.delete('welcome');
-    url.hash = '#coach-dashboard';
+    url.hash = '#partner-dashboard';
     window.history.replaceState({}, '', url.pathname + url.hash);
     
     return true;
