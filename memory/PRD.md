@@ -1,5 +1,66 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.9 - JAUGE DE CRÉDITS ET AUDIT VALIDÉS ✅ (01 Mars 2026)
+
+### STATUT: MISSION v9.5.9 COMPLÈTE - "JAUGE DE CRÉDITS ET AUDIT VALIDÉS"
+
+| Objectif | Statut |
+|----------|--------|
+| Jauge de crédits visuelle (barre de progression) | ✅ |
+| Super Admin badge "Crédits : Illimités ♾️" | ✅ |
+| Un seul bouton Déconnexion | ✅ |
+| Isolation données vérifiée | ✅ |
+| Alignement pixel 5px | ✅ |
+| Chat violet préservé | ✅ |
+
+### 1. JAUGE DE CRÉDITS VISUELLE
+
+**Pour partenaires (CoachDashboard.js L4041-4079):**
+```jsx
+<div data-testid="coach-credits-badge">
+  <span>💰</span>
+  <div className="flex flex-col">
+    <span>{coachCredits} Crédits</span>
+    {/* Barre de progression */}
+    <div style={{
+      width: Math.min(100, (coachCredits / 50) * 100) + '%',
+      background: coachCredits <= 0 ? '#ef4444' 
+        : coachCredits < 5 ? 'linear-gradient(90deg, #ef4444, #f97316)' 
+        : 'linear-gradient(90deg, #D91CD2, #8b5cf6)'
+    }} />
+  </div>
+</div>
+```
+
+**Pour Super Admin (L4097-4111):**
+```jsx
+<span data-testid="super-admin-badge">
+  👑 Crédits : Illimités ♾️
+</span>
+```
+
+### 2. RÉSULTATS AUDIT
+
+| Vérification | Résultat |
+|--------------|----------|
+| Boutons Déconnexion | ✅ 1 seul (coach-logout-fixed) |
+| Super Admin voit tout | ✅ 8 réservations |
+| Partenaire test isolé | ✅ 0 réservations |
+| Alignement header→vidéo | ✅ 28px paddingTop |
+| Sessions sous Reels | ✅ maxHeight 85vh |
+
+### Tests v9.5.9 - Iteration 116
+
+| Test | Statut |
+|------|--------|
+| Backend: 16/16 tests | ✅ 100% |
+| Frontend: All features | ✅ 100% |
+| Jauge avec progress bar | ✅ gradient violet |
+| Super Admin badge | ✅ "♾️ Illimités" |
+| Isolation données | ✅ coach_id filter |
+
+---
+
 ## v9.5.8 - NETTOYAGE DOUBLONS ET ISOLATION CRÉDITS ✅ (01 Mars 2026)
 
 ### STATUT: MISSION v9.5.8 COMPLÈTE - "NETTOYAGE DOUBLONS ET ISOLATION CRÉDITS VALIDÉS"
