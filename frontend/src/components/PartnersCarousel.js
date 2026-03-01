@@ -800,8 +800,8 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
             >
               <PartnerVideoCard
                 partner={partner}
-                isMuted={mutedStates[partner.id || partner.email] !== false}
-                onToggleMute={() => handleToggleMute(partner.id || partner.email)}
+                isMuted={globalMuted}
+                onToggleMute={() => setGlobalMuted(!globalMuted)}
                 isLiked={likedStates[partner.id || partner.email] || false}
                 onLike={() => handleToggleLike(partner.id || partner.email)}
                 isPaused={pausedStates[partner.id || partner.email] || false}
