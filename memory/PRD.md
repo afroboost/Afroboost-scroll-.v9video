@@ -1,5 +1,69 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.6.4 - ESPACE MOBILE RÉDUIT ET LOGIN OPTIMISÉ ✅ (01 Mars 2026)
+
+### STATUT: MISSION v9.6.4 COMPLÈTE - "ZÉRO VIDE NOIR ET FLUX LOGIN"
+
+| Objectif | Statut |
+|----------|--------|
+| ZÉRO VIDE NOIR (5px padding) | ✅ |
+| Vidéo immersive (90vh) | ✅ |
+| Login réorganisé (Google en haut) | ✅ |
+| Devenir Partenaire en bas | ✅ |
+| Horaires accessibles | ✅ |
+| Chat violet préservé | ✅ |
+
+### 1. ZÉRO VIDE NOIR - ALIGNEMENT PIXEL
+
+**Modifications (PartnersCarousel.js + App.js):**
+```javascript
+// PartnersCarousel.js L202
+paddingTop: '5px'  // Réduit de 28px à 5px
+
+// PartnersCarousel.js L602-603
+paddingTop: '0px',
+paddingBottom: '0px'  // Header ultra-compact
+
+// App.js L3760
+height: '90vh',   // Vidéo immersive
+maxHeight: '90vh'
+```
+
+### 2. LOGIN MODAL RÉORGANISÉ
+
+| Position | Élément | data-testid |
+|----------|---------|-------------|
+| HAUT | "Déjà partenaire ?" + Bouton Google | google-login-btn |
+| MILIEU | Séparateur "ou" | - |
+| BAS | "✨ Devenir Partenaire" | become-partner-btn |
+
+```jsx
+// CoachLoginModal.js - Structure v9.6.4
+<p>Déjà partenaire ?</p>
+<button data-testid="google-login-btn">Se connecter avec Google</button>
+<div className="separator">ou</div>
+<button data-testid="become-partner-btn">✨ Devenir Partenaire</button>
+```
+
+### 3. ACCESSIBILITÉ PRÉSERVÉE
+
+| Élément | Accessible |
+|---------|-----------|
+| Sessions | ✅ Scroll vers bas |
+| Footer © Afroboost 2026 | ✅ Scroll vers bas |
+| Loupe recherche | ✅ Header |
+| Chat violet | ✅ #D91CD2 |
+
+### Tests v9.6.4 - Iteration 119
+
+| Catégorie | Tests | Résultat |
+|-----------|-------|----------|
+| Backend | 6/6 | ✅ 100% |
+| Frontend | All | ✅ 100% |
+| Playwright | 11/11 | ✅ 100% |
+
+---
+
 ## v9.6.1 - ARCHITECTURE FLASH ET DESIGN ÉPURÉ SÉCURISÉS ✅ (01 Mars 2026)
 
 ### STATUT: MISSION v9.6.1 COMPLÈTE - "VALIDATION FINALE ONE-CLICK & ÉPURE TOTALE"
