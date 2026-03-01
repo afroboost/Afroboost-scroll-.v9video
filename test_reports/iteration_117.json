@@ -1,0 +1,104 @@
+{
+  "summary": "Mission v9.6.0 Testing Complete - All features verified: 1) window.location.assign() for FLASH login redirection, 2) 'Mon Dashboard' button added to ChatWidget (goto-dashboard-btn), 3) Header épuré with only logo + search icon, 4) Video overlay clean (sound, reserve, profile/like/bio only), 5) Alignment paddingTop 28px, 6) Sessions visible below Reels (85vh), 7) Purple chat preserved",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v960_mission.py",
+    "/app/test_reports/pytest/pytest_v960_mission.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ App.js L3389: window.location.assign(window.location.origin + '/#coach-dashboard') for Super Admin local check FLASH login",
+    "✅ App.js L3404: window.location.assign() for Super Admin API check FLASH login",
+    "✅ App.js L3416: window.location.assign() for active partner FLASH login",
+    "✅ ChatWidget.js L3705-3727: 'Mon Dashboard' button with data-testid='goto-dashboard-btn' using window.location.assign()",
+    "✅ PartnersCarousel.js L607-677: Header contains only logo (afroboost-logo) + search button (search-btn)",
+    "✅ PartnersCarousel.js L199-202: paddingTop: 28px for 5px gap between header and video",
+    "✅ PartnersCarousel.js L309-424: Video overlay only has mute-btn, reserve-btn, profile-overlay, like-btn - NO extra Partenaire/Horaires icons",
+    "✅ CoachDashboard.js L4002-4018: Single fixed logout button with data-testid='coach-logout-fixed'"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v960_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100% - 9/9 tests passed",
+    "frontend": "100% - All v9.6.0 UI features verified"
+  },
+  "test_credentials": {
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com",
+    "super_admin_emails": ["afroboost.bassi@gmail.com", "contact.artboost@gmail.com"]
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.6.0 verified. Key changes: 1) FLASH login uses window.location.assign() instead of window.location.hash for full page reload - fixes double-click issue, 2) ChatWidget has new '⚙️ Mon Dashboard' button (goto-dashboard-btn) in user dropdown menu that appears after login, 3) Header is clean with only Afroboost logo and search icon (loupe), 4) Video overlay elements: mute-btn, reserve-btn, profile-overlay (photo/name/bio), like-btn - no extra icons, 5) paddingTop 28px for header-video alignment, 6) Sessions section visible below 85vh Reels",
+  "verified_features_v960": {
+    "FLASH_LOGIN_WINDOW_LOCATION_ASSIGN": {
+      "status": "PASS",
+      "locations": ["App.js L3389", "App.js L3404", "App.js L3416", "ChatWidget.js L3707"],
+      "method": "window.location.assign(window.location.origin + '/#coach-dashboard')",
+      "comment": "Forces full page reload for clean dashboard state"
+    },
+    "CHATWIDGET_MON_DASHBOARD_BUTTON": {
+      "status": "PASS",
+      "location": "ChatWidget.js L3705-3727",
+      "data_testid": "goto-dashboard-btn",
+      "text": "⚙️ Mon Dashboard",
+      "color": "#D91CD2",
+      "visibility": "Appears in user dropdown menu after login"
+    },
+    "HEADER_EPURE_LOGO_SEARCH_ONLY": {
+      "status": "PASS",
+      "location": "PartnersCarousel.js L607-677",
+      "elements": ["afroboost-logo", "search-btn"],
+      "no_extra_icons": "Confirmed - no Partenaire/Horaires icons"
+    },
+    "VIDEO_OVERLAY_CLEAN": {
+      "status": "PASS",
+      "location": "PartnersCarousel.js L309-424",
+      "elements": ["mute-btn-*", "reserve-btn-*", "profile-overlay-*", "like-btn-*"],
+      "no_extra_icons": "Confirmed - only sound, reserve, profile/like/bio"
+    },
+    "HEADER_VIDEO_ALIGNMENT_28PX": {
+      "status": "PASS",
+      "location": "PartnersCarousel.js L199-202",
+      "paddingTop": "28px",
+      "comment": "v9.5.9: ALIGNEMENT PIXEL - 5px exact entre header et vidéo"
+    },
+    "SESSIONS_BELOW_REELS_85VH": {
+      "status": "PASS",
+      "location": "App.js L3757-3758",
+      "maxHeight": "85vh",
+      "sessions_visible": true
+    },
+    "PURPLE_CHAT_PRESERVED": {
+      "status": "PASS",
+      "color": "#D91CD2",
+      "chat_widget_visible": true
+    },
+    "SINGLE_LOGOUT_BUTTON": {
+      "status": "PASS",
+      "location": "CoachDashboard.js L4002-4018",
+      "data_testid": "coach-logout-fixed",
+      "position": "fixed"
+    }
+  },
+  "backend_tests_passed": {
+    "test_health_check": "PASS",
+    "test_super_admin_afroboost_auth_role": "PASS - is_super_admin=true, role=super_admin",
+    "test_super_admin_check_partner_status": "PASS - is_partner=true, has_credits=true, unlimited=true",
+    "test_super_admin_credits_check": "PASS - credits=-1, unlimited=true",
+    "test_super_admin_credits_deduct_bypass": "PASS - bypassed=true",
+    "test_partners_active_endpoint": "PASS",
+    "test_courses_endpoint": "PASS",
+    "test_concept_endpoint": "PASS",
+    "test_offers_endpoint": "PASS"
+  }
+}
