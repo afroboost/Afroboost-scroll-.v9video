@@ -1,5 +1,76 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.6.8 - DÉBLOCAGE PARTENAIRE & LOGIQUE DE VENTE ✅ (01 Mars 2026)
+
+### STATUT: MISSION v9.6.8 COMPLÈTE - "LOGIQUE DE CONNEXION ET UI RÉPARÉES"
+
+| Objectif | Statut |
+|----------|--------|
+| Redirection partenaire existant vers Dashboard | ✅ |
+| 3 icônes alignées (Langue, Loupe, Son) | ✅ |
+| Gap 16px entre icônes (gap-4) | ✅ |
+| Zéro vide noir (paddingTop 5px) | ✅ |
+| Son global fonctionnel | ✅ |
+| Sélecteur langue intégré au flux Reels | ✅ |
+
+### 1. LOGIQUE DE CONNEXION PARTENAIRE
+
+**Avant v9.6.8:**
+- Si `is_partner=true` ET `has_credits=true` → Dashboard
+- Sinon → Page des packs (même pour partenaires sans crédits)
+
+**Après v9.6.8 (App.js L3412-3418):**
+```javascript
+// CAS A - Partenaire EXISTANT → Dashboard IMMÉDIAT
+if (partnerRes.data?.is_partner) {
+  console.log('[APP] 🚀 Partenaire existant - Redirection Dashboard');
+  window.location.assign(window.location.origin + '/#coach-dashboard');
+  return;
+}
+
+// CAS B - NON-partenaire → Page d'inscription
+setShowBecomeCoach(true);
+```
+
+### 2. HEADER FLUX REELS AVEC 3 ICÔNES
+
+**PartnersCarousel.js L678-740:**
+```jsx
+<div className="flex items-center gap-4">
+  {/* Sélecteur de langue */}
+  <button data-testid="lang-selector-btn">
+    <GlobeIcon />
+  </button>
+  
+  {/* Recherche */}
+  <button data-testid="search-btn">
+    <SearchIcon />
+  </button>
+  
+  {/* Son global */}
+  <button data-testid="global-sound-btn">
+    <SoundIcon muted={globalMuted} />
+  </button>
+</div>
+```
+
+### 3. ZÉRO VIDE NOIR
+
+**PartnersCarousel.js L202:**
+```jsx
+style={{ paddingTop: '5px', ... }}
+```
+
+### Tests v9.6.8 - Iteration 122
+
+| Catégorie | Tests | Résultat |
+|-----------|-------|----------|
+| Backend | 10/10 | ✅ 100% |
+| Frontend | All | ✅ 100% |
+| Icons | 3/3 visible | ✅ |
+
+---
+
 ## v9.6.6 - FLUX UNIQUE ET UI ALIGNÉE ✅ (01 Mars 2026)
 
 ### STATUT: MISSION v9.6.6 COMPLÈTE - "FIX DOUBLONS VIDÉO ET ALIGNEMENT UI"
