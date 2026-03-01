@@ -426,8 +426,20 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
   );
 };
 
-// === COMPOSANT PRINCIPAL v9.5.7 - Support mode maintenance ===
-const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, isSuperAdmin = false }) => {
+// Icône Globe pour sélecteur de langue
+const GlobeIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+);
+
+// === COMPOSANT PRINCIPAL v9.6.8 - Support mode maintenance + Langue + Son global ===
+const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, isSuperAdmin = false, lang = 'fr', onLangChange }) => {
+  // v9.6.8: État pour sélecteur de langue
+  const [showLangMenu, setShowLangMenu] = useState(false);
+  const [globalMuted, setGlobalMuted] = useState(true); // Son global muté par défaut
   const [partners, setPartners] = useState([]);
   const [filteredPartners, setFilteredPartners] = useState([]);
   const [loading, setLoading] = useState(true);
