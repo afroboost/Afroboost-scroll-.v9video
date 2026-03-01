@@ -1,5 +1,86 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.6.0 - ARCHITECTURE FLASH ET ÉPURE ✅ (01 Mars 2026)
+
+### STATUT: MISSION v9.6.0 COMPLÈTE - "ARCHITECTURE FLASH ET ÉPURE VALIDÉE"
+
+| Objectif | Statut |
+|----------|--------|
+| FLASH Login (UN SEUL CLIC) | ✅ |
+| Épure visuelle (loupe unique) | ✅ |
+| Bouton "⚙️ Mon Dashboard" dans Chat | ✅ |
+| Alignement pixel 5px | ✅ |
+| Isolation données | ✅ |
+| Chat violet préservé | ✅ |
+
+### 1. FLASH LOGIN - UN SEUL CLIC
+
+**Problème:** Double-clic ou retour arrière nécessaire après login
+**Solution:** `window.location.assign()` force un reload complet
+
+```javascript
+// App.js L3389, L3404, L3416
+// AVANT: window.location.hash = '#coach-dashboard';
+// APRÈS:
+window.location.assign(window.location.origin + '/#coach-dashboard');
+```
+
+| Cas | Redirection |
+|-----|-------------|
+| Super Admin (local check) | ✅ FLASH → Dashboard |
+| Super Admin (API check) | ✅ FLASH → Dashboard |
+| Partenaire actif | ✅ FLASH → Dashboard |
+| Non-partenaire | Toast + Page Packs |
+
+### 2. ÉPURE VISUELLE - LOUPE UNIQUE
+
+**Header Reels (PartnersCarousel.js L607-677):**
+- ✅ Logo Afroboost (centré)
+- ✅ Loupe de recherche (droite)
+- ❌ Pas d'icône "Partenaire"
+- ❌ Pas d'icône "Horaires"
+
+**Overlay Vidéo (L309-424):**
+- ✅ Bouton Son (mute-btn)
+- ✅ Bouton Réserver (reserve-btn)
+- ✅ Profil/Like/Bio (profile-overlay)
+- ❌ Pas d'icônes supplémentaires
+
+### 3. BOUTON "⚙️ MON DASHBOARD" DANS CHAT
+
+```jsx
+// ChatWidget.js L3705-3727
+<button
+  onClick={() => {
+    window.location.assign(window.location.origin + '/#coach-dashboard');
+  }}
+  data-testid="goto-dashboard-btn"
+>
+  ⚙️ Mon Dashboard
+</button>
+```
+
+### 4. ALIGNEMENT PIXEL
+
+| Élément | Valeur |
+|---------|--------|
+| Header paddingTop | 2px |
+| Vidéo paddingTop | 28px |
+| Gap header→vidéo | ~5px |
+
+### Tests v9.6.0 - Iteration 117
+
+| Test | Statut |
+|------|--------|
+| Backend: 9/9 tests | ✅ 100% |
+| Frontend: All features | ✅ 100% |
+| FLASH login | ✅ window.location.assign() |
+| Mon Dashboard button | ✅ goto-dashboard-btn |
+| Header épuré | ✅ logo + loupe only |
+| Overlay clean | ✅ no extra icons |
+
+---
+
 ## v9.5.9 - JAUGE DE CRÉDITS ET AUDIT VALIDÉS ✅ (01 Mars 2026)
 
 ### STATUT: MISSION v9.5.9 COMPLÈTE - "JAUGE DE CRÉDITS ET AUDIT VALIDÉS"
