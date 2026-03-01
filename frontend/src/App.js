@@ -3771,6 +3771,8 @@ function App() {
           onSearch={() => setShowCoachSearch(true)}
           maintenanceMode={platformSettings.maintenance_mode}
           isSuperAdmin={isSuperAdminEmail(coachUser?.email)}
+          lang={lang}
+          onLangChange={setLang}
         />
       </div>
       
