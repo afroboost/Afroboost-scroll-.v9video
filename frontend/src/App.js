@@ -3750,11 +3750,12 @@ function App() {
         />
       )}
 
-      {/* v9.5.7: Flux Reels - Mobile first, pleine largeur, hauteur viewport */}
+      {/* v9.5.8: Flux Reels - Mobile first, pleine largeur, hauteur auto */}
       <div 
         className="relative w-full" 
         style={{ 
-          height: '100vh', 
+          height: 'calc(100vh - 50px)',  // v9.5.8: Ajusté pour supprimer l'espace vide
+          maxHeight: '85vh',  // Limite max pour laisser voir le contenu en dessous
           background: '#000000' 
         }}
       >
