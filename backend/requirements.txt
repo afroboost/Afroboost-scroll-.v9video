@@ -23,7 +23,6 @@ distro
 dnspython
 ecdsa
 email-validator
-emergentintegrations
 fastapi
 fastuuid
 filelock
