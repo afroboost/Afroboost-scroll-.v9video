@@ -780,7 +780,7 @@ select option {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 100;
+  z-index: 50;  /* v9.6.6: Réduit pour ne pas chevaucher le flux Reels */
   display: flex;
   align-items: center;
   gap: 6px;
