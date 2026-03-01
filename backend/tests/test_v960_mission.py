@@ -51,7 +51,7 @@ class TestV960SuperAdminAuth:
         """Test credits/check returns unlimited credits for Super Admin"""
         response = requests.get(
             f"{BASE_URL}/api/credits/check",
-            params={'email': 'afroboost.bassi@gmail.com'}
+            headers={'X-User-Email': 'afroboost.bassi@gmail.com'}
         )
         assert response.status_code == 200, f"Credits check failed: {response.status_code}"
         data = response.json()
@@ -65,7 +65,8 @@ class TestV960SuperAdminAuth:
         """Test credits/deduct is bypassed for Super Admin"""
         response = requests.post(
             f"{BASE_URL}/api/credits/deduct",
-            json={'email': 'afroboost.bassi@gmail.com', 'amount': 1}
+            headers={'X-User-Email': 'afroboost.bassi@gmail.com'},
+            json={'action': 'test_action'}
         )
         assert response.status_code == 200, f"Credits deduct failed: {response.status_code}"
         data = response.json()
