@@ -3379,13 +3379,14 @@ function App() {
       setTimeout(() => setValidationMessage(""), 5000);
     }
     
-    // v9.5.6: ROUTAGE INTELLIGENT selon le statut du partenaire (CORRIGÉ)
+    // v9.6.0: ROUTAGE INTELLIGENT - UN SEUL CLIC (FLASH LOGIN)
     try {
       // CAS C: Super Admin LOCAL CHECK FIRST - Accès illimité au Dashboard
       if (isSuperAdminEmail(userData?.email)) {
-        console.log('[APP] 🔑 Super Admin détecté (local) - Redirection Dashboard');
+        console.log('[APP] 🔑 Super Admin détecté (local) - Redirection Dashboard FLASH');
         setUserRole('super_admin');
-        window.location.hash = '#coach-dashboard';
+        // v9.6.0: FORCE RELOAD pour état propre du dashboard
+        window.location.assign(window.location.origin + '/#coach-dashboard');
         return;
       }
       
@@ -3398,8 +3399,9 @@ function App() {
       
       // CAS C bis: Super Admin via API - Accès illimité au Dashboard
       if (roleRes.data?.is_super_admin) {
-        console.log('[APP] 🔑 Super Admin détecté (API) - Redirection Dashboard');
-        window.location.hash = '#coach-dashboard';
+        console.log('[APP] 🔑 Super Admin détecté (API) - Redirection Dashboard FLASH');
+        // v9.6.0: FORCE RELOAD
+        window.location.assign(window.location.origin + '/#coach-dashboard');
         return;
       }
       
@@ -3409,8 +3411,9 @@ function App() {
       
       // CAS A: Partenaire Actif (a un pack payé avec crédits) - Redirection AUTOMATIQUE
       if (partnerRes.data?.is_partner && partnerRes.data?.has_credits) {
-        console.log('[APP] 🚀 Partenaire actif - Redirection Dashboard');
-        window.location.hash = '#coach-dashboard';
+        console.log('[APP] 🚀 Partenaire actif - Redirection Dashboard FLASH');
+        // v9.6.0: FORCE RELOAD
+        window.location.assign(window.location.origin + '/#coach-dashboard');
         return;
       }
       
