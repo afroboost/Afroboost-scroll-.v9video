@@ -780,13 +780,7 @@ select option {
   display: none; /* v9.6.8: Masqué - Maintenant intégré dans PartnersCarousel */
 }
 
-.lang-selector:hover {
-  transform: scale(1.05);
-}
-
-.lang-selector:hover svg {
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
-}
+/* v9.6.8: Lang selector hover styles supprimés car composant masqué */
 
 /* Switch Toggle */
 .switch {
