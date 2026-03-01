@@ -4038,26 +4038,50 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                 <span className="text-white/60 text-sm">
                   Connecté en tant que <span className="text-purple-400">{coachUser.email}</span>
                 </span>
-                {/* === AFFICHAGE CRÉDITS v9.2.3 - Solde TOUJOURS visible === */}
+                {/* === v9.5.9: JAUGE DE CRÉDITS VISUELLE - Barre de progression élégante === */}
                 {!isSuperAdmin && (
-                  <div className="flex items-center gap-2">
-                    <span 
-                      className="px-3 py-1 rounded-full text-sm font-bold"
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* Badge avec nombre de crédits */}
+                    <div 
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
                       style={{
-                        background: coachCredits <= 0 ? 'rgba(239,68,68,0.25)' : coachCredits < 5 ? 'rgba(239,68,68,0.2)' : 'rgba(217,28,210,0.2)',
-                        color: coachCredits < 5 ? '#ef4444' : '#D91CD2',
-                        border: `2px solid ${coachCredits < 5 ? 'rgba(239,68,68,0.6)' : 'rgba(217,28,210,0.6)'}`,
-                        boxShadow: coachCredits < 5 ? '0 0 10px rgba(239,68,68,0.3)' : '0 0 10px rgba(217,28,210,0.3)'
+                        background: coachCredits <= 0 ? 'rgba(239,68,68,0.15)' : 'rgba(217,28,210,0.15)',
+                        border: `1px solid ${coachCredits <= 0 ? 'rgba(239,68,68,0.4)' : 'rgba(217,28,210,0.4)}'`
                       }}
                       data-testid="coach-credits-badge"
                     >
-                      💰 Mon Solde : {coachCredits <= 0 ? '0' : coachCredits} Crédit{coachCredits > 1 ? 's' : ''}
-                    </span>
-                    {/* v9.5.0: Bouton Acheter des crédits si solde = 0 */}
+                      <span style={{ color: coachCredits <= 0 ? '#ef4444' : '#D91CD2' }}>💰</span>
+                      <div className="flex flex-col">
+                        <span 
+                          className="text-xs font-bold"
+                          style={{ color: coachCredits <= 0 ? '#ef4444' : '#D91CD2' }}
+                        >
+                          {coachCredits <= 0 ? '0' : coachCredits} Crédit{coachCredits !== 1 ? 's' : ''}
+                        </span>
+                        {/* Barre de progression visuelle */}
+                        <div 
+                          className="w-20 h-1.5 rounded-full overflow-hidden"
+                          style={{ background: 'rgba(255,255,255,0.1)' }}
+                        >
+                          <div 
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ 
+                              width: `${Math.min(100, (coachCredits / 50) * 100)}%`,
+                              background: coachCredits <= 0 
+                                ? '#ef4444' 
+                                : coachCredits < 5 
+                                  ? 'linear-gradient(90deg, #ef4444, #f97316)' 
+                                  : 'linear-gradient(90deg, #D91CD2, #8b5cf6)'
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Bouton Acheter si solde = 0 */}
                     {coachCredits <= 0 && (
                       <button
                         onClick={() => window.location.hash = '#become-coach'}
-                        className="px-3 py-1 rounded-full text-xs font-medium transition-all hover:scale-105"
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105"
                         style={{
                           background: 'linear-gradient(135deg, #D91CD2, #8b5cf6)',
                           color: 'white',
@@ -4065,23 +4089,24 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                         }}
                         data-testid="buy-credits-btn"
                       >
-                        🛒 Acheter des crédits
+                        🛒 Acheter
                       </button>
                     )}
                   </div>
                 )}
+                {/* v9.5.9: Super Admin - Badge Illimité ♾️ */}
                 {isSuperAdmin && (
                   <span 
-                    className="ml-2 px-3 py-1 rounded-full text-sm font-bold"
+                    className="ml-2 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1"
                     style={{ 
-                      background: 'linear-gradient(135deg, rgba(217,28,210,0.3), rgba(139,92,246,0.3))', 
+                      background: 'linear-gradient(135deg, rgba(217,28,210,0.2), rgba(139,92,246,0.2))', 
                       color: '#D91CD2', 
-                      border: '2px solid rgba(217,28,210,0.6)',
-                      boxShadow: '0 0 15px rgba(217,28,210,0.4)'
+                      border: '1px solid rgba(217,28,210,0.4)',
+                      boxShadow: '0 0 15px rgba(217,28,210,0.3)'
                     }}
                     data-testid="super-admin-badge"
                   >
-                    👑 Crédits Illimités
+                    <span>👑</span> Crédits : Illimités ♾️
                   </span>
                 )}
               </div>
