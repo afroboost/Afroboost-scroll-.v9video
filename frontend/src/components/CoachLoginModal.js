@@ -122,23 +122,22 @@ const CoachLoginModal = ({ t, onLogin, onCancel, welcomeMessage }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content glass rounded-xl p-8 max-w-md w-full neon-border">
+      <div className="modal-content glass rounded-xl p-6 max-w-md w-full neon-border">
         
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mx-auto mb-4 flex items-center justify-center">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {/* v9.6.4: Header simplifié */}
+        <div className="text-center mb-4">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 mx-auto mb-3 flex items-center justify-center">
+            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <h2 className="font-bold text-white text-xl mb-2">{t('coachLogin') || 'Espace Partenaire'}</h2>
-          <p className="text-white/60 text-sm">Connectez-vous avec votre compte Google autorisé</p>
+          <h2 className="font-bold text-white text-lg mb-1">{t('coachLogin') || 'Espace Partenaire'}</h2>
         </div>
 
         {/* v9.1.8: Message de bienvenue après paiement */}
         {welcomeMessage && (
           <div 
-            className="mb-6 p-4 rounded-lg text-center"
+            className="mb-4 p-3 rounded-lg text-center"
             style={{ 
               background: 'rgba(34, 197, 94, 0.2)', 
               border: '1px solid rgba(34, 197, 94, 0.5)' 
@@ -151,7 +150,7 @@ const CoachLoginModal = ({ t, onLogin, onCancel, welcomeMessage }) => {
         {/* Message d'erreur */}
         {error && (
           <div 
-            className="mb-6 p-4 rounded-lg text-center"
+            className="mb-4 p-3 rounded-lg text-center"
             style={{ 
               background: 'rgba(239, 68, 68, 0.2)', 
               border: '1px solid rgba(239, 68, 68, 0.5)' 
@@ -161,44 +160,70 @@ const CoachLoginModal = ({ t, onLogin, onCancel, welcomeMessage }) => {
           </div>
         )}
 
-        {/* Bouton Google */}
-        <button
-          onClick={handleGoogleLogin}
-          disabled={isLoading}
-          className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg font-medium transition-all duration-200"
-          style={{
-            background: '#ffffff',
-            color: '#1f1f1f',
-            border: 'none',
-            cursor: isLoading ? 'wait' : 'pointer',
-            opacity: isLoading ? 0.7 : 1
-          }}
-          data-testid="google-login-btn"
-        >
-          {isLoading ? (
-            <div className="animate-spin w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full"></div>
-          ) : (
-            <GoogleIcon />
-          )}
-          <span>{isLoading ? 'Connexion en cours...' : 'Se connecter avec Google'}</span>
-        </button>
-
-        {/* Info sécurité */}
-        <div className="mt-6 p-3 rounded-lg" style={{ background: 'rgba(139, 92, 246, 0.1)' }}>
-          <p className="text-white/50 text-xs text-center">
-            🔒 Accès sécurisé réservé aux comptes autorisés.<br/>
-            Seuls les administrateurs peuvent se connecter.
-          </p>
+        {/* v9.6.4: BOUTON PRINCIPAL EN HAUT - Déjà Partenaire */}
+        <div className="space-y-3">
+          <p className="text-white/70 text-xs text-center mb-2">Déjà partenaire ?</p>
+          <button
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:scale-[1.02]"
+            style={{
+              background: '#ffffff',
+              color: '#1f1f1f',
+              border: 'none',
+              cursor: isLoading ? 'wait' : 'pointer',
+              opacity: isLoading ? 0.7 : 1,
+              boxShadow: '0 4px 15px rgba(255,255,255,0.2)'
+            }}
+            data-testid="google-login-btn"
+          >
+            {isLoading ? (
+              <div className="animate-spin w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full"></div>
+            ) : (
+              <GoogleIcon />
+            )}
+            <span className="font-semibold">{isLoading ? 'Connexion...' : 'Se connecter avec Google'}</span>
+          </button>
         </div>
 
-        {/* Bouton Annuler */}
+        {/* Séparateur */}
+        <div className="flex items-center my-5">
+          <div className="flex-1 h-px bg-white/20"></div>
+          <span className="px-3 text-white/40 text-xs">ou</span>
+          <div className="flex-1 h-px bg-white/20"></div>
+        </div>
+
+        {/* v9.6.4: BOUTON SECONDAIRE EN BAS - Devenir Partenaire */}
+        <button 
+          type="button" 
+          onClick={() => {
+            onCancel();
+            window.location.hash = '#become-coach';
+          }} 
+          className="w-full py-3 rounded-lg font-medium text-sm transition-all hover:scale-[1.02]"
+          style={{
+            background: 'linear-gradient(135deg, rgba(217,28,210,0.3), rgba(139,92,246,0.3))',
+            border: '1px solid rgba(217,28,210,0.5)',
+            color: '#D91CD2'
+          }}
+          data-testid="become-partner-btn"
+        >
+          ✨ Devenir Partenaire
+        </button>
+
+        {/* Info sécurité compacte */}
+        <p className="text-white/40 text-[10px] text-center mt-4">
+          🔒 Connexion sécurisée via Google
+        </p>
+
+        {/* Bouton Fermer */}
         <button 
           type="button" 
           onClick={onCancel} 
-          className="w-full py-2 mt-4 rounded-lg glass text-white text-sm"
+          className="w-full py-2 mt-3 rounded-lg text-white/60 text-xs hover:text-white transition-colors"
           data-testid="coach-login-cancel"
         >
-          {t('cancel') || 'Annuler'}
+          Fermer
         </button>
       </div>
     </div>
