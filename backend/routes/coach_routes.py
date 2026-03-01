@@ -292,6 +292,7 @@ async def get_active_partners():
     """
     Récupère les partenaires actifs avec leurs vidéos pour le carousel de la home page.
     Inclut le concept (heroImageUrl/video_url) de chaque partenaire.
+    v9.6.6: Déduplication des partenaires par email
     """
     try:
         # Récupérer tous les coaches actifs
@@ -301,11 +302,37 @@ async def get_active_partners():
         ).to_list(20)
         
         partners_with_videos = []
+        seen_emails = set()  # v9.6.6: Track des emails pour éviter les doublons
         
-        # Pour chaque coach, récupérer son concept (vidéo)
+        # Ajouter Bassi (Super Admin) en premier s'il a une vidéo configurée
+        # v9.4.7: Collection "concept" (singulier) - id "concept" pour le principal
+        bassi_concept = await db.concept.find_one({"id": "concept"}, {"_id": 0, "heroImageUrl": 1, "heroVideoUrl": 1})
+        if bassi_concept and (bassi_concept.get("heroImageUrl") or bassi_concept.get("heroVideoUrl")):
+            bassi_data = {
+                "id": "bassi_main",  # v9.6.6: ID unique
+                "name": "Bassi - Afroboost",
+                "email": SUPER_ADMIN_EMAIL,
+                "platform_name": "Afroboost",
+                "photo_url": None,
+                "logo_url": None,
+                "bio": "Coach Afroboost - Fitness & Bien-être",
+                "video_url": bassi_concept.get("heroVideoUrl") or bassi_concept.get("heroImageUrl"),
+                "heroImageUrl": bassi_concept.get("heroImageUrl")
+            }
+            partners_with_videos.append(bassi_data)
+            seen_emails.add(SUPER_ADMIN_EMAIL.lower())  # v9.6.6: Marquer comme vu
+        
+        # Pour chaque coach, récupérer son concept (vidéo) - v9.6.6: Skip si déjà vu
         for coach in coaches:
             coach_email = coach.get("email", "").lower()
+            
+            # v9.6.6: Skip si email déjà dans la liste (évite les doublons)
+            if coach_email in seen_emails:
+                continue
+            seen_emails.add(coach_email)
+            
             partner_data = dict(coach)
+            partner_data["id"] = partner_data.get("id") or f"coach_{coach_email.replace('@', '_').replace('.', '_')}"  # v9.6.6: ID unique
             
             # Chercher le concept du coach pour avoir la vidéo
             # v9.4.7: Collection "concept" (singulier) pas "concepts"
@@ -322,25 +349,7 @@ async def get_active_partners():
             # Inclure même sans vidéo (affichera placeholder)
             partners_with_videos.append(partner_data)
         
-        # Ajouter Bassi (Super Admin) en premier s'il a une vidéo configurée
-        # v9.4.7: Collection "concept" (singulier) - id "concept" pour le principal
-        bassi_concept = await db.concept.find_one({"id": "concept"}, {"_id": 0, "heroImageUrl": 1, "heroVideoUrl": 1})
-        if bassi_concept and (bassi_concept.get("heroImageUrl") or bassi_concept.get("heroVideoUrl")):
-            bassi_data = {
-                "id": "bassi",
-                "name": "Bassi - Afroboost",
-                "email": SUPER_ADMIN_EMAIL,
-                "platform_name": "Afroboost",
-                "photo_url": None,
-                "logo_url": None,
-                "bio": "Coach Afroboost - Fitness & Bien-être",
-                "video_url": bassi_concept.get("heroVideoUrl") or bassi_concept.get("heroImageUrl"),
-                "heroImageUrl": bassi_concept.get("heroImageUrl")
-            }
-            # Ajouter Bassi en premier
-            partners_with_videos.insert(0, bassi_data)
-        
-        logger.info(f"[PARTNERS-CAROUSEL] {len(partners_with_videos)} partenaires avec vidéos")
+        logger.info(f"[PARTNERS-CAROUSEL] {len(partners_with_videos)} partenaires uniques avec vidéos")
         return partners_with_videos
         
     except Exception as e:
