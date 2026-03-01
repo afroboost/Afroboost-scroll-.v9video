@@ -1,0 +1,112 @@
+{
+  "summary": "Mission v9.5.8 Testing Complete - All features verified: 1) Single fixed logout button (data-testid='coach-logout-fixed'), 2) Campagnes tab hidden for non-Super Admin partners, 3) Credit system with deduct/check endpoints working, 4) Super Admin bypass (afroboost.bassi@gmail.com) verified, 5) Data isolation via coach_id in reservations, 6) Sessions section visible directly under Reels flux, 7) Purple chat widget preserved.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v958_mission.py",
+    "/app/test_reports/pytest/pytest_v958_mission.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ CoachDashboard.js L452-486: consumeCredit() function properly calls /api/credits/deduct with X-User-Email header",
+    "✅ CoachDashboard.js L489-497: checkCreditsBeforeAction() blocks actions when credits<=0 (except Super Admin)",
+    "✅ CoachDashboard.js L323-326: isSuperAdmin checks against both afroboost.bassi@gmail.com and contact.artboost@gmail.com",
+    "✅ CoachDashboard.js L3781-3782: Campagnes tab only added to baseTabs when isSuperAdmin is true",
+    "✅ CoachDashboard.js L4003-4018: Single fixed logout button with z-index:9999, position:fixed, data-testid='coach-logout-fixed'",
+    "✅ server.py L1414-1449: /api/credits/deduct and /api/credits/check endpoints implemented correctly",
+    "✅ server.py L297-319: deduct_credit() and check_credits() helper functions with Super Admin bypass",
+    "✅ reservation_routes.py L73-77: GET /api/reservations filters by coach_id (Super Admin sees all)",
+    "✅ App.js L3757-3758: Reels container height calc(100vh - 50px) with maxHeight 85vh",
+    "✅ Chat widget button has rgb(217, 28, 210) background - purple/pink color preserved"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v958_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100% - 17/17 tests passed",
+    "frontend": "100% - All v9.5.8 features verified"
+  },
+  "test_credentials": {
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com",
+    "super_admin_emails": ["afroboost.bassi@gmail.com", "contact.artboost@gmail.com"]
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.5.8 verified. All features working: 1) Single logout button (coach-logout-fixed) with position:fixed z-index:9999, 2) Campagnes tab hidden for partners via conditional tab array, 3) Credit system with consumeCredit() and checkCreditsBeforeAction() functions, 4) Backend endpoints /api/credits/deduct and /api/credits/check with Super Admin bypass, 5) Data isolation via coach_id filter in reservations, 6) Sessions section visible under Reels (85vh max), 7) Purple chat widget (rgb(217,28,210)).",
+  "verified_features_v958": {
+    "SINGLE_LOGOUT_BUTTON": {
+      "status": "PASS",
+      "location": "CoachDashboard.js L4003-4018",
+      "data_testid": "coach-logout-fixed",
+      "position": "fixed",
+      "top": "12px",
+      "right": "12px",
+      "z_index": "9999",
+      "occurrences_in_code": 1
+    },
+    "CAMPAGNES_TAB_HIDDEN": {
+      "status": "PASS",
+      "location": "CoachDashboard.js L3781-3782",
+      "logic": "...(isSuperAdmin ? [{id: 'campaigns', label: '📢 Campagnes'}] : [])",
+      "super_admin_sees_tab": true,
+      "partner_sees_tab": false
+    },
+    "CREDIT_SYSTEM": {
+      "status": "PASS",
+      "deduct_endpoint": "/api/credits/deduct (POST)",
+      "check_endpoint": "/api/credits/check (GET)",
+      "super_admin_bypass": true,
+      "frontend_functions": ["consumeCredit()", "checkCreditsBeforeAction()"]
+    },
+    "SUPER_ADMIN_BYPASS": {
+      "status": "PASS",
+      "afroboost_bassi": {"credits_remaining": -1, "bypassed": true, "unlimited": true},
+      "contact_artboost": {"credits_remaining": -1, "bypassed": true, "unlimited": true}
+    },
+    "DATA_ISOLATION": {
+      "status": "PASS",
+      "endpoint": "GET /api/reservations",
+      "filter_logic": "coach_id filter for partners, no filter for Super Admin",
+      "location": "reservation_routes.py L73-77"
+    },
+    "SESSIONS_BELOW_REELS": {
+      "status": "PASS",
+      "reels_max_height": "85vh",
+      "sessions_section_visible": true,
+      "sessions_section_id": "#sessions-section"
+    },
+    "PURPLE_CHAT_PRESERVED": {
+      "status": "PASS",
+      "chat_button_color": "rgb(217, 28, 210)",
+      "hex_color": "#D91CD2",
+      "class": "chat-widget-button"
+    }
+  },
+  "backend_tests_passed": {
+    "test_credits_deduct_missing_email": "PASS",
+    "test_credits_deduct_super_admin_bypass": "PASS",
+    "test_credits_deduct_super_admin_artboost": "PASS",
+    "test_credits_check_missing_email": "PASS",
+    "test_credits_check_super_admin_unlimited": "PASS",
+    "test_credits_check_super_admin_artboost": "PASS",
+    "test_check_partner_super_admin_afroboost": "PASS",
+    "test_check_partner_super_admin_artboost": "PASS",
+    "test_check_partner_regular_user": "PASS",
+    "test_reservations_super_admin_sees_all": "PASS",
+    "test_reservations_partner_filtered": "PASS",
+    "test_reservations_no_email_blocked": "PASS",
+    "test_health_check": "PASS",
+    "test_courses_endpoint": "PASS",
+    "test_offers_endpoint": "PASS",
+    "test_super_admin_emails_bypass_credits_contact_artboost": "PASS",
+    "test_super_admin_emails_bypass_credits_afroboost_bassi": "PASS"
+  }
+}
