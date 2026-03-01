@@ -775,20 +775,9 @@ select option {
   display: block;
 }
 
-/* Language Selector - Clean without background */
+/* Language Selector - v9.6.8: Masqué car intégré dans le flux Reels */
 .lang-selector {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 50;  /* v9.6.6: Réduit pour ne pas chevaucher le flux Reels */
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  display: none; /* v9.6.8: Masqué - Maintenant intégré dans PartnersCarousel */
 }
 
 .lang-selector:hover {
