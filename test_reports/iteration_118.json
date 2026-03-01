@@ -1,0 +1,127 @@
+{
+  "summary": "Mission v9.6.1 VALIDATION FINALE Complete - All features confirmed working: 1) window.location.assign() FLASH login at 3 locations in App.js, 2) 'Mon Dashboard' button in ChatWidget (goto-dashboard-btn), 3) Header épuré with ONLY logo + search, 4) NO Partenaire/Horaires icons anywhere, 5) Single logout button (coach-logout-fixed), 6) Super Admin unlimited credits (-1), 7) Data isolation working (test partner sees 0 reservations)",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v961_validation.py",
+    "/app/test_reports/pytest/pytest_v961_validation.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ App.js L3389: window.location.assign() for Super Admin local check FLASH login",
+    "✅ App.js L3404: window.location.assign() for Super Admin API check FLASH login",
+    "✅ App.js L3416: window.location.assign() for active partner FLASH login",
+    "✅ ChatWidget.js L3704-3727: 'Mon Dashboard' button with data-testid='goto-dashboard-btn' using window.location.assign()",
+    "✅ PartnersCarousel.js L640: Afroboost logo with data-testid='afroboost-logo'",
+    "✅ PartnersCarousel.js L666: Search button with data-testid='search-btn'",
+    "✅ NO Partenaire/Horaires icons found in header or video overlay",
+    "✅ CoachDashboard.js L4015: Single fixed logout button with data-testid='coach-logout-fixed'",
+    "✅ server.py L300 & L314: Super Admin credits=-1 (unlimited), bypass credit deduction"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v961_validation.py"
+  ],
+  "success_rate": {
+    "backend": "100% - 10/10 tests passed",
+    "frontend": "100% - All v9.6.1 UI features verified"
+  },
+  "test_credentials": {
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com",
+    "super_admin_email": "afroboost.bassi@gmail.com"
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.6.1 VALIDATION FINALE confirmed all v9.6.0 features: (1) FLASH login uses window.location.assign() for clean dashboard state - 3 occurrences in App.js + 1 in ChatWidget.js, (2) ChatWidget has 'Mon Dashboard' button (goto-dashboard-btn) at L3705-3727, (3) Header is clean with only logo (afroboost-logo) + search (search-btn), (4) NO Partenaire/Horaires icons in header or video overlay, (5) Single logout button at fixed position (coach-logout-fixed), (6) Super Admin has unlimited credits (-1), (7) Data isolation works - test partner sees 0 reservations.",
+  "verified_features_v961": {
+    "FLASH_LOGIN_WINDOW_LOCATION_ASSIGN": {
+      "status": "PASS",
+      "total_occurrences": 4,
+      "locations": [
+        "App.js L3389 - Super Admin local check",
+        "App.js L3404 - Super Admin API check",
+        "App.js L3416 - Active partner",
+        "ChatWidget.js L3707 - Mon Dashboard button"
+      ],
+      "method": "window.location.assign(window.location.origin + '/#coach-dashboard')"
+    },
+    "MON_DASHBOARD_BUTTON": {
+      "status": "PASS",
+      "location": "ChatWidget.js L3704-3727",
+      "data_testid": "goto-dashboard-btn",
+      "text": "⚙️ Mon Dashboard",
+      "color": "#D91CD2 (purple)"
+    },
+    "HEADER_EPURE_LOGO_SEARCH_ONLY": {
+      "status": "PASS",
+      "logo_testid": "afroboost-logo",
+      "search_testid": "search-btn",
+      "partenaire_icons": 0,
+      "horaires_icons": 0
+    },
+    "NO_EXTRA_ICONS_ON_VIDEO_OVERLAY": {
+      "status": "PASS",
+      "allowed_elements": ["mute-btn-*", "reserve-btn-*", "profile-overlay-*", "like-btn-*"],
+      "playwright_verification": "5 instances of each element found"
+    },
+    "SINGLE_LOGOUT_BUTTON": {
+      "status": "PASS",
+      "location": "CoachDashboard.js L4015",
+      "data_testid": "coach-logout-fixed"
+    },
+    "SUPER_ADMIN_UNLIMITED_CREDITS": {
+      "status": "PASS",
+      "email": "afroboost.bassi@gmail.com",
+      "is_super_admin": true,
+      "credits": -1,
+      "unlimited": true,
+      "has_credits": true
+    },
+    "DATA_ISOLATION": {
+      "status": "PASS",
+      "super_admin_sees_all": true,
+      "test_partner_sees_zero": true,
+      "isolation_filter": "coach_id"
+    },
+    "SESSIONS_VISIBLE_BELOW_REELS": {
+      "status": "PASS",
+      "text_visible": "Choisissez votre session"
+    },
+    "PURPLE_CHAT_PRESERVED": {
+      "status": "PASS",
+      "color": "#D91CD2",
+      "widget_visible": true
+    }
+  },
+  "backend_tests_passed": {
+    "test_health_check": "PASS",
+    "test_super_admin_check_partner_status": "PASS - is_partner=true, unlimited=true, credits=-1, is_super_admin=true",
+    "test_super_admin_credits_check_infinite": "PASS - credits=-1, unlimited=true, has_credits=true",
+    "test_super_admin_sees_all_reservations": "PASS - endpoint works with no coach_id filter",
+    "test_test_partner_isolation": "PASS - test partner sees 0 reservations",
+    "test_super_admin_credits_deduct_bypass": "PASS - bypassed=true, credits_remaining=-1",
+    "test_partners_active_endpoint": "PASS",
+    "test_courses_endpoint": "PASS",
+    "test_offers_endpoint": "PASS",
+    "test_concept_endpoint": "PASS"
+  },
+  "playwright_tests_passed": {
+    "logo_visible": true,
+    "search_visible": true,
+    "no_partenaire_horaires": true,
+    "reels_section_visible": true,
+    "sessions_visible": true,
+    "mute_buttons": 5,
+    "reserve_buttons": 5,
+    "profile_overlays": 5,
+    "like_buttons": 5,
+    "chat_widget_present": true
+  }
+}
