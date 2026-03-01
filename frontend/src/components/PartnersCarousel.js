@@ -196,10 +196,10 @@ const PartnerVideoCard = ({ partner, onToggleMute, isMuted, onLike, isLiked, onN
       }}
       data-testid={`partner-card-${partner.id || partner.email}`}
     >
-      {/* v9.5.9: ALIGNEMENT PIXEL - 5px exact entre header et vidéo */}
+      {/* v9.6.4: ZÉRO VIDE NOIR - padding réduit à 5px */}
       <div 
         className="relative w-full h-full flex items-start justify-center"
-        style={{ paddingTop: '28px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '0' }}
+        style={{ paddingTop: '5px', paddingLeft: '2px', paddingRight: '2px', paddingBottom: '0' }}
       >
         <div 
           className="relative w-full"
