@@ -14,7 +14,7 @@ import os
 import json
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://partner-reels-feed.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://multi-coach-saas.preview.emergentagent.com').rstrip('/')
 
 class TestHealthAndBasicAPIs:
     """Basic API health checks"""

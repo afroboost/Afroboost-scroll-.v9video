@@ -1,56 +1,57 @@
 <analysis>**original_problem_statement:**
-The user wants to transform the existing Afroboost application into a multi-partner SaaS platform. The application owner, Bassi (), will act as the Super Admin with complete control over the platform.
+The user wants to transform the existing Afroboost application into a multi-partner SaaS platform. The application owner, Bassi, acts as the Super Admin (, ).
 
 **PRODUCT REQUIREMENTS:**
 1.  **Refactor & Optimize:** Clean up the monolithic  and .
-2.  **Hierarchy & Access Control:** Implement a Super Admin role with full access and a Partner role with isolated data access ().
+2.  **Hierarchy & Access Control:** Implement a Super Admin role with full access and a Partner role with isolated data access.
 3.  **SaaS Monetization & White-Labeling:**
-    *   Partners must purchase credit packs. Partner actions consume credits.
+    *   Partners must purchase credit packs. Partner actions (e.g., creating promos, chatting) consume credits.
     *   Implement Stripe Connect for direct partner payouts.
-    *   The partner's public page () must be a visual mirror of , with full visual customization.
+    *   The partner's public page () must be a visual mirror of .
 4.  **UI/UX & Features (Missions):**
-    *   **v9.4.7:** Implement a dynamic video carousel of partners on the homepage and streamline the Become Partner login flow.
-    *   **v9.4.8:** Convert the homepage carousel to a Reels-style vertical snap-scroll feed with a minimalist overlay UI.
-    *   **v9.4.9:** Further refine the Reels UI (remove clutter), add a Retour au Flux button on the partner vitrine that preserves scroll position, and add robust video link compatibility (YouTube/MP4) with a fallback.
-    *   **v9.5.0:** Add a video link uploader and credit balance display in the partner dashboard.
-    *   **v9.5.1:** Redesign the Reels feed header (logo, search icon), implement single/double-click video interactions, and fix the color customization feature in the dashboard.
-    *   **v9.5.2:** Implement intelligent routing post-login (redirecting active partners to their dashboard) and optimize the video feed with lazy loading.
-    *   **v9.5.3:** Replace a broken default video URL and implement the search functionality in the Reels feed.
-    *   **v9.5.4:** Make the Reels feed a full-screen experience by removing extra UI elements and finalize the partner redirection logic.
+    *   **v9.5.6:** Fix Super Admin login loop, repair page scroll to make footer content accessible, and improve mobile UI compactness.
+    *   **v9.5.7:** Implement a Quick Control maintenance mode lock and fix the  of the logout button.
+    *   **v9.5.8:** Remove duplicate logout buttons, mask the Campaigns feature for partners, implement credit deduction logic for partner actions, and ensure strict data isolation between partners.
+    *   **v9.5.9:** Add a visual credit gauge (progress bar) to the partner dashboard and audit all recent fixes.
+    *   **v9.6.0:** Fix the post-login flash issue by forcing a page reload, and add a My Dashboard button to the chat widget.
+    *   **v9.6.1:** A final validation mission to confirm all recent UI and logic fixes.
+    *   **v9.6.4:** Eliminate black space around the video feed for a more immersive mobile experience and reorganize the login modal to prioritize existing partners.
+    *   **v9.6.6:** Fix video duplication in the Reels feed and align overlapping header icons (Search, Translate, Sound).
+    *   **v9.6.7:** Final audit mission to validate the fixes from v9.6.6.
 
 **User's preferred language**: français
 
 **what currently exists?**
-The application's homepage has been transformed into a full-screen, Reels-style vertical video feed. This feed, which is now the central user experience, lazy-loads and displays videos from active partners. The UI is highly minimalist, with a small logo and search icon in the header, and an overlay on the video showing partner info (profile picture, name, bio), a Like button, and a compact Réserver button.
+The application's core is a full-screen, mobile-first, Reels-style vertical video feed. The UI is highly minimalist and compact, with almost no black space around the video content.
 
-Key functionalities implemented:
--   **Intelligent Routing:** After login, active partners are automatically redirected to their dashboard, while non-partners receive a toast notification and remain on the Become Partner page.
--   **Seamless Navigation:** Users can double-click a video to navigate to the partner's  (public page). The  now features a Retour au Flux button that returns the user to their exact position in the video feed.
--   **Partner Autonomy:** Partners can update their profile video link (YouTube or direct MP4) and view their credit balance from their dashboard.
--   **Search:** Users can filter the video feed by partner name using a search bar activated by a loupe icon.
--   **UI/UX:** The interface is mobile-first, full-screen, and customizable with partner-specific colors.
+Key functionalities implemented and stabilized in this session:
+-   **Super Admin Access:** The Super Admin role now correctly recognizes both  and , granting access to the full dashboard.
+-   **Optimized Login Flow:** The login process is streamlined. Existing partners are redirected instantly to their dashboard with a single click (), resolving previous state-related flash issues.
+-   **Robust UI:** The main feed is now a true full-page experience, but users can still scroll down to access other sections like Sessions and the footer. Header icons (Search, Language, Sound) are properly spaced and no longer overlap.
+-   **Unique Video Feed:** Duplicate videos in the Reels feed have been eliminated through deduplication logic on both the backend and frontend.
+-   **Partner Credit System:** The backend and frontend infrastructure for a credit system is in place. A credit deduction endpoint () exists, and it is successfully used when a partner creates a promo code. A visual progress bar for credits is displayed in the partner dashboard.
 
 **Last working item**:
-    - Last item agent was working: **Mission v9.5.4: Nettoyage Case et Réparation Bouton**. The agent worked on making the Reels-style video feed a true full-screen experience by removing extraneous UI elements (like a duplicate search bar and extra margins) and finalized the redirection logic that sends paying partners directly to their dashboard after login.
-    - Status: USER VERIFICATION PENDING
-    - Agent Testing Done: Y
-    - Which testing method agent to use? NA
+    - Last item agent was working: **Mission v9.6.7: Validation Finale UI et Flux Unique**. This was a final audit to confirm that all recent fixes were working as intended, specifically: no black space, correctly aligned icons, no video duplicates, and a flawless login flow. The agent performed a manual code audit and API tests, which were all successful.
+    - Status: IN PROGRESS
+    - Agent Testing Done: N
+    - Which testing method agent to use? . The agent has already invoked the testing agent, but the results have not been received yet. The next agent should analyze the test report and address any failures.
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  - Issue 1:  (P1) Implement Stripe Connect for partner coaches.
+  - Issue 1:  (P0) Implement Stripe Connect for partner coaches.
   
   Issues Detail:
   - Issue 1: 
-     - **Description**: This is a major pending feature from the original product requirements. Partners need the ability to connect their own Stripe accounts to receive payments for their services directly. The UI tab exists, but the full onboarding and payment processing flow is not implemented.
+     - **Description**: This is a major pending feature from the original product requirements. Partners need the ability to connect their Stripe accounts to receive payments directly. The UI tab exists, but the onboarding and payment processing flow is not implemented.
      - **Attempted fixes**: None.
      - **Next debug checklist**:
-       - Connect the frontend Connecter mon Stripe button in  to a new backend onboarding API.
+       - Connect the Connecter mon Stripe button in  to a new backend API.
        - Use the  agent to get the correct Stripe Connect implementation plan.
        - Create a backend API using the Stripe SDK to initiate a Stripe Connect onboarding session ().
        - Implement the redirect flow to and from Stripe's onboarding page.
        - Modify the Stripe webhook handler in  to correctly route events from connected accounts.
-     - **Why fix this issue and what will be achieved with the fix?**: This enables the platform to function as a true marketplace where partners can manage their own revenue, completing a core aspect of the SaaS model.
+     - **Why fix this issue and what will be achieved with the fix?**: This is a core requirement for the SaaS model, enabling the platform to function as a marketplace where partners manage their own revenue.
      - **Status**:  NOT STARTED
      - **Is recurring issue?** N
      - **Should Test frontend/backend/both after fix?** Both
@@ -59,42 +60,48 @@ Key functionalities implemented:
 **In progress Task List**:
   - Task 1:  (P1) Continue modularizing .
   - Task 2:  (P1) Continue modularizing .
+  - Task 3: (P1) Complete implementation of the partner credit system.
 
  Task Detail:
   - Task 1: 
-     - **Where to resume**:  is still a large monolith. The next logical step is to extract route groups (e.g., Stripe, AI, Campaigns) into their own files under .
+     - **Where to resume**:  is still a large monolith containing multiple concerns (auth, partners, settings, etc.). The next step is to extract route groups (e.g., Stripe, AI, Campaigns) into their own files under a structured  directory.
      - **What will be achieved with this?**: Improving code organization, maintainability, and stability.
      - **Status**:  IN PROGRESS
      - **Should Test frontend/backend/both after fix?** Backend
      - **Blocked on something**: None
   - Task 2: 
-     - **Where to resume**:  remains extremely large. The next step is to extract other major sections like Réservations or Offres into their own components within .
+     - **Where to resume**:  remains extremely large. The next step is to break down other major sections like Réservations, Profil, or Offres into their own components within a  directory.
      - **What will be achieved with this?**: Reducing the complexity of the main dashboard component, making it easier and safer to modify.
      - **Status**:  IN PROGRESS
      - **Should Test frontend/backend/both after fix?** Frontend
+     - **Blocked on something**: None
+  - Task 3: 
+     - **Where to resume**: Mission v9.5.8 requested credit deduction for Chat and Création Promo. The agent implemented the  endpoint and wired it to promo code creation but did not implement it for Chat actions. The next step is to integrate the  hook with the chat functionalities.
+     - **What will be achieved with this?**: Completes the initial scope of the credit consumption feature.
+     - **Status**:  IN PROGRESS
+     - **Should Test frontend/backend/both after fix?** Both
      - **Blocked on something**: None
 
 **Upcoming and Future Tasks**
     Upcoming Tasks:
     - **(P0)** Implement Stripe Connect (see Issue #1 above).
-    - **(P1)** Implement the partner credit system: create endpoints and UI for purchasing credit packs and logic for consuming credits when performing actions.
-    - **(P2)** Finalize the partner dashboard UI to clearly display the current credit balance and provide an alert/link to buy more when the balance is zero.
+    - **(P1)** Complete Partner Credit System (see Task #3 above).
     
     Future Tasks:
     - Continue progressive refactoring of  and .
 
 **Completed work in this session**
-- **v9.5.4:** Made the Reels feed full-screen and fixed the partner redirection logic.
-- **v9.5.3:** Replaced the broken default video and implemented search functionality in the Reels feed.
-- **v9.5.2:** Implemented intelligent routing post-login and optimized the video feed with lazy loading.
-- **v9.5.1:** Redesigned the Reels feed header (logo, search icon), added single/double-click interactions, and added a manual save button for color settings.
-- **v9.5.0:** Added a video link uploader and credit balance display in the partner dashboard.
-- **v9.4.9:** Refined the Reels UI, added robust video fallback, and created a Retour au Flux button on the partner vitrine.
-- **v9.4.8:** Converted the homepage from a horizontal carousel to a vertical Reels-style snap-scroll feed.
-- **v9.4.7:** Implemented a dynamic video carousel on the homepage and improved the Become Partner flow.
+- **v9.6.6:** Fixed video duplication in the Reels feed and aligned overlapping header icons.
+- **v9.6.4:** Eliminated black space for a more immersive mobile UI and reorganized the login modal.
+- **v9.6.1:** Final validation mission confirming UI purity and login flow.
+- **v9.6.0:** Fixed flash login using  and added a My Dashboard button in the chat.
+- **v9.5.9:** Added a visual credit gauge/progress bar to the partner dashboard.
+- **v9.5.8:** Implemented partner credit deduction for creating promo codes and removed duplicate UI elements.
+- **v9.5.7:** Implemented a maintenance mode lock (Quick Control) and fixed logout button positioning.
+- **v9.5.6:** Fixed Super Admin access loop and repaired main page scrolling.
 
 **Earlier issues found/mentioned but not fixed**
-   - **Issue 1**: The color customization in the partner dashboard was reported as not working. A manual save button was added as a fix (Mission v9.5.1), but the root cause of the auto-save failing might persist. The  hook or state propagation could be investigated if the issue reappears.
+   - **Issue 1**: The initial handoff mentioned a potential issue with the color customization  hook in the partner dashboard. A manual save button was added in a previous session, but the root cause was never investigated. This was not addressed in the current session.
 
 **Known issue recurrence from previous fork**
   - None.
@@ -103,79 +110,77 @@ Key functionalities implemented:
 
 
 **Key Technical Concepts**
-- **Reels-Style Vertical Snap Scroll:** Using  and  for a smooth, TikTok-like scrolling experience.
-- **Full-Screen UI:** Using  to make the Reels component take over the viewport, hiding other page elements.
-- **Conditional Routing & UI:** Using state (, ) fetched from the backend to dynamically render UI and control navigation post-login.
-- **Lazy Loading with :** Implemented via a custom hook to only load videos when they are visible in the viewport, improving performance.
-- **Client-Side Search:** Filtering the list of partners directly in the frontend based on user input.
-- **Navigation State Preservation:** Using  to save the scroll position of the Reels feed, allowing the Retour au Flux button to restore the user's exact location.
+- **Forced Page Reload on Login:** Using  to programmatically force a full page reload and navigate to the dashboard. This was critical for solving post-login state inconsistencies.
+- **Backend Route Conflict Resolution:** Identified and fixed a bug where two routers mounted in  defined the same endpoint (). The fix involved consolidating the Super Admin check logic.
+- **Data De-duplication:** Implemented logic on both the backend (filtering the MongoDB query result) and frontend () to prevent duplicate videos from appearing in the Reels feed.
+- **Conditional UI Rendering:** Heavy use of  and  props to dynamically show/hide/disable UI elements (e.g., Campaigns tab, maintenance mode locks, credit display).
+- **CSS  and :** Used to fix UI layout issues, specifically separating overlapping icons in the header and ensuring buttons were always clickable.
 
 **key DB schema**
-- **coaches**: 
-- **concept**: 
+  - **coaches**: 
+  - **concept**: 
 
 **changes in tech stack**
-- No changes.
+  - No changes.
 
 **All files of reference**
-- **Heavily Modified:**
-  - : Rewritten multiple times to evolve from a horizontal carousel to a full-screen, minimalist, searchable vertical Reels feed.
-  - : Layout logic was significantly altered to conditionally render the full-screen Reels feed or the standard page content.
-  - : Created and modified to handle video rendering, overlays (profile, bio, like), and click/double-click events.
-  - : Added  to serve videos for the feed and  for the intelligent routing logic.
-  - : Updated to allow partners to edit their video URL and to display their credit balance.
-  - : Updated to handle the new redirection logic and toast notifications.
-  - : Modified to include the Retour au Flux button.
+- ****: Heavily modified to fix Super Admin logic, add deduplication, and create the  endpoint.
+- ****: Modified extensively to manage the Reels feed display, handle the flash login redirection, and pass down state.
+- ****: Updated to remove duplicate buttons, add the credit progress bar, and hide tabs for partners.
+- ****: UI refined to eliminate black space, align header icons, and implement frontend deduplication.
+- ****: UI reorganized to prioritize the login flow for existing partners.
+- ****: Fixed a conflicting  endpoint that was overriding the correct Super Admin check.
+- ****: Updated with the correct list of Super Admin emails.
 
 **Areas that need refactoring**:
-- ****: **CRITICAL**. Still a large monolith.
-- ****: **CRITICAL**. Extremely large and complex, making it difficult to maintain.
+- ****: **CRITICAL**. Still a large monolith that is difficult to maintain.
+- ****: **CRITICAL**. An extremely large component that needs to be broken down.
 
 **key api endpoints**
-- : Fetches all active partners with their concept data (video URL, colors, etc.) for the Reels feed.
-- : Checks if a logged-in user has an active partner subscription. Returns .
-- : (Authenticated) Updates a partner's visual concept, including .
+- ****: (New) Deducts one credit from the authenticated partner's balance.
+- ****: (Modified) Now includes backend logic to de-duplicate partners before sending the list to the frontend.
+- ****: (Fixed) A route conflict was resolved to ensure this endpoint correctly identifies Super Admins.
+- ****: Used for intelligent routing post-login.
 
 **Critical Info for New Agent**
-- **Reels is the Core UX:** The application's primary interface is now the full-screen vertical video feed. All changes should be mindful of this mobile-first, minimalist design.
-- **Verify Login Logic:** The redirection logic after login is crucial. Test with a super admin, a paying partner, and a new user to ensure all cases work as expected.
-- **Stripe Connect is the Next Big Task:** This is the most significant pending feature from the original spec. Use the  agent to ensure a correct and secure implementation.
-- **Monoliths are Risky:** Be cautious when editing  and . They are sources of technical debt. Prioritize extracting logic from them when possible.
+- **Super Admin Logic:** The Super Admin check is now based on a list of emails . This logic was duplicated across several backend files and has been mostly centralized, but be cautious of any remaining hardcoded checks.
+- **Login is Sensitive:** The login flow now relies on  to force a clean state. Avoid using hash-based routing or simple state updates for post-login redirection.
+- **UI is Compact:** All UI changes must adhere to the zero black space principle. The main feed is designed to be immersive on mobile.
+- **Testing Agent:** The last action was to call the testing agent. Your first step should be to analyze its report from  and fix any issues found.
 
 **documents and test reports created in this job**
-- Continuously updated .
-- Test reports generated for each mission up to  via .
+  -  (updated after each mission)
+  - Test reports for missions v9.5.6 through v9.6.6 are available in . The report for v9.6.7 should be the next one generated.
 
-**Last 10 User Messages and any pending HUMAN messages**
-- **v9.5.4 (Completed):** Remove an extra UI element (case) and fix the partner redirection logic.
-- **v9.5.3 (Completed):** Replace the broken default video URL and implement search functionality in the feed.
-- **v9.5.2 (Completed):** Implement intelligent login routing and optimize the video feed with lazy loading.
-- **v9.5.1 (Completed):** Add a logo and search icon to the feed header and implement single/double-click interactions.
-- **v9.5.0 (Completed):** Add video uploader and credit balance display to the partner dashboard.
-- **v9.4.9 (Completed):** Refine the Reels UI, add a robust video fallback, and create a Retour au Flux button.
-- **v9.4.8 (Completed):** Convert the homepage to a vertical Reels-style scroll feed.
-- **v9.4.7 (Completed):** Implement a dynamic partner video carousel on the homepage.
-- **v9.4.6 (Handled previously):** Clean up the hero video and add a PWA Install button.
-- **v9.4.5 (Handled previously):** Cleaned up the partner page header and simplified the booking form.
+**Last 10 User Messages and any pending HUMAN messages** 
+- **v9.6.7 (Last Request):** Final validation mission to confirm all recent fixes: zero black space, aligned icons, no video duplicates, and a flawless login flow. (IN PROGRESS)
+- **v9.6.6:** Fix video duplicates in the feed and align overlapping header icons. (Completed)
+- **v9.6.4:** Eliminate black space around the video and reorganize the login modal. (Completed)
+- **v9.6.1:** A final validation mission to confirm UI purity and the fixed login flow. (Completed)
+- **v9.6.0:** Fix the flash login issue and add a My Dashboard button to the chat. (Completed)
+- **v9.5.9:** Add a visual credit gauge to the partner dashboard and audit recent fixes. (Completed)
+- **v9.5.8:** Remove duplicate UI elements, implement credit deduction, and ensure data isolation. (Completed)
+- **v9.5.7:** Implement a maintenance mode lock and fix button positioning. (Completed)
+- **v9.5.6:** Fix Super Admin access and repair main page scrolling. (Completed)
 
 **Project Health Check:**
-- **Brittle:** While functionally advanced, the application's reliance on two large monolithic files (, ) remains a significant architectural risk. The feature velocity is high, but the technical debt is accumulating.
+- **Brittle:** The application is functionally advanced, but its reliance on two large monolithic files (, ) remains a significant architectural risk. The high pace of UI changes has been stabilized, but the underlying tech debt is still present.
 
 **3rd Party Integrations**
-- **Stripe:** Used for payment processing. Stripe Connect is the next major integration task.
+- **Stripe:** Used for payment processing. Stripe Connect is a major upcoming task.
 - **Resend:** Used for transactional and campaign emails.
-- **Google Auth:** Used for user login.
+- **Google Auth:** Used for user login via Emergent's managed auth.
 
 **Testing status**
   - Testing agent used after significant changes: YES
   - Troubleshoot agent used after agent stuck in loop: NO
-  - Test files created: No new files, but existing tests were run.
-  - Known regressions: None.
+  - Test files created: None.
+  - Known regressions: None from this session.
 
 **Credentials to test flow:**
-- **Super Admin Email:** 
-- **Partner Test Account:** Use any new Google account. The system will auto-create a profile. Use the 0 CHF test pack to onboard a new partner for free to test the non-paying flow, then simulate payment (e.g., by manually setting credits in the DB) to test the active partner flow.
-- **Access Method:** Login with Google. For Super Admin, triple-click the © Afroboost 2026 footer text to open the login modal.
+- **Super Admin Emails:** , 
+- **Partner Test Account:** Onboard a new partner using any Google account and the free test pack.
+- **Access Method:** Use Google Login. For Super Admin, triple-click the © Afroboost 2026 footer text to open the login modal.
 
 **What agent forgot to execute**
-The agent has been thorough in completing the user's mission requests sequentially. No immediate actions were forgotten. The primary forgotten items are long-term strategic tasks like implementing Stripe Connect and refactoring the monoliths, which are captured as pending tasks.</analysis>
+- In mission v9.5.8, the user requested that credit deduction be implemented for **Chat** and **Promo Code** actions. The agent successfully implemented it for promo codes but did not add the logic for chat actions. This is captured in the In progress Task List.</analysis>
