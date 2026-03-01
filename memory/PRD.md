@@ -1,5 +1,114 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.5.8 - NETTOYAGE DOUBLONS ET ISOLATION CRÉDITS ✅ (01 Mars 2026)
+
+### STATUT: MISSION v9.5.8 COMPLÈTE - "NETTOYAGE DOUBLONS ET ISOLATION CRÉDITS VALIDÉS"
+
+| Objectif | Statut |
+|----------|--------|
+| Un seul bouton Déconnexion (fixed z-index 9999) | ✅ |
+| Campagnes masqué pour partenaires | ✅ |
+| Système de crédits (vérification + déduction) | ✅ |
+| Super Admin bypass (accès illimité) | ✅ |
+| Isolation données par coach_id | ✅ |
+| Espace réduit entre vidéo et Sessions | ✅ |
+| Chat violet préservé | ✅ |
+
+### 1. UN SEUL BOUTON DÉCONNEXION
+
+**Avant:** 2 boutons de déconnexion (header + fixed)
+**Après:** 1 seul bouton fixed en haut à droite
+
+```jsx
+// CoachDashboard.js L3959-3975
+<button 
+  onClick={handleSecureLogout}
+  style={{ 
+    position: 'fixed',
+    top: '12px',
+    right: '12px',
+    zIndex: 9999,
+    background: 'rgba(239, 68, 68, 0.9)'
+  }}
+  data-testid="coach-logout-fixed"
+>
+  🚪 Déconnexion
+</button>
+```
+
+### 2. CAMPAGNES MASQUÉ POUR PARTENAIRES
+
+```jsx
+// CoachDashboard.js L3781-3782
+const baseTabs = [
+  { id: "reservations", label: t('reservations') },
+  // ... autres onglets ...
+  // v9.5.8: Campagnes masqué pour les partenaires
+  ...(isSuperAdmin ? [{ id: "campaigns", label: "📢 Campagnes" }] : []),
+];
+```
+
+### 3. SYSTÈME DE CRÉDITS
+
+**Frontend (CoachDashboard.js L449-497):**
+```javascript
+const consumeCredit = async (action = "action") => {
+  if (isSuperAdmin) return { success: true, bypassed: true }; // Super Admin gratuit
+  if (coachCredits <= 0) {
+    setValidationMessage('⚠️ Solde épuisé. Achetez un pack pour continuer.');
+    return { success: false };
+  }
+  const res = await axios.post(`${API}/credits/deduct`, { action });
+  setCoachCredits(res.data?.credits_remaining);
+  return { success: true };
+};
+
+const checkCreditsBeforeAction = () => {
+  if (isSuperAdmin) return true;
+  if (coachCredits <= 0) {
+    setValidationMessage('⚠️ Solde épuisé.');
+    return false;
+  }
+  return true;
+};
+```
+
+**Backend (server.py L1415-1455):**
+```python
+@api_router.post("/credits/deduct")
+async def api_deduct_credit(request: Request):
+    result = await deduct_credit(user_email, action)
+    return result
+
+@api_router.get("/credits/check")
+async def api_check_credits(request: Request):
+    return await check_credits(user_email)
+```
+
+### 4. ISOLATION DONNÉES PAR coach_id
+
+```python
+# reservation_routes.py L77
+base_query = {} if is_super_admin(caller_email) else {"coach_id": caller_email}
+```
+
+| Utilisateur | Accès |
+|-------------|-------|
+| Super Admin | Toutes les données |
+| Coach Partenaire | Uniquement ses données (coach_id) |
+
+### Tests v9.5.8 - Iteration 115
+
+| Test | Statut |
+|------|--------|
+| Backend: 17/17 tests | ✅ 100% |
+| Frontend: All features | ✅ 100% |
+| Super Admin bypass | ✅ credits_remaining=-1 |
+| Isolation données | ✅ coach_id filter |
+| Chat violet | ✅ rgb(217, 28, 210) |
+
+---
+
 ## v9.5.7 - ALIGNEMENT PIXEL ET SÉCURITÉ MAINTENANCE ✅ (28 Février 2026)
 
 ### STATUT: MISSION v9.5.7 COMPLÈTE - "ALIGNEMENT PIXEL ET MAINTENANCE SÉCURISÉE"
