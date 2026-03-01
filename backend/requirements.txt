@@ -62,3 +62,4 @@ markdown-it-py
 MarkupSafe
 mccabe
 mdurl
+uvicorn
