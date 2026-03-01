@@ -141,14 +141,12 @@ class TestCreditsEndpointsV959:
 
 
 class TestPartnerCheckV959:
-    """v9.5.9: Partner check endpoint"""
+    """v9.5.9: Partner check endpoint (uses path parameter /check-partner/{email})"""
     
     def test_check_partner_super_admin_afroboost(self):
         """Check partner endpoint for Super Admin afroboost.bassi@gmail.com"""
-        response = requests.get(
-            f"{BASE_URL}/api/check-partner",
-            headers={"X-User-Email": "afroboost.bassi@gmail.com"}
-        )
+        # Note: endpoint uses path parameter, not header
+        response = requests.get(f"{BASE_URL}/api/check-partner/afroboost.bassi@gmail.com")
         assert response.status_code == 200
         data = response.json()
         assert data.get("is_partner") == True
@@ -159,10 +157,7 @@ class TestPartnerCheckV959:
     
     def test_check_partner_super_admin_artboost(self):
         """Check partner endpoint for Super Admin contact.artboost@gmail.com"""
-        response = requests.get(
-            f"{BASE_URL}/api/check-partner",
-            headers={"X-User-Email": "contact.artboost@gmail.com"}
-        )
+        response = requests.get(f"{BASE_URL}/api/check-partner/contact.artboost@gmail.com")
         assert response.status_code == 200
         data = response.json()
         assert data.get("is_partner") == True
@@ -170,16 +165,13 @@ class TestPartnerCheckV959:
         print("✅ check-partner: contact.artboost is Super Admin")
     
     def test_check_partner_non_super_admin(self):
-        """Check partner endpoint for non-Super Admin"""
-        response = requests.get(
-            f"{BASE_URL}/api/check-partner",
-            headers={"X-User-Email": TEST_PARTNER_EMAIL}
-        )
-        # Non-existent partner should either return is_partner=false or 404
-        assert response.status_code in [200, 404]
-        if response.status_code == 200:
-            data = response.json()
-            assert data.get("is_super_admin") != True
+        """Check partner endpoint for non-Super Admin (not in DB)"""
+        response = requests.get(f"{BASE_URL}/api/check-partner/{TEST_PARTNER_EMAIL}")
+        assert response.status_code == 200
+        data = response.json()
+        # Non-existent partner should return is_partner=false
+        assert data.get("is_partner") == False
+        assert data.get("is_super_admin") != True
         print("✅ check-partner: non-super-admin handled correctly")
 
 
