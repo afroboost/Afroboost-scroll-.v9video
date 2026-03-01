@@ -3409,17 +3409,18 @@ function App() {
       const partnerRes = await axios.get(`${API}/check-partner/${encodeURIComponent(userData?.email || '')}`);
       console.log('[APP] 📊 Statut partenaire:', partnerRes.data);
       
-      // CAS A: Partenaire Actif (a un pack payé avec crédits) - Redirection AUTOMATIQUE
-      if (partnerRes.data?.is_partner && partnerRes.data?.has_credits) {
-        console.log('[APP] 🚀 Partenaire actif - Redirection Dashboard FLASH');
-        // v9.6.0: FORCE RELOAD
+      // v9.6.8: CAS A - Partenaire EXISTANT (inscrit dans coaches) - Redirection IMMÉDIATE
+      // RÈGLE: Tout partenaire inscrit va au Dashboard, même sans crédits
+      if (partnerRes.data?.is_partner) {
+        console.log('[APP] 🚀 Partenaire existant - Redirection Dashboard FLASH (crédits:', partnerRes.data?.credits || 0, ')');
+        // v9.6.8: FORCE RELOAD - Le partenaire verra son solde dans le dashboard
         window.location.assign(window.location.origin + '/#coach-dashboard');
         return;
       }
       
-      // CAS B: Non-partenaire ou sans crédits - Afficher Toast et page Packs
-      console.log('[APP] ⚠️ Accès Dashboard refusé - Pas de pack actif');
-      setValidationMessage('⚠️ Paiement requis pour accéder au Dashboard. Veuillez choisir un pack.');
+      // CAS B: NON-partenaire (pas inscrit) - Afficher la page Packs
+      console.log('[APP] ⚠️ Non-partenaire - Affichage page d\'inscription');
+      setValidationMessage('✨ Bienvenue ! Choisissez un pack pour devenir partenaire.');
       setTimeout(() => setValidationMessage(""), 6000);
       
       // Ouvrir la page "Devenir Partenaire" avec les packs
