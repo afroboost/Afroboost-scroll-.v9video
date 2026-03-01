@@ -27,9 +27,10 @@ class TestMissionV964:
         """
         Verify Super Admin (afroboost.bassi@gmail.com) has unlimited credits (-1)
         """
+        # Use cookies session for auth
         response = requests.get(
-            f"{BASE_URL}/api/partner/check-credits",
-            params={"email": "afroboost.bassi@gmail.com"},
+            f"{BASE_URL}/api/credits/check",
+            cookies={"user_email": "afroboost.bassi@gmail.com"},
             timeout=10
         )
         assert response.status_code == 200
