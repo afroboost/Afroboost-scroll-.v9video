@@ -4046,7 +4046,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                       className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
                       style={{
                         background: coachCredits <= 0 ? 'rgba(239,68,68,0.15)' : 'rgba(217,28,210,0.15)',
-                        border: `1px solid ${coachCredits <= 0 ? 'rgba(239,68,68,0.4)' : 'rgba(217,28,210,0.4)}'`
+                        border: coachCredits <= 0 ? '1px solid rgba(239,68,68,0.4)' : '1px solid rgba(217,28,210,0.4)'
                       }}
                       data-testid="coach-credits-badge"
                     >
@@ -4066,7 +4066,7 @@ const CoachDashboard = ({ t, lang, onBack, onLogout, coachUser }) => {
                           <div 
                             className="h-full rounded-full transition-all duration-500"
                             style={{ 
-                              width: `${Math.min(100, (coachCredits / 50) * 100)}%`,
+                              width: Math.min(100, (coachCredits / 50) * 100) + '%',
                               background: coachCredits <= 0 
                                 ? '#ef4444' 
                                 : coachCredits < 5 
