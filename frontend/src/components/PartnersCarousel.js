@@ -674,8 +674,51 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
             </div>
           )}
           
-          {/* v9.6.6: Container icônes avec gap de 15px */}
-          <div className="flex items-center gap-3">
+          {/* v9.6.8: Container icônes avec gap de 15px (gap-4) - LANGUE + LOUPE + SON */}
+          <div className="flex items-center gap-4">
+            {/* v9.6.8: Sélecteur de langue */}
+            <div className="relative">
+              <button
+                onClick={() => setShowLangMenu(!showLangMenu)}
+                className="w-7 h-7 flex items-center justify-center rounded-full transition-all hover:scale-110"
+                style={{ 
+                  background: 'rgba(255,255,255,0.1)',
+                  color: 'white'
+                }}
+                data-testid="lang-selector-btn"
+              >
+                <GlobeIcon />
+              </button>
+              {showLangMenu && (
+                <div 
+                  className="absolute top-full right-0 mt-1 py-1 rounded-lg overflow-hidden"
+                  style={{
+                    background: 'rgba(0,0,0,0.95)',
+                    border: '1px solid rgba(139, 92, 246, 0.4)',
+                    minWidth: '60px',
+                    zIndex: 50
+                  }}
+                >
+                  {['FR', 'EN', 'DE'].map(code => (
+                    <button
+                      key={code}
+                      onClick={() => {
+                        if (onLangChange) onLangChange(code.toLowerCase());
+                        setShowLangMenu(false);
+                      }}
+                      className="w-full px-3 py-1.5 text-white text-xs text-center hover:bg-purple-500/30"
+                      style={{ 
+                        background: lang?.toUpperCase() === code ? 'rgba(139, 92, 246, 0.3)' : 'transparent' 
+                      }}
+                      data-testid={`lang-${code.toLowerCase()}`}
+                    >
+                      {code}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
             {/* Bouton Recherche/Fermer */}
             <button
               onClick={() => {
@@ -701,6 +744,19 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
               ) : (
                 <SearchIcon />
               )}
+            </button>
+            
+            {/* v9.6.8: Bouton Son global */}
+            <button
+              onClick={() => setGlobalMuted(!globalMuted)}
+              className="w-7 h-7 flex items-center justify-center rounded-full transition-all hover:scale-110"
+              style={{ 
+                background: globalMuted ? 'rgba(255,255,255,0.1)' : 'var(--primary-color, #D91CD2)',
+                color: 'white'
+              }}
+              data-testid="global-sound-btn"
+            >
+              <SoundIcon muted={globalMuted} />
             </button>
           </div>
         </div>
