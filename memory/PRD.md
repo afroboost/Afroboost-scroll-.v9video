@@ -1,5 +1,83 @@
 # Afroboost - Document de Référence Produit (PRD)
 
+## v9.6.6 - FLUX UNIQUE ET UI ALIGNÉE ✅ (01 Mars 2026)
+
+### STATUT: MISSION v9.6.6 COMPLÈTE - "FIX DOUBLONS VIDÉO ET ALIGNEMENT UI"
+
+| Objectif | Statut |
+|----------|--------|
+| Suppression doublons vidéo | ✅ |
+| Séparation icônes (gap 12px) | ✅ |
+| Keys uniques par vidéo | ✅ |
+| Lang selector z-index réduit | ✅ |
+| Sections accessibles | ✅ |
+| Chat violet préservé | ✅ |
+
+### 1. DÉDUPLICATION DES PARTENAIRES
+
+**Backend (coach_routes.py L305-331):**
+```python
+seen_emails = set()  # Track des emails
+
+# Ajouter Bassi en premier
+if bassi_concept:
+    partners_with_videos.append(bassi_data)
+    seen_emails.add(SUPER_ADMIN_EMAIL.lower())
+
+# Pour chaque coach - Skip si déjà vu
+for coach in coaches:
+    if coach_email in seen_emails:
+        continue  # Skip doublon
+    seen_emails.add(coach_email)
+```
+
+**Frontend (PartnersCarousel.js L487-493):**
+```javascript
+const seen = new Set();
+const data = rawData.filter(p => {
+  const key = (p.email || p.id || '').toLowerCase();
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return true;
+});
+```
+
+### 2. SÉPARATION DES ICÔNES
+
+**Container Flexbox (PartnersCarousel.js L666):**
+```jsx
+<div className="flex items-center gap-3">
+  {/* Loupe de recherche */}
+  <button data-testid="search-btn">...</button>
+</div>
+```
+
+**Z-index réduit (App.css L783):**
+```css
+.lang-selector {
+  z-index: 50;  /* Réduit de 100 à 50 */
+}
+```
+
+### 3. KEYS UNIQUES VÉRIFIÉS
+
+| Partenaire | Key |
+|------------|-----|
+| Bassi | `bassi_main` |
+| Coach 1 | `coach_{uuid}` |
+| Coach 2 | `coach_{uuid}` |
+| ... | ... |
+
+### Tests v9.6.6 - Iteration 120
+
+| Catégorie | Tests | Résultat |
+|-----------|-------|----------|
+| Backend | 8/8 | ✅ 100% |
+| Frontend | All | ✅ 100% |
+| Playwright | 9/9 | ✅ 100% |
+
+---
+
 ## v9.6.4 - ESPACE MOBILE RÉDUIT ET LOGIN OPTIMISÉ ✅ (01 Mars 2026)
 
 ### STATUT: MISSION v9.6.4 COMPLÈTE - "ZÉRO VIDE NOIR ET FLUX LOGIN"
