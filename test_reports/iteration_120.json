@@ -1,0 +1,125 @@
+{
+  "summary": "Mission v9.6.6 'Fix Doublons Vidéo et Alignement UI' - ALL FEATURES VERIFIED. 1) Backend deduplication via seen_emails set working - /api/partners/active returns 5 unique partners, 2) Frontend deduplication filter as double security working, 3) Each video card has unique key (bassi_main for Bassi), 4) Language selector z-index reduced to 50, 5) Chat widget violet (#D91CD2) preserved, 6) Sessions section and footer '© Afroboost 2026' accessible",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_v966_mission.py",
+    "/app/test_reports/pytest/pytest_v966_mission.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✅ coach_routes.py L305: seen_emails = set() for backend deduplication",
+    "✅ coach_routes.py L323: seen_emails.add(SUPER_ADMIN_EMAIL.lower()) for Bassi",
+    "✅ coach_routes.py L330-331: Skip if email already in seen_emails",
+    "✅ PartnersCarousel.js L487-493: Frontend deduplication filter with Set",
+    "✅ PartnersCarousel.js L666: Header icons container with gap-3 class",
+    "✅ App.css L783: lang-selector z-index: 50 (reduced from 100)",
+    "✅ Super Admin (afroboost.bassi@gmail.com) verified with unlimited credits (-1)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_v966_mission.py"
+  ],
+  "success_rate": {
+    "backend": "100% - 8/8 tests passed",
+    "frontend": "100% - All v9.6.6 UI features verified via Playwright"
+  },
+  "test_credentials": {
+    "api_url": "https://partner-reels-feed.preview.emergentagent.com",
+    "super_admin_emails": ["afroboost.bassi@gmail.com", "contact.artboost@gmail.com"]
+  },
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mission v9.6.6 verified: (1) Backend deduplication with seen_emails set - 5 unique partners returned, Bassi has ID 'bassi_main', (2) Frontend deduplication filter in PartnersCarousel.js L487-493, (3) Header icons with gap-3 (12px) in flex container, (4) Lang-selector z-index reduced to 50, (5) Chat widget violet #D91CD2 preserved with rgb(217, 28, 210), (6) Sessions section and footer accessible by scrolling",
+  "verified_features_v966": {
+    "BACKEND_DEDUPLICATION": {
+      "status": "PASS",
+      "endpoint": "/api/partners/active",
+      "total_partners": 5,
+      "unique_by_email": true,
+      "bassi_id": "bassi_main",
+      "code_location": "coach_routes.py L305-331 (seen_emails set)"
+    },
+    "FRONTEND_DEDUPLICATION": {
+      "status": "PASS",
+      "code_location": "PartnersCarousel.js L487-493",
+      "method": "Filter with Set on email/id key",
+      "console_log": "[FLUX-REELS] 5 partenaires reçus, 5 uniques"
+    },
+    "UNIQUE_VIDEO_KEYS": {
+      "status": "PASS",
+      "keys_verified": [
+        "partner-card-bassi_main",
+        "partner-card-3f36bd1b-0069-4174-8eef-bd4cefc30298",
+        "partner-card-9fe618e2-2b7c-4aed-b101-c968cd62377d",
+        "partner-card-029007d2-e461-4dee-8834-bff5eee41103",
+        "partner-card-aabace6c-f46f-4065-924b-99a44807f0fd"
+      ]
+    },
+    "ICONS_SEPARATION": {
+      "status": "PASS",
+      "container_class": "flex items-center gap-3",
+      "gap_value": "12px (gap-3 in Tailwind)",
+      "icons": ["search-btn", "sound-icon"]
+    },
+    "LANG_SELECTOR_ZINDEX": {
+      "status": "PASS",
+      "z_index": "50",
+      "position": "fixed",
+      "code_location": "App.css L783"
+    },
+    "SESSIONS_SECTION_VISIBLE": {
+      "status": "PASS",
+      "text_visible": "Choisissez votre session",
+      "scrollable": true
+    },
+    "FOOTER_ACCESSIBLE": {
+      "status": "PASS",
+      "text": "© Afroboost 2026",
+      "scrollable": true
+    },
+    "CHAT_VIOLET_PRESERVED": {
+      "status": "PASS",
+      "expected_color": "#D91CD2",
+      "actual_color": "rgb(217, 28, 210)",
+      "match": true
+    },
+    "SUPER_ADMIN_UNLIMITED_CREDITS": {
+      "status": "PASS",
+      "emails_verified": [
+        "afroboost.bassi@gmail.com",
+        "contact.artboost@gmail.com"
+      ],
+      "credits": -1,
+      "unlimited": true
+    }
+  },
+  "backend_tests_passed": {
+    "test_health_check": "PASS",
+    "test_partners_active_returns_unique_by_email": "PASS",
+    "test_partners_active_bassi_has_unique_id": "PASS",
+    "test_super_admin_bassi_unlimited_credits": "PASS",
+    "test_super_admin_contact_artboost_unlimited_credits": "PASS",
+    "test_partners_active_all_have_unique_ids": "PASS",
+    "test_courses_endpoint": "PASS",
+    "test_offers_endpoint": "PASS"
+  },
+  "playwright_tests_passed": {
+    "reels_section_present": true,
+    "logo_present": true,
+    "search_btn_present": true,
+    "partner_cards_count": 5,
+    "all_cards_unique_keys": true,
+    "lang_selector_zindex_50": true,
+    "sessions_section_visible": true,
+    "footer_visible": true,
+    "chat_widget_violet": true
+  }
+}
