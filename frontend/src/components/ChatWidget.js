@@ -3701,6 +3701,33 @@ export const ChatWidget = () => {
                       
                       <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }} />
                       
+                      {/* v9.6.0: Bouton Mon Dashboard */}
+                      <button
+                        onClick={() => {
+                          window.location.assign(window.location.origin + '/#coach-dashboard');
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '10px 14px',
+                          textAlign: 'left',
+                          fontSize: '12px',
+                          color: '#D91CD2',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px'
+                        }}
+                        className="hover:bg-white/10"
+                        data-testid="goto-dashboard-btn"
+                      >
+                        <span>⚙️</span>
+                        Mon Dashboard
+                      </button>
+                      
+                      <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }} />
+                      
                       {/* Bouton Déconnexion */}
                       <button
                         onClick={() => { handleLogout(); }}
