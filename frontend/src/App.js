@@ -3769,9 +3769,9 @@ function App() {
         />
       </div>
       
-      {/* v9.5.6: Contenu scrollable SOUS le flux Reels */}
-      <div className="max-w-4xl mx-auto px-4 pt-8" style={{ background: '#000000' }}>
-        {/* v9.5.6: NavigationBar simplifiée - sans la barre de recherche (déjà dans le header Reels) */}
+      {/* v9.5.8: Contenu scrollable SOUS le flux Reels - Espacement réduit */}
+      <div className="max-w-4xl mx-auto px-4 pt-2" style={{ background: '#000000' }}>
+        {/* v9.5.8: Suppression espace vide */}
 
         {/* Message si aucun résultat */}
         {filteredServices.length === 0 && filteredProducts.length === 0 && visibleCourses.length === 0 && searchQuery.trim() && (
