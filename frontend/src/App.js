@@ -3753,12 +3753,12 @@ function App() {
         />
       )}
 
-      {/* v9.5.8: Flux Reels - Mobile first, pleine largeur, hauteur auto */}
+      {/* v9.6.4: Flux Reels - IMMERSIF 90vh sur mobile */}
       <div 
         className="relative w-full" 
         style={{ 
-          height: 'calc(100vh - 50px)',  // v9.5.8: Ajusté pour supprimer l'espace vide
-          maxHeight: '85vh',  // Limite max pour laisser voir le contenu en dessous
+          height: '90vh',  // v9.6.4: Augmenté pour effet plein écran
+          maxHeight: '90vh',
           background: '#000000' 
         }}
       >
