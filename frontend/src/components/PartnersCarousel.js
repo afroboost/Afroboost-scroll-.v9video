@@ -594,16 +594,16 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
       style={{ background: '#000000' }}
       data-testid="partners-reels-section"
     >
-      {/* v9.5.7: HEADER ultra-compact - 5px max entre logo et vidéo */}
+      {/* v9.6.4: HEADER ultra-compact - ZÉRO marge */}
       <div 
         className="absolute top-0 left-0 right-0 z-20"
         style={{ 
           background: 'linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
-          paddingTop: '2px',
-          paddingBottom: '2px'
+          paddingTop: '0px',
+          paddingBottom: '0px'
         }}
       >
-        {/* Ligne principale: Logo + Recherche - ZÉRO marge */}
+        {/* Ligne principale: Logo + Recherche - ZÉRO padding */}
         <div className="flex items-center justify-between px-2 py-0">
           <div className="w-7"></div>
           
