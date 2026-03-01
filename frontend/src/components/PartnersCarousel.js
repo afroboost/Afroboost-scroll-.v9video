@@ -607,7 +607,7 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
       style={{ background: '#000000' }}
       data-testid="partners-reels-section"
     >
-      {/* v9.6.4: HEADER ultra-compact - ZÉRO marge */}
+      {/* v9.6.6: HEADER avec icônes bien alignées (Loupe + Traduction) */}
       <div 
         className="absolute top-0 left-0 right-0 z-20"
         style={{ 
@@ -616,9 +616,10 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
           paddingBottom: '0px'
         }}
       >
-        {/* Ligne principale: Logo + Recherche - ZÉRO padding */}
-        <div className="flex items-center justify-between px-2 py-0">
-          <div className="w-7"></div>
+        {/* Ligne principale: Logo (centre) + Icônes (droite) */}
+        <div className="flex items-center justify-between px-2 py-1">
+          {/* Espace gauche pour équilibrer */}
+          <div className="w-8"></div>
           
           {/* Logo centré (ou barre de recherche si activée) */}
           {showSearch ? (
@@ -661,32 +662,35 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
             </div>
           )}
           
-          {/* Bouton Recherche/Fermer - Plus petit */}
-          <button
-            onClick={() => {
-              setShowSearch(!showSearch);
-              if (!showSearch) {
-                setTimeout(() => searchInputRef.current?.focus(), 100);
-              } else {
-                setSearchQuery('');
-              }
-            }}
-            className="w-8 h-8 flex items-center justify-center rounded-full transition-all hover:scale-110"
-            style={{ 
-              background: showSearch ? 'var(--primary-color, #D91CD2)' : 'rgba(255,255,255,0.1)',
-              color: 'white'
-            }}
-            data-testid="search-btn"
-          >
-            {showSearch ? (
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            ) : (
-              <SearchIcon />
-            )}
-          </button>
+          {/* v9.6.6: Container icônes avec gap de 15px */}
+          <div className="flex items-center gap-3">
+            {/* Bouton Recherche/Fermer */}
+            <button
+              onClick={() => {
+                setShowSearch(!showSearch);
+                if (!showSearch) {
+                  setTimeout(() => searchInputRef.current?.focus(), 100);
+                } else {
+                  setSearchQuery('');
+                }
+              }}
+              className="w-7 h-7 flex items-center justify-center rounded-full transition-all hover:scale-110"
+              style={{ 
+                background: showSearch ? 'var(--primary-color, #D91CD2)' : 'rgba(255,255,255,0.1)',
+                color: 'white'
+              }}
+              data-testid="search-btn"
+            >
+              {showSearch ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              ) : (
+                <SearchIcon />
+              )}
+            </button>
+          </div>
         </div>
         
         {/* v9.5.3: Résultats de recherche */}
