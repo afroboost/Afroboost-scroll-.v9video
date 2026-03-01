@@ -481,15 +481,28 @@ const PartnersCarousel = ({ onPartnerClick, onSearch, maintenanceMode = false, i
     const fetchPartners = async () => {
       try {
         const res = await axios.get(`${API}/partners/active`);
-        const data = res.data || [];
+        const rawData = res.data || [];
+        
+        // v9.6.6: Déduplication par email (double sécurité)
+        const seen = new Set();
+        const data = rawData.filter(p => {
+          const key = (p.email || p.id || '').toLowerCase();
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+        
+        console.log(`[FLUX-REELS] ${rawData.length} partenaires reçus, ${data.length} uniques`);
+        
         setPartners(data);
         setFilteredPartners(data); // v9.5.3: Initialiser filteredPartners
         
         const initialMuted = {};
         const initialPaused = {};
-        (res.data || []).forEach(p => {
-          initialMuted[p.id || p.email] = true;
-          initialPaused[p.id || p.email] = false;
+        data.forEach(p => {
+          const pKey = p.id || p.email;
+          initialMuted[pKey] = true;
+          initialPaused[pKey] = false;
         });
         setMutedStates(initialMuted);
         setPausedStates(initialPaused);
